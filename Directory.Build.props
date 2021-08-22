@@ -1,0 +1,16 @@
+<Project>
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Matthias Wolf</Authors>
+    <Company>Mawosoft</Company>
+    <Product>Mawosoft.BenchmarkDotNetToolbox</Product>
+    <Copyright>Copyright (c) 2021 Matthias Wolf, Mawosoft</Copyright>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+
+</Project>
