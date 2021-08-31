@@ -13,35 +13,53 @@ namespace Mawosoft.BenchmarkDotNetToolbox
     public class JobColumnSelectionProvider : IColumnProvider
     {
         private static readonly Lazy<FilterFactory> s_filterFactory = new();
-
         private readonly bool _showHiddenValuesInLegend;
-        private readonly CharacteristicFilter[] _characteristicFilters;
+        private readonly CharacteristicFilter[] _presentableCharacteristicFilters;
 
-        public JobColumnSelectionProvider(bool showHiddenValuesInLegend, params string[] filterExpressions)
+        public JobColumnSelectionProvider(string filterExpression, bool showHiddenValuesInLegend = true)
         {
             _showHiddenValuesInLegend = showHiddenValuesInLegend;
-            _characteristicFilters = s_filterFactory.Value.CreateCharacteristicFilters(filterExpressions);
+            _presentableCharacteristicFilters =
+                s_filterFactory.Value.CreateCharacteristicFilters(filterExpression)
+                .Where(c => c.Column != null).ToArray();
         }
 
         public IEnumerable<IColumn> GetColumns(Summary summary)
         {
-            ColumnFilter[] columnFilters = _characteristicFilters.Where(c => c.Column != null).Select(c => new ColumnFilter(c)).ToArray();
-            IEnumerable<Job> jobs = summary.BenchmarksCases.Select(b => b.Job);
-            for (int i = 0; i < columnFilters.Length; i++)
+            ColumnFilter[] columnFilters
+                = _presentableCharacteristicFilters.Select(c => new ColumnFilter(c, summary)).ToArray();
+            if (_showHiddenValuesInLegend)
             {
-                if (columnFilters[i].Available = columnFilters[i].Column.IsAvailable(summary))
+                int legendColumnIndex = Array.FindIndex(columnFilters, cf => cf.IsVisible);
+                if (legendColumnIndex >= 0)
                 {
-                    columnFilters[i].MultiValue = jobs.Select(j => CharacteristicPresenter.DefaultPresenter.ToPresentation(j, columnFilters[i].Characteristic)).Distinct().Count() > 1;
-                }
-            }
-            if (_showHiddenValuesInLegend && columnFilters.Any(cf => cf.IsHidden))
-            {
-                int firstVisible = Array.FindIndex(columnFilters, cf => cf.IsVisible);
-                if (firstVisible >= 0)
-                {
-                    // TODO select only the hidden characteristics
-                    string legend = "Job characteristics" + Environment.NewLine + string.Join(Environment.NewLine, jobs.Select(j => j.DisplayInfo).Distinct());
-                    columnFilters[firstVisible].Column = new JobCharacteristicColumnWithLegend(columnFilters[firstVisible].Column, legend);
+                    int idColumnIndex = Array.FindIndex(columnFilters, cf => cf.Characteristic.Id == "Id");
+                    if (idColumnIndex >= 0 && !columnFilters[idColumnIndex].IsHidden)
+                    {
+                        legendColumnIndex = idColumnIndex;
+                    }
+
+                    IEnumerable<ColumnFilter> hiddenColumns =
+                        columnFilters.Where(cf => cf.IsHidden && cf.Characteristic.Id != "Id");
+                    if (hiddenColumns.Any())
+                    {
+                        int paddedJobNameLength = summary.BenchmarksCases.Max(b => b.Job.ResolvedId.Length) + 4;
+                        string legend = (columnFilters[legendColumnIndex].Characteristic.Id
+                            == "Id" ? "Job name" : "Job characteristic")
+                            + ". Some job columns have been hidden:" + Environment.NewLine
+                            + string.Join(Environment.NewLine,
+                                summary.BenchmarksCases.Select(b =>
+                                    b.Job.ResolvedId.PadLeft(paddedJobNameLength) + ": " 
+                                    + string.Join(", ", hiddenColumns.Select(cf =>
+                                        cf.Characteristic.Id + "=" + cf.Column.GetValue(summary, b)))).Distinct());
+                        columnFilters[legendColumnIndex].AddLegend(legend);
+                    }
+                    else if (columnFilters[idColumnIndex].IsHidden)
+                    {
+                        string legend = "Job characteristic. Hidden job names: "
+                            + string.Join(", ", summary.BenchmarksCases.Select(b => b.Job.ResolvedId).Distinct());
+                        columnFilters[legendColumnIndex].AddLegend(legend);
+                    }
                 }
             }
             return columnFilters.Where(cf => !cf.IsHidden).Select(cf => cf.Column);
@@ -63,83 +81,101 @@ namespace Mawosoft.BenchmarkDotNetToolbox
 
         private struct ColumnFilter
         {
-            // TODO readonly for ctor initialized fields (however, we want to replace one Column int the array)
-            public Characteristic Characteristic;
-            public IColumn Column;
-            public bool Hide;
-            public bool Available;
-            public bool MultiValue;
+            public Characteristic Characteristic { get; }
+            public IColumn Column { get; private set; }
+            private readonly bool _hide; // per user-defined filter
+            private readonly bool _available;
+            private readonly bool _multiValue;
+            // ***BE CAREFUL*** IsVisible is *NOT* the same as !IsHidden
+            // - A column the user wants to hide may not be available in the current context, thus it is neither.
+            //   Currently JobCharacteristic.IsAvailable() always returns true, but that can change in the future.
+            //   For example, see PR https://github.com/dotnet/BenchmarkDotNet/pull/1621
+            // - A column the user wants to hide may contain the same value for all benchmarks and therefore
+            //   gets extracted by BDN and the value appears only once above the summary. In this case, too,
+            //   the column is neither hidden nor visible for our purposes.
+            public bool IsHidden => _available && _multiValue && _hide;
+            public bool IsVisible => _available && _multiValue && !_hide;
 
-            public bool IsHidden => Available && MultiValue && Hide;
-            public bool IsVisible => Available && MultiValue && !Hide;
-
-            public ColumnFilter(CharacteristicFilter characteristicFilter) : this()
+            public ColumnFilter(CharacteristicFilter characteristicFilter, Summary summary) : this()
             {
                 Characteristic = characteristicFilter.Characteristic;
-                Column = characteristicFilter.Column ?? throw new ArgumentNullException(nameof(Column));
-                Hide = characteristicFilter.Hide;
+                IColumn column = Column = characteristicFilter.Column ?? throw new ArgumentNullException(nameof(Column));
+                _hide = characteristicFilter.Hide;
+                if (_available = Column.IsAvailable(summary))
+                {
+                    _multiValue = summary.BenchmarksCases.Select(b => column.GetValue(summary, b)).Distinct().Count() > 1;
+                }
+            }
+
+            public void AddLegend(string legend)
+            {
+                if (Column is JobCharacteristicColumnWithLegend)
+                    throw new InvalidOperationException("Column already has a legend.");
+                Column = new JobCharacteristicColumnWithLegend(Column, legend);
             }
         }
 
         private class FilterFactory
         {
-            private readonly (Characteristic characteristic, IColumn? column)[] _items;
-            private readonly Dictionary<string, (int index, int[] childIndices)> _lookup;
+            private readonly (Characteristic characteristic, IColumn? column)[] _allCharacteristicsAndColumns;
+            private readonly Dictionary<string, (int index, int[] childIndices)> _idToIndexLookup;
 
             public FilterFactory()
             {
                 IReadOnlyList<Characteristic> allCharacteristics = CharacteristicHelper.GetAllCharacteristics(typeof(Job));
-                _items = new (Characteristic characteristic, IColumn? column)[allCharacteristics.Count];
-                _lookup = new(_items.Length + 10, StringComparer.OrdinalIgnoreCase);
+                _allCharacteristicsAndColumns = new (Characteristic characteristic, IColumn? column)[allCharacteristics.Count];
+                _idToIndexLookup = new(_allCharacteristicsAndColumns.Length + 10, StringComparer.OrdinalIgnoreCase);
                 for (int index = 0; index < allCharacteristics.Count; index++)
                 {
                     Characteristic characteristic = allCharacteristics[index];
-                    _items[index].characteristic = characteristic;
+                    _allCharacteristicsAndColumns[index].characteristic = characteristic;
                     if (characteristic.HasChildCharacteristics)
                     {
                         string type = characteristic.CharacteristicType.Name;
-                        int[] childIndices = allCharacteristics.Select((c, i) => c.DeclaringType.Name == type ? i : -1).Where(i => i != -1).ToArray();
-                        _lookup.Add(characteristic.Id, (index, childIndices));
+                        int[] childIndices = allCharacteristics.Select((c, i) => c.DeclaringType.Name == type ? i : -1)
+                            .Where(i => i != -1).ToArray();
+                        _idToIndexLookup.Add(characteristic.Id, (index, childIndices));
                         if (!string.Equals(type, characteristic.Id, StringComparison.OrdinalIgnoreCase))
                         {
-                            _lookup.Add(type, (index, childIndices));
+                            _idToIndexLookup.Add(type, (index, childIndices)); // Alias
                         }
                     }
                     else
                     {
-                        _lookup.Add(characteristic.Id, (index, Array.Empty<int>()));
+                        _idToIndexLookup.Add(characteristic.Id, (index, Array.Empty<int>()));
                     }
                 }
-                _lookup.Add("Job", _lookup["Id"]);
-                _lookup.Add("All", (-1, Enumerable.Range(0, allCharacteristics.Count).ToArray()));
+                _idToIndexLookup.Add("Job", _idToIndexLookup["Id"]); // Alias
+                _idToIndexLookup.Add("All", (-1, Enumerable.Range(0, allCharacteristics.Count).ToArray()));
                 IColumn[] allColumns = JobCharacteristicColumn.AllColumns;
                 for (int i = 0; i < allColumns.Length; i++)
                 {
-                    _items[_lookup[allColumns[i].ColumnName].index].column = allColumns[i];
+                    _allCharacteristicsAndColumns[_idToIndexLookup[allColumns[i].ColumnName].index].column = allColumns[i];
                 }
             }
 
-            public CharacteristicFilter[] CreateCharacteristicFilters(params string[] filterExpressions)
+            public CharacteristicFilter[] CreateCharacteristicFilters(string filterExpression)
             {
-                if (filterExpressions == null)
-                    throw new ArgumentNullException(nameof(filterExpressions));
-                CharacteristicFilter[] retVal = _items.Select(i => new CharacteristicFilter(i.characteristic, i.column)).ToArray();
+                if (filterExpression == null)
+                    throw new ArgumentNullException(nameof(filterExpression));
+                string[] filterExpressions = filterExpression.Split(new[]{ ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                CharacteristicFilter[] retVal =
+                    _allCharacteristicsAndColumns.Select(i => new CharacteristicFilter(i.characteristic, i.column)).ToArray();
                 for (int i = 0; i < filterExpressions.Length; i++)
                 {
-                    string filterExpression = filterExpressions[i];
-                    if (string.IsNullOrEmpty(filterExpression)) throw new ArgumentException(null, $"{nameof(filterExpressions)}[{i}]");
-                    bool hide = filterExpression[0] == '-';
-                    if (filterExpression[0] is '-' or '+')
+                    string filterId = filterExpressions[i];
+                    bool hide = filterId[0] == '-';
+                    if (filterId[0] is '-' or '+')
                     {
-                        filterExpression = filterExpression.Substring(1);
+                        filterId = filterId.Substring(1);
                     }
-                    ApplyFilter(filterExpression, hide);
+                    ApplyFilter(filterId, hide);
                 }
                 return retVal;
 
                 void ApplyFilter(string filterId, bool hide)
                 {
-                    (int index, int[] childIndices) = _lookup[filterId];
+                    (int index, int[] childIndices) = _idToIndexLookup[filterId];
                     if (index >= 0)
                     {
                         retVal[index].Hide = hide;
