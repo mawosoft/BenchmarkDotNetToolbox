@@ -26,7 +26,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
 
         public static ManualConfig ReplaceColumnCategory(this ManualConfig config, params IColumn[] newColumns)
         {
-            var categories = newColumns.GroupBy(c => c.Category).Select(g => g.Key).ToArray();
+            ColumnCategory[] categories = newColumns.Select(c => c.Category).Distinct().ToArray();
             RemoveColumnsByCategory(config, categories);
             return config.AddColumn(newColumns);
         }

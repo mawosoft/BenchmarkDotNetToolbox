@@ -10,12 +10,35 @@ using BenchmarkDotNet.Reports;
 
 namespace Mawosoft.BenchmarkDotNetToolbox
 {
+    /// <summary>
+    /// An alternative to DefaultColumnProviders.Job with user-defined selection of Job columns.
+    /// See also <seealso cref="JobColumnSelectionAttribute"/>.
+    /// </summary>
     public class JobColumnSelectionProvider : IColumnProvider
     {
         private static readonly Lazy<FilterFactory> s_filterFactory = new();
         private readonly bool _showHiddenValuesInLegend;
         private readonly CharacteristicFilter[] _presentableCharacteristicFilters;
 
+        /// <summary>
+        /// Initializes a user-defined selection of Job columns.
+        /// </summary>
+        /// <param name="filterExpression">A space-separated list of job column or category names, prefixed with
+        /// - or + to exclude or include them. See remarks for details.</param>
+        /// <param name="showHiddenValuesInLegend">True to include a compact display of hidden values as legend,
+        /// false if not.</param>
+        /// <remarks>
+        /// <para>Initially, all columns are visible, just like with the default provider.
+        /// The filter expressions are processed sequentially, e.g. <b>"-All +Job"</b> will hide all columns
+        /// except the Job name column, and <b>"-Run +RunStrategy"</b> will hide the columns of the Run category
+        /// except for RunStrategy.</para>
+        /// <para>Categories can be specified either by their name or type; e.g. <i>Run</i> and <i>RunMode</i>
+        /// are equivalent. Available categories are: <i>Environment, Gc, Run, Infrastructure, Accuracy</i>.
+        /// See the <see href="https://benchmarkdotnet.org/articles/configs/jobs.html">BenchmarkDotNet documentation</see>
+        /// for details.</para>
+        /// <para>The alias <i>All</i> refers to all columns, and both <i>Job</i> and <i>Id</i> can be used for
+        /// the Job name colum.</para>
+        /// </remarks>
         public JobColumnSelectionProvider(string filterExpression, bool showHiddenValuesInLegend = true)
         {
             _showHiddenValuesInLegend = showHiddenValuesInLegend;
