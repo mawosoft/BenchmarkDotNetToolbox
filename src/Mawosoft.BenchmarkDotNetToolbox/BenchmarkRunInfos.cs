@@ -96,11 +96,14 @@ namespace Mawosoft.BenchmarkDotNetToolbox
                 Items.AddRange(runInfos.Where(ri => ri.BenchmarksCases.Length > 0));
                 return;
             }
-            // TODO Not sure if the underlying Dispose implementation is safe for our purposes.
+            // TODO Verify that the underlying Dispose implementation is safe for our purposes.
             // IDisposable chain goes: BenchmarkRunInfo -> BenchmarkCase(s) -> ParameterInstances ->
             //                         ParameterInstance(s) -> (Value as IDisposable)?
-            // Preliminary tests show that disposal only occurs explicitly after running all benchmarks.
-            // So we should be on the safe side here by just discarding the old runInfos.
+            // Preliminary tests show:
+            // - During conversion, parameters are constructed per method and each job works with
+            //   the same cached parameter(s).
+            // - Disposal only occurs explicitly after running all benchmarks.
+            // => That means it is safe to just discard the unused original benchmark cases.
             foreach (BenchmarkRunInfo runInfo in runInfos)
             {
                 HashSet<BenchmarkCase> oldBenchmarkCases =
@@ -141,7 +144,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             public int GetHashCode(BenchmarkCase obj)
                 => (obj?.Descriptor?.GetHashCode() ?? 0)
                    ^ (obj?.Parameters?.GetHashCode() ?? 0)
-                   ^ (obj?.Descriptor?.GetHashCode() ?? 0);
+                   ^ (obj?.Config?.GetHashCode() ?? 0);
         }
     }
 }
