@@ -24,13 +24,16 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             List<IColumn> columns = new(maxParamCount);
             for (int paramIndex = 0; paramIndex < maxParamCount; paramIndex++)
             {
-                // netstandard2.0 compat. Otherwise we would use ToHashSet() instead of Distinct().ToList()
-                List<string> names = summary.BenchmarksCases.Where(b => b.Parameters.Count > paramIndex).Select(b => b.Parameters.Items.ElementAt(paramIndex).Definition.Name).Distinct().ToList();
+                HashSet<string> names = new(summary.BenchmarksCases
+                    .Where(b => b.Parameters.Count > paramIndex)
+                    .Select(b => b.Parameters.Items.ElementAt(paramIndex).Definition.Name));
                 Debug.Assert(names.Count > 0);
                 if (names.Count > 0)
                 {
                     bool isRealName = _tryKeepParamName && names.Count == 1;
-                    columns.Add(new RecyclableParamColumn(paramIndex, isRealName ? names.First() : _genericName + (paramIndex + 1), isRealName));
+                    columns.Add(new RecyclableParamColumn(paramIndex, isRealName
+                        ? names.First()
+                        : _genericName + (paramIndex + 1), isRealName));
                 }
             }
             return columns;

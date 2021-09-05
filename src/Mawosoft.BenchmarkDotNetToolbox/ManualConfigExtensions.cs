@@ -8,11 +8,7 @@ using System.Reflection;
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Exporters;
-using BenchmarkDotNet.Filters;
-using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Loggers;
-using BenchmarkDotNet.Running;
-using BenchmarkDotNet.Toolchains.InProcess.Emit;
 
 namespace Mawosoft.BenchmarkDotNetToolbox
 {
@@ -24,35 +20,36 @@ namespace Mawosoft.BenchmarkDotNetToolbox
         // default Analysers and Validators, and everything else is empty by default. Plus, BDN will add mandatory
         // Validators anyway when finalizing the Config.
 
+        public static ManualConfig ReplaceLoggers(this ManualConfig config, params ILogger[] newLoggers)
+        {
+            List<ILogger> loggers = config.GetLoggers() as List<ILogger>
+                ?? throw new InvalidOperationException("Could not get loggers as List<>.");
+            loggers.Clear();
+            return config.AddLogger(newLoggers);
+        }
+
+        public static ManualConfig ReplaceExporters(this ManualConfig config, params IExporter[] newExporters)
+        {
+            List<IExporter> exporters = config.GetExporters() as List<IExporter>
+                ?? throw new InvalidOperationException("Could not get exporters as List<>.");
+            exporters.Clear();
+            return config.AddExporter(newExporters);
+        }
+
         public static ManualConfig ReplaceColumnCategory(this ManualConfig config, params IColumn[] newColumns)
-        {
-            ColumnCategory[] categories = newColumns.Select(c => c.Category).Distinct().ToArray();
-            RemoveColumnsByCategory(config, categories);
-            return config.AddColumn(newColumns);
-        }
+            => config.RemoveColumnsByCategory(newColumns.Select(c => c.Category).Distinct().ToArray())
+                     .AddColumn(newColumns);
 
-        public static ManualConfig ReplaceColumnCategory(this ManualConfig config, ColumnCategory columnCategory, params IColumnProvider[] newColumnProviders)
-        {
-            RemoveColumnsByCategory(config, columnCategory);
-            return config.AddColumnProvider(newColumnProviders);
-        }
+        public static ManualConfig ReplaceColumnCategory(this ManualConfig config, ColumnCategory columnCategory,
+                                                         params IColumnProvider[] newColumnProviders)
+            => config.RemoveColumnsByCategory(columnCategory).AddColumnProvider(newColumnProviders);
 
-        private static readonly Type[] s_nonReplacableColumns = { typeof(TargetMethodColumn) };
-        private static readonly Lazy<(Type type, ColumnCategory category)[]> s_knownColumnProviders = new(() => new[] {
-            (DefaultColumnProviders.Job.GetType(), ColumnCategory.Job),
-            (DefaultColumnProviders.Statistics.GetType(), ColumnCategory.Statistics),
-            (DefaultColumnProviders.Params.GetType(), ColumnCategory.Params),
-            (DefaultColumnProviders.Metrics.GetType(), ColumnCategory.Metric),
-            (typeof(RecyclableParamsColumnProvider), ColumnCategory.Params),
-        });
-
-        private static void RemoveColumnsByCategory(ManualConfig config, params ColumnCategory[] categories)
+        public static ManualConfig RemoveColumnsByCategory(this ManualConfig config, params ColumnCategory[] categories)
         {
-            List<IColumnProvider> configColumnProviders = config.GetColumnProviders() as List<IColumnProvider> ?? throw new InvalidOperationException("Could not get column providers as List<>.");
-            List<IColumnProvider> providers = new(configColumnProviders);
+            List<IColumnProvider> providers = config.GetColumnProviders() as List<IColumnProvider>
+                ?? throw new InvalidOperationException("Could not get column providers as List<>.");
             Core(providers, categories);
-            configColumnProviders.Clear();
-            configColumnProviders.AddRange(providers);
+            return config;
 
             static void Core(List<IColumnProvider> providers, ColumnCategory[] categories)
             {
@@ -61,7 +58,8 @@ namespace Mawosoft.BenchmarkDotNetToolbox
                     bool remove = false;
                     IColumnProvider provider = providers[i];
                     Type providerType = provider.GetType();
-                    (Type type, ColumnCategory category) = s_knownColumnProviders.Value.FirstOrDefault(item => item.type == providerType);
+                    (Type type, ColumnCategory category) =
+                        s_knownColumnProviders.Value.FirstOrDefault(item => item.type == providerType);
                     if (providerType == type)
                     {
                         if (categories.Contains(category))
@@ -71,9 +69,13 @@ namespace Mawosoft.BenchmarkDotNetToolbox
                     }
                     else if (providerType == typeof(SimpleColumnProvider))
                     {
-                        FieldInfo? columnsField = typeof(SimpleColumnProvider).GetField("columns", BindingFlags.Instance | BindingFlags.NonPublic);
+                        FieldInfo? columnsField = typeof(SimpleColumnProvider).GetField("columns",
+                            BindingFlags.Instance | BindingFlags.NonPublic);
                         Debug.Assert(columnsField != null);
-                        IColumn[]? columns = (columnsField?.GetValue(provider) as IColumn[])?.Where(col => s_nonReplacableColumns.Contains(col.GetType()) || !categories.Contains(col.Category)).ToArray();
+                        IColumn[]? columns = (columnsField?.GetValue(provider) as IColumn[])?
+                            .Where(col => s_nonReplacableColumns.Contains(col.GetType())
+                                   || !categories.Contains(col.Category))
+                            .ToArray();
                         if (columns != null)
                         {
                             if (columns.Length == 0)
@@ -89,9 +91,11 @@ namespace Mawosoft.BenchmarkDotNetToolbox
                     }
                     else if (providerType == typeof(CompositeColumnProvider))
                     {
-                        FieldInfo? providersField = typeof(CompositeColumnProvider).GetField("providers", BindingFlags.Instance | BindingFlags.NonPublic);
+                        FieldInfo? providersField = typeof(CompositeColumnProvider).GetField("providers",
+                            BindingFlags.Instance | BindingFlags.NonPublic);
                         Debug.Assert(providersField != null);
-                        List<IColumnProvider>? subProviders = (providersField?.GetValue(provider) as IColumnProvider[])?.ToList();
+                        List<IColumnProvider>? subProviders =
+                            (providersField?.GetValue(provider) as IColumnProvider[])?.ToList();
                         if (subProviders != null)
                         {
                             Core(subProviders, categories);
@@ -113,48 +117,31 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             }
         }
 
-        public static ManualConfig ReplaceExporters(this ManualConfig config, params IExporter[] newExporters)
-        {
-            List<IExporter> exporters = config.GetExporters() as List<IExporter> ?? throw new InvalidOperationException("Could not get exporters as List<>.");
-            exporters.Clear();
-            return config.AddExporter(newExporters);
-        }
+        private static readonly Type[] s_nonReplacableColumns = { typeof(TargetMethodColumn) };
+        private static readonly Lazy<(Type type, ColumnCategory category)[]> s_knownColumnProviders = new(() => new[] {
+            (DefaultColumnProviders.Job.GetType(), ColumnCategory.Job),
+            (DefaultColumnProviders.Statistics.GetType(), ColumnCategory.Statistics),
+            (DefaultColumnProviders.Params.GetType(), ColumnCategory.Params),
+            (DefaultColumnProviders.Metrics.GetType(), ColumnCategory.Metric),
+            (typeof(RecyclableParamsColumnProvider), ColumnCategory.Params),
+        });
 
-        public static ManualConfig ReplaceLoggers(this ManualConfig config, params ILogger[] newLoggers)
-        {
-            List<ILogger> loggers = config.GetLoggers() as List<ILogger> ?? throw new InvalidOperationException("Could not get loggers as List<>.");
-            loggers.Clear();
-            return config.AddLogger(newLoggers);
-        }
+        // IConfig overloads for extensions above
 
-        public static ManualConfig AddExclusiveJob(this ManualConfig config, params Job[] exclusiveJobs)
-        {
-            if (config.GetFilters().Any(f => f.GetType() == typeof(ExclusiveJobFilter)))
-                throw new InvalidOperationException("Exclusive jobs can only be added once.");
-            return config.AddFilter(new ExclusiveJobFilter(exclusiveJobs)).AddJob(exclusiveJobs);
-        }
+        public static ManualConfig ReplaceColumnCategory(this IConfig config, params IColumn[] newColumns)
+            => ManualConfig.Create(config).ReplaceColumnCategory(newColumns);
 
-        [Conditional("DEBUG")]
-        public static void DebugAddExclusiveJob(this ManualConfig config, params Job[] exclusiveJobs)
-        {
-            config.AddExclusiveJob(exclusiveJobs);
-        }
+        public static ManualConfig ReplaceColumnCategory(this IConfig config, ColumnCategory columnCategory,
+                                                         params IColumnProvider[] newColumnProviders)
+            => ManualConfig.Create(config).ReplaceColumnCategory(columnCategory, newColumnProviders);
 
-        public static ManualConfig AddExclusiveDebugJob(this ManualConfig config)
-        {
-            return config.AddExclusiveJob(new Job("DebugJob", Job.Dry.WithToolchain(InProcessEmitToolchain.Instance)));
-        }
+        public static ManualConfig RemoveColumnsByCategory(IConfig config, params ColumnCategory[] categories)
+            => ManualConfig.Create(config).RemoveColumnsByCategory(categories);
 
-        [Conditional("DEBUG")]
-        public static void DebugAddExclusiveDebugJob(this ManualConfig config)
-        {
-            config.AddExclusiveDebugJob();
-        }
-        private class ExclusiveJobFilter : IFilter
-        {
-            private readonly Job[] _exclusiveJobs;
-            public ExclusiveJobFilter(params Job[] exclusiveJobs) => _exclusiveJobs = exclusiveJobs;
-            public bool Predicate(BenchmarkCase benchmarkCase) => _exclusiveJobs.Any(j => ReferenceEquals(j, benchmarkCase.Job));
-        }
+        public static ManualConfig ReplaceExporters(this IConfig config, params IExporter[] newExporters)
+            => ManualConfig.Create(config).ReplaceExporters(newExporters);
+
+        public static ManualConfig ReplaceLoggers(this IConfig config, params ILogger[] newLoggers)
+            => ManualConfig.Create(config).ReplaceLoggers(newLoggers);
     }
 }
