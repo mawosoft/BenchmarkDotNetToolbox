@@ -6,7 +6,7 @@ using BenchmarkDotNet.Configs;
 namespace Mawosoft.BenchmarkDotNetToolbox
 {
     /// <summary>
-    /// Initializes a user-defined selection of Job columns.
+    /// An alternative to DefaultColumnProviders.Job with user-defined selection of Job columns.
     /// See <see cref="JobColumnSelectionProvider"/> for details.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Assembly)]

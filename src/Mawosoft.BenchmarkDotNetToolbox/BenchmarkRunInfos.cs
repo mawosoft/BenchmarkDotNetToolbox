@@ -39,7 +39,8 @@ namespace Mawosoft.BenchmarkDotNetToolbox
         //         Summary[] summaries = BenchmarkRunner.Run(typeof(Program).Assembly, config, args);
         //     }
 
-        public static Job FastInProcessJob = new("FastInProc", Job.Dry.WithToolchain(InProcessEmitToolchain.Instance));
+        public static readonly Job FastInProcessJob =
+            new Job("FastInProc", Job.Dry.WithToolchain(InProcessEmitToolchain.Instance)).Freeze();
         public IConfig? Config { get; set; }
         public List<Job> ReplacementJobs { get; }
         public List<BenchmarkRunInfo> Items { get; } = new();
@@ -127,7 +128,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
 
         private class BenchmarkCaseWithoutJobEqualityComparer : IEqualityComparer<BenchmarkCase>
         {
-            public static BenchmarkCaseWithoutJobEqualityComparer Instance = new();
+            public static readonly BenchmarkCaseWithoutJobEqualityComparer Instance = new();
             public bool Equals(BenchmarkCase x, BenchmarkCase y)
             {
                 if (ReferenceEquals(x, y))
