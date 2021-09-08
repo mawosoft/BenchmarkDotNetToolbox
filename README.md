@@ -17,11 +17,6 @@ ManualConfig config;
 // ...
 config.AddColumnProvider(new JobColumnSelectionProvider("-all +Job", showHiddenValuesInLegend: true));
 ```
-Alternatively, you can add an attribute to your benchmark class or the entire assembly:
-```C#
-[JobColumnSelection("-all +Job", showHiddenValuesInLegend: true)]
-public class MyBenchmarks { // ...
-```
 
 <details>
   <summary>Parameters (click to expand)</summary>
@@ -35,7 +30,7 @@ public class MyBenchmarks { // ...
 <details>
   <summary>Associated classes</summary>
   
-* `JobCharacteristicColumnWithLegend`, `JobColumnSelectionAttribute`, `JobColumnSelectionProvider`
+* `JobCharacteristicColumnWithLegend`, `JobColumnSelectionProvider`
 </details>
 
 <details>

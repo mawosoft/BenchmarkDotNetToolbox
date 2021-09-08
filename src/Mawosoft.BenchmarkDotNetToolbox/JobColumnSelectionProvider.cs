@@ -12,7 +12,6 @@ namespace Mawosoft.BenchmarkDotNetToolbox
 {
     /// <summary>
     /// An alternative to DefaultColumnProviders.Job with user-defined selection of Job columns.
-    /// See also <seealso cref="JobColumnSelectionAttribute"/>.
     /// </summary>
     public class JobColumnSelectionProvider : IColumnProvider
     {
