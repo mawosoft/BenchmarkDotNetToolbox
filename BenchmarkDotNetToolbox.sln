@@ -7,11 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mawosoft.BenchmarkDotNetToo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mawosoft.BenchmarkDotNetToolbox.Tests", "tests\Mawosoft.BenchmarkDotNetToolbox.Tests\Mawosoft.BenchmarkDotNetToolbox.Tests.csproj", "{9FC57102-2DAD-4B1B-8533-694704594C60}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{343D7107-E03D-44E7-AD30-17534968D8D6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParamWrapperBenchmarks", "tests\ParamWrapperBenchmarks\ParamWrapperBenchmarks.csproj", "{6A765A16-E225-41FC-AA05-24AFFEC9E2BC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JobColumnSample", "samples\JobColumnSample\JobColumnSample.csproj", "{F9333231-2745-4C50-B6CB-AA913EC781FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mawosoft.BDNToolboxSamples", "samples\Mawosoft.BDNToolboxSamples\Mawosoft.BDNToolboxSamples.csproj", "{6566AA25-87FC-4C2B-8712-29C35F38C9C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,16 +29,13 @@ Global
 		{6A765A16-E225-41FC-AA05-24AFFEC9E2BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A765A16-E225-41FC-AA05-24AFFEC9E2BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A765A16-E225-41FC-AA05-24AFFEC9E2BC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F9333231-2745-4C50-B6CB-AA913EC781FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9333231-2745-4C50-B6CB-AA913EC781FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9333231-2745-4C50-B6CB-AA913EC781FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9333231-2745-4C50-B6CB-AA913EC781FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6566AA25-87FC-4C2B-8712-29C35F38C9C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6566AA25-87FC-4C2B-8712-29C35F38C9C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6566AA25-87FC-4C2B-8712-29C35F38C9C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6566AA25-87FC-4C2B-8712-29C35F38C9C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{F9333231-2745-4C50-B6CB-AA913EC781FB} = {343D7107-E03D-44E7-AD30-17534968D8D6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FB83BDB8-3B12-4E52-A54D-84CB6AF9A969}

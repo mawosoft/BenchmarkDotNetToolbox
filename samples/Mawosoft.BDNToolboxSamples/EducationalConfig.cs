@@ -13,6 +13,9 @@ using Mawosoft.BenchmarkDotNetToolbox;
 
 namespace Mawosoft.BDNToolboxSamples
 {
+    /// <summary>
+    /// This class isn't really used anywhere, it exists just for (self-)educational purposes.
+    /// </summary>
     public static class EducationalConfig
     {
         // Verbose recreation of DefaultConfig.
@@ -20,7 +23,7 @@ namespace Mawosoft.BDNToolboxSamples
         public static ManualConfig CreateVerboseDefaultConfig()
         {
             ManualConfig config = ManualConfig.CreateEmpty()
-                // AddColumnProvider(DefaultColumnProviders.Instance); // is the same as:
+                // DefaultColumnProviders.Instance:
                 .AddColumnProvider(
                     DefaultColumnProviders.Descriptor,
                     DefaultColumnProviders.Job,
@@ -39,7 +42,6 @@ namespace Mawosoft.BDNToolboxSamples
                     )
                 // No default diagnosers
                 .AddDiagnoser()
-                // AddAnalyser(DefaultConfig.Instance.GetAnalysers().ToArray());
                 .AddAnalyser(
                     EnvironmentAnalyser.Default,
                     OutliersAnalyser.Default,
@@ -51,9 +53,8 @@ namespace Mawosoft.BDNToolboxSamples
                     )
                 // No defaults. If none, ImmutableConfigBuilder will add Job.Default
                 .AddJob()
-                //AddValidator(DefaultConfig.Instance.GetValidators().ToArray());
-                //AddValidator(DefaultConfig.Instance.GetValidators()
-                //    .Where(v => v != JitOptimizationsValidator.FailOnError).ToArray());
+                // The validators in DefaultConfig are slightly different from the mandatory ones
+                // added by ImmutableConfigBuilder.
                 .AddValidator(
                     BaselineValidator.FailOnError,               // mandatory
                     SetupCleanupValidator.FailOnError,           // mandatory
@@ -84,6 +85,11 @@ namespace Mawosoft.BDNToolboxSamples
             //   new DefaultOrderer(SummaryOrderPolicy.Default, MethodOrderPolicy.Declared);
             // where SummaryOrderPolicy.Default seems to be execution order.(?)
             config.Orderer = null;
+            // SummaryStyle.Default which has:
+            //   PrintUnitsInHeader = false, PrintUnitsInContent = true, PrintZeroValuesInContent = false,
+            //   MaxParameterColumnWidth = 20, SizeUnit = null, TimeUnit = null,
+            //   CultureInfo = CultureInfo.InvariantCulture with explicit NumberDecimalSeparator = ".",
+            //   RatioStyle = RatioStyle.Value
             config.SummaryStyle = SummaryStyle.Default;
             config.UnionRule = ConfigUnionRule.Union;
             // OS dependent. If null, ImmutableConfigBuilder will use DefaultConfig.Instance.ArtifactsPath
@@ -134,26 +140,18 @@ namespace Mawosoft.BDNToolboxSamples
 
         // The same custom config as above, but created by starting with DefaultConfig and using
         // the Mawosoft.BenchmarkDotNetToolbox.ManualConfigExtensions methods (Replacers)
-        public static ManualConfig CreateCustomConfigFromDefaultWithNewExtensionMethodsV1()
+        // This doesn't actually seem like less work, but...
+        // - If you really want to make that many changes, you should probably declare a custom
+        //   config anyway.
+        // - Main purpose of Replacer methods are little changes from Default or a given config.
+        // - Even with many changes, you still only have to think about the changes, not which
+        //   defaults you may have forgotten to add.
+        public static ManualConfig CreateCustomConfigFromDefaultWithNewExtensionMethods()
         {
             ManualConfig config = ManualConfig.Create(DefaultConfig.Instance)
                 .ReplaceColumnCategory(ColumnCategory.Job,
                     new JobColumnSelectionProvider("-all +Job", showHiddenValuesInLegend: true))
                 .ReplaceColumnCategory(ColumnCategory.Params,
-                    new RecyclableParamsColumnProvider())
-                .ReplaceColumnCategory(StatisticColumn.Mean, BaselineRatioColumn.RatioMean)
-                .ReplaceExporters(MarkdownExporter.Console)
-                .ReplaceLoggers(ConsoleLogger.Unicode);
-            return config;
-        }
-
-        // Again, the same custom config as above, with a slightly different approach.
-        public static ManualConfig CreateCustomConfigFromDefaultWithNewExtensionMethodsV2()
-        {
-            ManualConfig config = ManualConfig.Create(DefaultConfig.Instance)
-                .RemoveColumnsByCategory(ColumnCategory.Job, ColumnCategory.Params)
-                .AddColumnProvider(
-                    new JobColumnSelectionProvider("-all +Job", showHiddenValuesInLegend: true),
                     new RecyclableParamsColumnProvider())
                 .ReplaceColumnCategory(StatisticColumn.Mean, BaselineRatioColumn.RatioMean)
                 .ReplaceExporters(MarkdownExporter.Console)
