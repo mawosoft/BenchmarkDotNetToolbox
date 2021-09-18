@@ -11,7 +11,7 @@ using BenchmarkDotNet.Reports;
 namespace Mawosoft.BenchmarkDotNetToolbox
 {
     /// <summary>
-    /// An alternative to DefaultColumnProviders.Job with user-defined selection of Job columns.
+    /// An alternative to <see cref="DefaultColumnProviders.Job"/> with user-defined selection of Job columns.
     /// </summary>
     public class JobColumnSelectionProvider : IColumnProvider
     {

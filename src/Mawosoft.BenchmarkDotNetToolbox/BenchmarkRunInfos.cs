@@ -14,49 +14,52 @@ using BenchmarkDotNet.Toolchains.InProcess.Emit;
 
 namespace Mawosoft.BenchmarkDotNetToolbox
 {
+    /// <summary>
+    /// A wrapper and extension for <see cref="BenchmarkConverter"/>, maintaining the involved input and output items,
+    /// capable of overriding any global or local Job configs for Debug and similar purposes.
+    /// </summary>
+    /// <remarks>
+    /// By specifying a replacement job, you can disable all global *and* local job configurations, mutators,
+    /// etc. without having to temporarly modifying their respective coding and only run a single fast
+    /// in-process job targeted at the methods you want to debug.
+    /// </remarks>
     public class BenchmarkRunInfos
     {
-        // Note:
-        // Beside providing a nice wrapper + extension for BenchmarkConverter and BenchmarkRunner, the main
-        // use case for BenchmarkRunInfos is benchmark debugging.
-        // By specifying a replacement job, you can disable all global *and* local job configurations, mutators,
-        // etc. without having to temporarly modifying their respective coding and only run a single fast
-        // in-process job targeted at the methods you want to debug.
-        //
-        // Example:
-        //
-        //     ... build your regular global config ...
-        //     if (Debugger.IsAttached && args.Length == 0)
-        //     {
-        //         config.WithOption(ConfigOptions.DisableOptimizationsValidator, true);
-        //         BenchmarkRunInfos runInfos = new(config, BenchmarkRunInfos.FastInProcessJob);
-        //         runInfos.ConvertMethodsToBenchmarks(typeof(MyClass1), "Method1");
-        //         runInfos.ConvertMethodsToBenchmarks(typeof(MyClass2), "Method2", "Method3");
-        //         Summary[] summaries = runInfos.RunAll();
-        //     }
-        //     else
-        //     {
-        //         Summary[] summaries = BenchmarkRunner.Run(typeof(Program).Assembly, config, args);
-        //     }
-
+        /// <summary>Predefined Job instance that can be used as replacement job.</summary>
         public static readonly Job FastInProcessJob =
             new Job("FastInProc", Job.Dry.WithToolchain(InProcessEmitToolchain.Instance)).Freeze();
+        /// <summary>Global config to use for subsequent ConvertXxx method calls.</summary>
         public IConfig? Config { get; set; }
+        /// <summary>List of optional replacement jobs to use for subsequent ConvertXxx method calls.</summary>
+        /// <remarks>Use the Add() etc. methods of the <see cref="List{T}>"/> class.</remarks>
         public List<Job> ReplacementJobs { get; }
+        /// <summary>List of <see cref="BenchmarkRunInfo"/> items created by ConvertXxx method calls.</summary>
         public List<BenchmarkRunInfo> Items { get; } = new();
+        /// <summary>Number of <see cref="BenchmarkRunInfo"/> items created by ConvertXxx method calls.</summary>
         public int Count => Items.Count;
+        /// <summary>Get the <see cref="BenchmarkRunInfo"/> item at the specified index.</summary>
         public BenchmarkRunInfo this[int index] => Items[index];
 
+        /// <summary>Initializes a new instance of the <see cref="BenchmarkRunInfos"/> class.</summary>
         public BenchmarkRunInfos() : this(null) { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BenchmarkRunInfos"/> class with an optional global
+        /// config and optional replacement jobs.
+        /// </summary>
         public BenchmarkRunInfos(IConfig? globalConfig, params Job[] replacementJobs)
         {
             Config = globalConfig;
             ReplacementJobs = replacementJobs?.Length > 0 ? new(replacementJobs) : new();
         }
 
+        /// <summary>
+        /// Adds a predefined replacement job when called from code compiled with the conditional
+        /// <b>DEBUG</b> symbol defined.
+        /// </summary>
         [Conditional("DEBUG")]
         public void DebugAddDefaultReplacementJob() => ReplacementJobs.Add(FastInProcessJob);
 
+        /// <summary>Converts all types with benchmarks in the given assembly.</summary>
         public void ConvertAssemblyToBenchmarks(Assembly assembly)
         {
             IEnumerable<Type> types = assembly.GetTypes()
@@ -71,6 +74,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             }
         }
 
+        /// <summary>Converts the named benchmark methods of the given type.</summary>
         public void ConvertMethodsToBenchmarks(Type containingType, params string[] benchmarkMethodNames)
             => PostProcessRunInfos(BenchmarkConverter.MethodsToBenchmarks(containingType,
                    benchmarkMethodNames
@@ -79,15 +83,23 @@ namespace Mawosoft.BenchmarkDotNetToolbox
                        .ToArray(),
                    Config));
 
+        /// <summary>Wrapper for <see cref="BenchmarkConverter.MethodsToBenchmarks"/></summary>
         public void ConvertMethodsToBenchmarks(Type containingType, params MethodInfo[] benchmarkMethods)
             => PostProcessRunInfos(BenchmarkConverter.MethodsToBenchmarks(containingType, benchmarkMethods, Config));
+
+        /// <summary>Wrapper for <see cref="BenchmarkConverter.SourceToBenchmarks"/></summary>
         public void ConvertSourceToBenchmarks(string source)
             => PostProcessRunInfos(BenchmarkConverter.SourceToBenchmarks(source, Config));
+
+        /// <summary>Wrapper for <see cref="BenchmarkConverter.TypeToBenchmarks"/></summary>
         public void ConvertTypeToBenchmarks(Type type)
             => PostProcessRunInfos(BenchmarkConverter.TypeToBenchmarks(type, Config));
+
+        /// <summary>Wrapper for <see cref="BenchmarkConverter.UrlToBenchmarks"/></summary>
         public void ConvertUrlToBenchmarks(string url)
             => PostProcessRunInfos(BenchmarkConverter.UrlToBenchmarks(url, Config));
 
+        /// <summary>Runs all converted benchmarks.</summary>
         public Summary[] RunAll() => BenchmarkRunner.Run(Items.ToArray());
 
         private void PostProcessRunInfos(params BenchmarkRunInfo[] runInfos)

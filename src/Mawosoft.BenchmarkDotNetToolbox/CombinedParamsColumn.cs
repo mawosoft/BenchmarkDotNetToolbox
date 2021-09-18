@@ -8,12 +8,20 @@ using BenchmarkDotNet.Running;
 
 namespace Mawosoft.BenchmarkDotNetToolbox
 {
+    /// <summary>
+    /// An alternative to <see cref="DefaultColumnProviders.Params"/> that displays all params in a single,
+    /// customizable column.
+    /// </summary>
     public class CombinedParamsColumn : IColumn
     {
         private readonly string _formatNameValue;
         private readonly string _separator;
         private readonly string _prefix;
         private readonly string _suffix;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CombinedParamsColumn"/> class with optional custom
+        /// formatting.
+        /// </summary>
         public CombinedParamsColumn(string formatNameValue = "{0}={1}", string separator = ", ", string prefix = "", string suffix = "")
         {
             _formatNameValue = formatNameValue;

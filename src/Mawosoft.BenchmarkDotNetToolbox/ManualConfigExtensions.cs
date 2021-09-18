@@ -12,14 +12,20 @@ using BenchmarkDotNet.Loggers;
 
 namespace Mawosoft.BenchmarkDotNetToolbox
 {
+    /// <summary>
+    /// Extension methods for <see cref="ManualConfig"/> and <see cref="IConfig"/>
+    /// </summary>
+    /// <remarks>
+    /// <para>The main purpose of the ReplaceXxx extension methods are applying little changes to configs created
+    /// from <see cref="DefaultConfig.Instance"/> or another given config.</para>
+    /// <para>When used with <b>ManualConfig</b>, the extension methods will modify and return the existing
+    /// instance. When used with other <b>IConfig</b>s, the extension methods will create and return a new
+    /// <b>ManualConfig</b></para>.
+    /// </remarks>
     public static class ManualConfigExtensions
     {
-        // Note:
-        // The main use case for Replacers is ManualConfig config = ManualConfig.Create(DefaultConfig.Instance);
-        // As such, you only need them for Columns, Exporters, and Loggers. There is no reason to replace the
-        // default Analysers and Validators, and everything else is empty by default. Plus, BDN will add mandatory
-        // Validators anyway when finalizing the Config.
-
+        /// <summary>Replaces all loggers with the given new ones.</summary>
+        /// <returns>The existing ManualConfig with changes applied.</returns>
         public static ManualConfig ReplaceLoggers(this ManualConfig config, params ILogger[] newLoggers)
         {
             List<ILogger> loggers = config.GetLoggers() as List<ILogger>
@@ -28,6 +34,8 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             return config.AddLogger(newLoggers);
         }
 
+        /// <summary>Replaces all exporters with the given new ones.</summary>
+        /// <returns>The existing ManualConfig with changes applied.</returns>
         public static ManualConfig ReplaceExporters(this ManualConfig config, params IExporter[] newExporters)
         {
             List<IExporter> exporters = config.GetExporters() as List<IExporter>
@@ -36,14 +44,25 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             return config.AddExporter(newExporters);
         }
 
+        /// <summary>
+        /// Replaces existing columns belonging to the same category or categories as <b>newColumns</b>
+        /// with the given new ones.
+        /// </summary>
+        /// <returns>The existing ManualConfig with changes applied.</returns>
         public static ManualConfig ReplaceColumnCategory(this ManualConfig config, params IColumn[] newColumns)
             => config.RemoveColumnsByCategory(newColumns.Select(c => c.Category).Distinct().ToArray())
                      .AddColumn(newColumns);
 
+        /// <summary>
+        /// Replaces existing columns of the specified category with the given new ColumnProviders.
+        /// </summary>
+        /// <returns>The existing ManualConfig with changes applied.</returns>
         public static ManualConfig ReplaceColumnCategory(this ManualConfig config, ColumnCategory columnCategory,
                                                          params IColumnProvider[] newColumnProviders)
             => config.RemoveColumnsByCategory(columnCategory).AddColumnProvider(newColumnProviders);
 
+        /// <summary>Removes existing columns of the specified category or categories.</summary>
+        /// <returns>The existing ManualConfig with changes applied.</returns>
         public static ManualConfig RemoveColumnsByCategory(this ManualConfig config, params ColumnCategory[] categories)
         {
             List<IColumnProvider> providers = config.GetColumnProviders() as List<IColumnProvider>
@@ -117,30 +136,48 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             }
         }
 
-        private static readonly Type[] s_nonReplacableColumns = { typeof(TargetMethodColumn) };
+        private static readonly Type[] s_nonReplacableColumns = {
+            // TargetMethodColumn belongs to ColumnCategory.Job, but should not be replaced.
+            typeof(TargetMethodColumn)
+        };
+        // Maps known ColumnProviders (which don't report a ColumnCategory) to ColumnCategory
         private static readonly Lazy<(Type type, ColumnCategory category)[]> s_knownColumnProviders = new(() => new[] {
             (DefaultColumnProviders.Job.GetType(), ColumnCategory.Job),
             (DefaultColumnProviders.Statistics.GetType(), ColumnCategory.Statistics),
             (DefaultColumnProviders.Params.GetType(), ColumnCategory.Params),
             (DefaultColumnProviders.Metrics.GetType(), ColumnCategory.Metric),
             (typeof(RecyclableParamsColumnProvider), ColumnCategory.Params),
+            (typeof(JobColumnSelectionProvider), ColumnCategory.Job),
         });
 
-        // IConfig overloads for extensions above
-
+        /// <summary>
+        /// Replaces existing columns belonging to the same category or categories as <b>newColumns</b>
+        /// with the given new ones.
+        /// </summary>
+        /// <returns>A new instance of <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig ReplaceColumnCategory(this IConfig config, params IColumn[] newColumns)
             => ManualConfig.Create(config).ReplaceColumnCategory(newColumns);
 
+        /// <summary>
+        /// Replaces existing columns of the specified category with the given new ColumnProviders.
+        /// </summary>
+        /// <returns>A new instance of <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig ReplaceColumnCategory(this IConfig config, ColumnCategory columnCategory,
                                                          params IColumnProvider[] newColumnProviders)
             => ManualConfig.Create(config).ReplaceColumnCategory(columnCategory, newColumnProviders);
 
+        /// <summary>Removes existing columns of the specified category or categories.</summary>
+        /// <returns>A new instance of <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig RemoveColumnsByCategory(IConfig config, params ColumnCategory[] categories)
             => ManualConfig.Create(config).RemoveColumnsByCategory(categories);
 
+        /// <summary>Replaces all exporters with the given new ones.</summary>
+        /// <returns>A new instance of <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig ReplaceExporters(this IConfig config, params IExporter[] newExporters)
             => ManualConfig.Create(config).ReplaceExporters(newExporters);
 
+        /// <summary>Replaces all loggers with the given new ones.</summary>
+        /// <returns>A new instance of <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig ReplaceLoggers(this IConfig config, params ILogger[] newLoggers)
             => ManualConfig.Create(config).ReplaceLoggers(newLoggers);
     }

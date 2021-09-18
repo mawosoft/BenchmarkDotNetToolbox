@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2021 Matthias Wolf, Mawosoft.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Parameters;
@@ -8,8 +9,12 @@ using BenchmarkDotNet.Running;
 
 namespace Mawosoft.BenchmarkDotNetToolbox
 {
+    /// <summary>Internal class used by <see cref="RecyclableParamsColumnProvider"/></summary>
     internal class RecyclableParamColumn : IColumn
     {
+        [SuppressMessage("CodeQuality", "IDE0079:Remove unnecessary suppression",
+            Justification = "False warning for IDE0032 supression.")]
+        [SuppressMessage("Style", "IDE0032:Use auto property")]
         private readonly int _paramIndex;
         private readonly bool _isRealName;
         public RecyclableParamColumn(int paramIndex, string columnName, bool isRealName)
