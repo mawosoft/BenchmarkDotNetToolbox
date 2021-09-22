@@ -76,64 +76,99 @@ namespace Mawosoft.BenchmarkDotNetToolbox
 
         /// <summary>Converts the named benchmark methods of the given type.</summary>
         public void ConvertMethodsToBenchmarks(Type containingType, params string[] benchmarkMethodNames)
-            => PostProcessRunInfos(BenchmarkConverter.MethodsToBenchmarks(containingType,
-                   benchmarkMethodNames
-                       .Select(bmn => containingType.GetMethod(bmn)
+            => PostProcessConverter(PreProcessConverter(),
+                BenchmarkConverter.MethodsToBenchmarks(containingType,
+                    benchmarkMethodNames
+                        .Select(
+                            bmn => containingType.GetMethod(bmn)
                                    ?? throw new MissingMethodException(containingType.Name, bmn))
-                       .ToArray(),
-                   Config));
+                        .ToArray(),
+                    Config));
 
         /// <summary>Wrapper for <see cref="BenchmarkConverter.MethodsToBenchmarks"/></summary>
         public void ConvertMethodsToBenchmarks(Type containingType, params MethodInfo[] benchmarkMethods)
-            => PostProcessRunInfos(BenchmarkConverter.MethodsToBenchmarks(containingType, benchmarkMethods, Config));
+            => PostProcessConverter(PreProcessConverter(),
+                BenchmarkConverter.MethodsToBenchmarks(containingType, benchmarkMethods, Config));
 
         /// <summary>Wrapper for <see cref="BenchmarkConverter.SourceToBenchmarks"/></summary>
         public void ConvertSourceToBenchmarks(string source)
-            => PostProcessRunInfos(BenchmarkConverter.SourceToBenchmarks(source, Config));
+            => PostProcessConverter(PreProcessConverter(), BenchmarkConverter.SourceToBenchmarks(source, Config));
 
         /// <summary>Wrapper for <see cref="BenchmarkConverter.TypeToBenchmarks"/></summary>
         public void ConvertTypeToBenchmarks(Type type)
-            => PostProcessRunInfos(BenchmarkConverter.TypeToBenchmarks(type, Config));
+            => PostProcessConverter(PreProcessConverter(), BenchmarkConverter.TypeToBenchmarks(type, Config));
 
         /// <summary>Wrapper for <see cref="BenchmarkConverter.UrlToBenchmarks"/></summary>
         public void ConvertUrlToBenchmarks(string url)
-            => PostProcessRunInfos(BenchmarkConverter.UrlToBenchmarks(url, Config));
+            => PostProcessConverter(PreProcessConverter(), BenchmarkConverter.UrlToBenchmarks(url, Config));
 
         /// <summary>Runs all converted benchmarks.</summary>
         public Summary[] RunAll() => BenchmarkRunner.Run(Items.ToArray());
 
-        private void PostProcessRunInfos(params BenchmarkRunInfo[] runInfos)
+        private WhatifFilter? PreProcessConverter()
         {
+            // If an enabled WhatifFilter exists, we want it to filter the results of our own conversion,
+            // not the one performed by BenchmarkConverter. Thus, we disable it here and turn it back on
+            // in the post processor.
+            if (ReplacementJobs.Count != 0
+                && Config?.GetFilters().SingleOrDefault(f => f is WhatifFilter) is WhatifFilter filter
+                && filter.Enabled)
+            {
+                filter.Enabled = false;
+                return filter;
+            }
+            return null;
+        }
+
+        private void PostProcessConverter(WhatifFilter? whatifFilter, params BenchmarkRunInfo[] runInfos)
+        {
+            if (whatifFilter != null)
+            {
+                // Reenable filter after BenchmarkConverter has been called
+                whatifFilter.Enabled = true;
+            }
             if (ReplacementJobs.Count == 0)
             {
+                Debug.Assert(whatifFilter == null);
                 Items.AddRange(runInfos.Where(ri => ri.BenchmarksCases.Length > 0));
-                return;
             }
-            // TODO Verify that the underlying Dispose implementation is safe for our purposes.
-            // IDisposable chain goes: BenchmarkRunInfo -> BenchmarkCase(s) -> ParameterInstances ->
-            //                         ParameterInstance(s) -> (Value as IDisposable)?
-            // Preliminary tests show:
-            // - During conversion, parameters are constructed per method and each job works with
-            //   the same cached parameter(s).
-            // - Disposal only occurs explicitly after running all benchmarks.
-            // => That means it is safe to just discard the unused original benchmark cases.
-            foreach (BenchmarkRunInfo runInfo in runInfos)
+            else
             {
-                HashSet<BenchmarkCase> oldBenchmarkCases =
-                    new(runInfo.BenchmarksCases, BenchmarkCaseWithoutJobEqualityComparer.Instance);
-                List<BenchmarkCase> newBenchmarkCases = new();
+                // TODO Verify that the underlying Dispose implementation is safe for our purposes.
+                // IDisposable chain goes: BenchmarkRunInfo -> BenchmarkCase(s) -> ParameterInstances ->
+                //                         ParameterInstance(s) -> (Value as IDisposable)?
+                // Preliminary tests show:
+                // - During conversion, parameters are constructed per method and each job works with
+                //   the same cached parameter(s).
+                // - Disposal only occurs explicitly after running all benchmarks.
+                // => That means it is safe to just discard the unused original benchmark cases.
+                // 2nd question:
+                // - What happens to outfiltered benchmark cases? Both here and in BDN? Are they disposed?
+                //   In BDN, filtering happens here and outfiltered benchmarks are *NOT* disposed.
+                //   https://github.com/dotnet/BenchmarkDotNet/blob/master/src/BenchmarkDotNet/Running/BenchmarkConverter.cs#L254
                 HashSet<Job> jobs = new(ReplacementJobs);
-                foreach (BenchmarkCase benchmarkCase in oldBenchmarkCases)
+                foreach (BenchmarkRunInfo runInfo in runInfos)
                 {
-                    foreach (Job job in jobs)
+                    HashSet<BenchmarkCase> oldBenchmarkCases =
+                        new(runInfo.BenchmarksCases, BenchmarkCaseWithoutJobEqualityComparer.Instance);
+                    List<BenchmarkCase> newBenchmarkCases = new();
+                    foreach (BenchmarkCase benchmarkCase in oldBenchmarkCases)
                     {
-                        newBenchmarkCases.Add(BenchmarkCase.Create(benchmarkCase.Descriptor, job,
-                            benchmarkCase.Parameters, benchmarkCase.Config));
+                        foreach (Job job in jobs)
+                        {
+                            BenchmarkCase newBenchmarkCase =
+                                BenchmarkCase.Create(benchmarkCase.Descriptor, job, benchmarkCase.Parameters,
+                                                     benchmarkCase.Config);
+                            if (whatifFilter == null || whatifFilter.Predicate(newBenchmarkCase))
+                            {
+                                newBenchmarkCases.Add(newBenchmarkCase);
+                            }
+                        }
                     }
-                }
-                if (newBenchmarkCases.Count > 0)
-                {
-                    Items.Add(new BenchmarkRunInfo(newBenchmarkCases.ToArray(), runInfo.Type, runInfo.Config));
+                    if (newBenchmarkCases.Count > 0)
+                    {
+                        Items.Add(new BenchmarkRunInfo(newBenchmarkCases.ToArray(), runInfo.Type, runInfo.Config));
+                    }
                 }
             }
         }
