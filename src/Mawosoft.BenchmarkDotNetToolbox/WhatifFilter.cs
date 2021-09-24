@@ -19,16 +19,50 @@ using BenchmarkDotNet.Validators;
 
 namespace Mawosoft.BenchmarkDotNetToolbox
 {
-    // TODO inline doc
+    /// <summary>
+    /// This filter allows you to see results of a particular BechmarkDotnet configuration without actually
+    /// running the benchmarks.
+    /// </summary>
+    /// <remarks>
+    /// <para>The term 'configuration' here refers to the interplay of global and local configs, attribute
+    /// annotations, and console arguments. The filter can be controlled programmatically with the
+    /// <see cref="Enabled"/> property or by using <see cref="PreparseConsoleArguments"/> to scan the command
+    /// line for the option <b>--whatif</b> (short: <b>-w</b>). </para>
+    /// <para>If enabled, the filter will collect all benchmark cases produced by <see cref="BenchmarkRunner"/>,
+    /// <see cref="BenchmarkSwitcher"/> or <see cref="BenchmarkConverter"/> and suppress their actual execution.
+    /// </para>
+    /// <para>The properties <see cref="FilteredBenchmarkCases"/> and <see cref="FilteredBenchmarkRunInfos"/>
+    /// can be used to access the collected benchmarks cases.</para>
+    /// <para>With <see cref="PrintAsSummaries"/> you can output them to the console or another logger.</para>
+    /// 
+    /// </remarks>
     public class WhatifFilter : IFilter, IDisposable
     {
         private readonly List<BenchmarkCase> _filteredBenchmarkCases = new();
+        /// <summary>
+        /// Gets or sets the filter's Enabled state. When true, the filter will suppress the actual execution
+        /// of benchmarks via <see cref="BenchmarkRunner"/> or related classes, and will collect them instead.
+        /// When false, the filter will not have any effect.
+        /// </summary>
         public bool Enabled { get; set; }
+        /// <summary>
+        /// Gets an enumerable collection of the filtered, individual benchmark cases.
+        /// </summary>
         public IEnumerable<BenchmarkCase> FilteredBenchmarkCases => _filteredBenchmarkCases;
+        /// <summary>
+        /// Gets an enumerable collection of the filtered benchmark cases grouped by containing type.
+        /// </summary>
         public IEnumerable<BenchmarkRunInfo> FilteredBenchmarkRunInfos => _filteredBenchmarkCases
             .GroupBy(bc => bc.Descriptor.Type)
             .Select(g => new BenchmarkRunInfo(g.ToArray(), g.First().Descriptor.Type, g.First().Config));
 
+        /// <summary>
+        /// Preparses the console arguments for the option <b>--whatif</b> (short: <b>-w</b>) and automatically
+        /// enables the filter if the option is presesent.
+        /// </summary>
+        /// <param name="args">The array of console arguments as passed to the <b>Main</b> method of your
+        /// application.</param>
+        /// <returns>The passed in array of console arguments with the <b>--whatif</b> option removed.</returns>
         public string[] PreparseConsoleArguments(string[] args)
         {
             Enabled = false;
@@ -45,6 +79,9 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             return args;
         }
 
+        /// <summary>
+        /// Clears the list of collected benchmark cases and optionally disposes them.
+        /// </summary>
         public void Clear(bool dispose)
         {
             if (dispose)
@@ -54,8 +91,17 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             _filteredBenchmarkCases.Clear();
         }
 
-        public void PrintAsSummaries(ILogger logger, bool? joinTristate)
+        /// <summary>
+        /// Prints the collected benchmark cases as summaries to the given logger.
+        /// </summary>
+        /// <param name="logger">The logger to use, e.g. <see cref="ConsoleLogger.Default"/>.</param>
+        /// <param name="joinTristate">Determines if multiple summaries should be joined. If null
+        /// (default) the specified <see cref="ConfigOptions.JoinSummary"/> flag is used.</param>
+        public void PrintAsSummaries(ILogger logger, bool? joinTristate = null)
         {
+            if (_filteredBenchmarkCases.Count == 0)
+                return;
+
             bool join = joinTristate
                         ?? _filteredBenchmarkCases.Any(bc => (bc.Config.Options & ConfigOptions.JoinSummary) != 0);
 
@@ -68,7 +114,8 @@ namespace Mawosoft.BenchmarkDotNetToolbox
                 default, Array.Empty<Metric>()));
 
             HostEnvironmentInfo hostEnvironmentInfo = HostEnvironmentInfo.GetCurrent();
-            CultureInfo cultureInfo = _filteredBenchmarkCases.FirstOrDefault()?.Config.CultureInfo
+            // This is the way BDN does it. SummaryStyle.CultureInfo seems to be getting ignored.
+            CultureInfo cultureInfo = _filteredBenchmarkCases.First().Config.CultureInfo
                                       ?? SummaryExtensions.GetCultureInfo(null);
             ImmutableArray<ValidationError> validationErrors = ImmutableArray.Create<ValidationError>();
 
@@ -110,6 +157,9 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             }
         }
 
+        /// <summary>
+        /// Called internally by <see cref="BenchmarkRunner"/> and related classes.
+        /// </summary>
         public bool Predicate(BenchmarkCase benchmarkCase)
         {
             if (Enabled)
@@ -119,6 +169,9 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             return !Enabled;
         }
 
+        /// <summary>
+        /// Clears and disposes the collected benchmark cases.
+        /// </summary>
         public void Dispose() => Clear(dispose: true);
     }
 }
