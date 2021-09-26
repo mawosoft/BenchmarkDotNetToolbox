@@ -18,6 +18,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
         private readonly string _separator;
         private readonly string _prefix;
         private readonly string _suffix;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CombinedParamsColumn"/> class with optional custom
         /// formatting.

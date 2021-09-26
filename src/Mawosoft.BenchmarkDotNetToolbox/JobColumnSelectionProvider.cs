@@ -22,8 +22,8 @@ namespace Mawosoft.BenchmarkDotNetToolbox
         /// <summary>
         /// Initializes a user-defined selection of Job columns.
         /// </summary>
-        /// <param name="filterExpression">A space-separated list of job column or category names, prefixed with
-        /// - (minus) or + (plus) to exclude or include them. See remarks for details.</param>
+        /// <param name="filterExpression">A space-separated list of job column or category names, prefixed
+        /// with - (minus) or + (plus) to exclude or include them. See remarks for details.</param>
         /// <param name="showHiddenValuesInLegend">True to include a compact display of hidden values as legend,
         /// false if not.</param>
         /// <remarks>

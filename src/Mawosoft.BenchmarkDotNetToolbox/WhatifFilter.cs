@@ -58,7 +58,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
 
         /// <summary>
         /// Preparses the console arguments for the option <b>--whatif</b> (short: <b>-w</b>) and automatically
-        /// enables the filter if the option is presesent.
+        /// enables the filter if the option is present.
         /// </summary>
         /// <param name="args">The array of console arguments as passed to the <b>Main</b> method of your
         /// application.</param>
@@ -94,16 +94,12 @@ namespace Mawosoft.BenchmarkDotNetToolbox
         /// <summary>
         /// Prints the collected benchmark cases as summaries to the given logger.
         /// </summary>
-        /// <param name="logger">The logger to use, e.g. <see cref="ConsoleLogger.Default"/>.</param>
-        /// <param name="joinTristate">Determines if multiple summaries should be joined. If null
-        /// (default) the specified <see cref="ConfigOptions.JoinSummary"/> flag is used.</param>
-        public void PrintAsSummaries(ILogger logger, bool? joinTristate = null)
+        public void PrintAsSummaries(ILogger logger)
         {
             if (_filteredBenchmarkCases.Count == 0)
                 return;
 
-            bool join = joinTristate
-                        ?? _filteredBenchmarkCases.Any(bc => (bc.Config.Options & ConfigOptions.JoinSummary) != 0);
+            bool join = _filteredBenchmarkCases.Any(bc => (bc.Config.Options & ConfigOptions.JoinSummary) != 0);
 
             GenerateResult generateResult = GenerateResult.Success(ArtifactsPaths.Empty, Array.Empty<string>());
             BuildResult buildResult = BuildResult.Success(generateResult);

@@ -16,7 +16,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
 {
     /// <summary>
     /// A wrapper and extension for <see cref="BenchmarkConverter"/>, maintaining the involved input and output items,
-    /// capable of overriding any global or local Job configs for Debug and similar purposes.
+    /// capable of overriding any global or local Job configs. For Debug and similar purposes.
     /// </summary>
     /// <remarks>
     /// By specifying a replacement job, you can disable all global *and* local job configurations, mutators,
@@ -31,7 +31,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
         /// <summary>Global config to use for subsequent ConvertXxx method calls.</summary>
         public IConfig? Config { get; set; }
         /// <summary>List of optional replacement jobs to use for subsequent ConvertXxx method calls.</summary>
-        /// <remarks>Use the Add() etc. methods of the <see cref="List{T}>"/> class.</remarks>
+        /// <remarks>Use the <see cref="List{Job}.Add(Job)>"/> method to add a job.</remarks>
         public List<Job> ReplacementJobs { get; }
         /// <summary>List of <see cref="BenchmarkRunInfo"/> items created by ConvertXxx method calls.</summary>
         public List<BenchmarkRunInfo> Items { get; } = new();
@@ -42,6 +42,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
 
         /// <summary>Initializes a new instance of the <see cref="BenchmarkRunInfos"/> class.</summary>
         public BenchmarkRunInfos() : this(null) { }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="BenchmarkRunInfos"/> class with an optional global
         /// config and optional replacement jobs.
@@ -134,18 +135,6 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             }
             else
             {
-                // TODO Verify that the underlying Dispose implementation is safe for our purposes.
-                // IDisposable chain goes: BenchmarkRunInfo -> BenchmarkCase(s) -> ParameterInstances ->
-                //                         ParameterInstance(s) -> (Value as IDisposable)?
-                // Preliminary tests show:
-                // - During conversion, parameters are constructed per method and each job works with
-                //   the same cached parameter(s).
-                // - Disposal only occurs explicitly after running all benchmarks.
-                // => That means it is safe to just discard the unused original benchmark cases.
-                // 2nd question:
-                // - What happens to outfiltered benchmark cases? Both here and in BDN? Are they disposed?
-                //   In BDN, filtering happens here and outfiltered benchmarks are *NOT* disposed.
-                //   https://github.com/dotnet/BenchmarkDotNet/blob/master/src/BenchmarkDotNet/Running/BenchmarkConverter.cs#L254
                 HashSet<Job> jobs = new(ReplacementJobs);
                 foreach (BenchmarkRunInfo runInfo in runInfos)
                 {

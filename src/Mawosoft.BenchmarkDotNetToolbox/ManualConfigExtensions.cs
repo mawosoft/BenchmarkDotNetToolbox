@@ -18,14 +18,14 @@ namespace Mawosoft.BenchmarkDotNetToolbox
     /// <remarks>
     /// <para>The main purpose of the ReplaceXxx extension methods are applying little changes to configs created
     /// from <see cref="DefaultConfig.Instance"/> or another given config.</para>
-    /// <para>When used with <b>ManualConfig</b>, the extension methods will modify and return the existing
-    /// instance. When used with other <b>IConfig</b>s, the extension methods will create and return a new
-    /// <b>ManualConfig</b></para>.
+    /// <para>When used with <see cref="ManualConfig"/>, the extension methods will modify and return the existing
+    /// instance. When used with any other <see cref="IConfig"/>s, the extension methods will create and return
+    /// a new  <see cref="ManualConfig"/> instance.</para>
     /// </remarks>
     public static class ManualConfigExtensions
     {
         /// <summary>Replaces all loggers with the given new ones.</summary>
-        /// <returns>The existing ManualConfig with changes applied.</returns>
+        /// <returns>The existing <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig ReplaceLoggers(this ManualConfig config, params ILogger[] newLoggers)
         {
             List<ILogger> loggers = config.GetLoggers() as List<ILogger>
@@ -35,7 +35,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
         }
 
         /// <summary>Replaces all exporters with the given new ones.</summary>
-        /// <returns>The existing ManualConfig with changes applied.</returns>
+        /// <returns>The existing <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig ReplaceExporters(this ManualConfig config, params IExporter[] newExporters)
         {
             List<IExporter> exporters = config.GetExporters() as List<IExporter>
@@ -48,7 +48,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
         /// Replaces existing columns belonging to the same category or categories as <b>newColumns</b>
         /// with the given new ones.
         /// </summary>
-        /// <returns>The existing ManualConfig with changes applied.</returns>
+        /// <returns>The existing <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig ReplaceColumnCategory(this ManualConfig config, params IColumn[] newColumns)
             => config.RemoveColumnsByCategory(newColumns.Select(c => c.Category).Distinct().ToArray())
                      .AddColumn(newColumns);
@@ -56,13 +56,13 @@ namespace Mawosoft.BenchmarkDotNetToolbox
         /// <summary>
         /// Replaces existing columns of the specified category with the given new ColumnProviders.
         /// </summary>
-        /// <returns>The existing ManualConfig with changes applied.</returns>
+        /// <returns>The existing <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig ReplaceColumnCategory(this ManualConfig config, ColumnCategory columnCategory,
                                                          params IColumnProvider[] newColumnProviders)
             => config.RemoveColumnsByCategory(columnCategory).AddColumnProvider(newColumnProviders);
 
         /// <summary>Removes existing columns of the specified category or categories.</summary>
-        /// <returns>The existing ManualConfig with changes applied.</returns>
+        /// <returns>The existing <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig RemoveColumnsByCategory(this ManualConfig config, params ColumnCategory[] categories)
         {
             List<IColumnProvider> providers = config.GetColumnProviders() as List<IColumnProvider>
