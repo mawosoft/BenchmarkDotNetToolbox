@@ -3,6 +3,7 @@
 using System;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
@@ -62,10 +63,13 @@ namespace WhatifFilterSample
             WhatifFilter whatifFilter = new();
             args = whatifFilter.PreparseConsoleArguments(args);
 
-            // Create a global confing and add the filter. We are using the default here for simplicity.
+            // Create a global confing and add the filter.
+            // We are using the DefaultConfig here for simplicity, but add a ShortRun job as default
+            // to have some common columns to display.
 
             ManualConfig config = ManualConfig.Create(DefaultConfig.Instance)
                 .AddFilter(whatifFilter)
+                .AddJob(Job.ShortRun.AsDefault().UnfreezeCopy())
                 .WithOptions(ConfigOptions.DisableOptimizationsValidator);
 
             // Run your benchmarks. If the filter was enabled, the returned array will be empty.

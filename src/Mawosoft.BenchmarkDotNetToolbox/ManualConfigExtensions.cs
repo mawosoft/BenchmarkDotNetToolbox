@@ -168,7 +168,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
 
         /// <summary>Removes existing columns of the specified category or categories.</summary>
         /// <returns>A new instance of <see cref="ManualConfig"/> with changes applied.</returns>
-        public static ManualConfig RemoveColumnsByCategory(IConfig config, params ColumnCategory[] categories)
+        public static ManualConfig RemoveColumnsByCategory(this IConfig config, params ColumnCategory[] categories)
             => ManualConfig.Create(config).RemoveColumnsByCategory(categories);
 
         /// <summary>Replaces all exporters with the given new ones.</summary>
