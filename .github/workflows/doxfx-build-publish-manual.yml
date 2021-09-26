@@ -1,0 +1,32 @@
+name: DocFX Build and Publish
+
+on:
+  workflow_dispatch:
+    
+jobs:
+  generate-docs:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup .NET 5
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+      - name: Restore
+        run: |
+          dotnet restore "src/Mawosoft.BenchmarkDotNetToolbox/Mawosoft.BenchmarkDotNetToolbox.csproj"
+          dotnet restore "docs/docs.csproj"
+      # DocFX build depends on BenchmarkDotNetToolbox for xref
+      - name: DocFX Build 
+        run: |
+          dotnet build --no-restore "src/Mawosoft.BenchmarkDotNetToolbox/Mawosoft.BenchmarkDotNetToolbox.csproj"
+          dotnet build --no-restore "docs/docs.csproj"
+        continue-on-error: false
+      - name: Publish
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_site
+          force_orphan: true

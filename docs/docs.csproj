@@ -1,0 +1,29 @@
+﻿<Project>
+
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LogLevel>Info</LogLevel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="docfx.console" Version="2.58.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+
+  <Target Name="Build">
+    <CallTarget Targets="DocBuild"/>
+  </Target>
+  <Target Name="Rebuild">
+    <CallTarget Targets="DocRebuild"/>
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="DocClean"/>
+  </Target>
+
+</Project>

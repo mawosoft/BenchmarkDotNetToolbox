@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColumnDisplaySamples", "sam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WhatifFilterSample", "samples\WhatifFilterSample\WhatifFilterSample.csproj", "{7B6BF24E-B48D-4DBD-8006-275F39424061}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docs", "docs\docs.csproj", "{3D931261-5A76-48E6-9CC3-A6681E0F9818}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{7B6BF24E-B48D-4DBD-8006-275F39424061}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B6BF24E-B48D-4DBD-8006-275F39424061}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B6BF24E-B48D-4DBD-8006-275F39424061}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D931261-5A76-48E6-9CC3-A6681E0F9818}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D931261-5A76-48E6-9CC3-A6681E0F9818}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D931261-5A76-48E6-9CC3-A6681E0F9818}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D931261-5A76-48E6-9CC3-A6681E0F9818}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
