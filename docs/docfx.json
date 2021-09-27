@@ -51,11 +51,17 @@
             }
         ],
         "dest": "_site",
+        "globalMetadata": {
+            "_appTitle": "BenchmarkDotNet Toolbox",
+            "_appFooter": "Copyright &copy; 2021 Matthias Wolf, Mawosoft",
+            "_enableSearch": true
+        },
         "globalMetadataFiles": [],
         "fileMetadataFiles": [],
         "template": [
             "default"
         ],
+        "xref": [ "xrefmap-BenchmarkDotNet.yml" ],
         "xrefService": [
             "https://xref.docs.microsoft.com/query?uid={uid}"
         ],
