@@ -36,19 +36,23 @@ namespace Mawosoft.BenchmarkDotNetToolbox
     /// <para>With <see cref="PrintAsSummaries"/> you can output them to the console or another logger.</para>
     /// 
     /// </remarks>
-    public class WhatifFilter : IFilter, IDisposable
+    public class WhatifFilter : IFilter
     {
         private readonly List<BenchmarkCase> _filteredBenchmarkCases = new();
+        private string[]? _consoleArguments = null;
+
         /// <summary>
         /// Gets or sets the filter's Enabled state. When true, the filter will suppress the actual execution
         /// of benchmarks via <see cref="BenchmarkRunner"/> or related classes, and will collect them instead.
         /// When false, the filter will not have any effect.
         /// </summary>
         public bool Enabled { get; set; }
+
         /// <summary>
         /// Gets an enumerable collection of the filtered, individual benchmark cases.
         /// </summary>
         public IEnumerable<BenchmarkCase> FilteredBenchmarkCases => _filteredBenchmarkCases;
+
         /// <summary>
         /// Gets an enumerable collection of the filtered benchmark cases grouped by containing type.
         /// </summary>
@@ -66,15 +70,24 @@ namespace Mawosoft.BenchmarkDotNetToolbox
         public string[] PreparseConsoleArguments(string[] args)
         {
             Enabled = false;
+            _consoleArguments = null;
             if (args == null)
             {
                 return Array.Empty<string>();
             }
-            int i = Array.FindIndex(args, a => a.ToLowerInvariant() is "-w" or "--whatif");
-            if (i >= 0)
+            // Get a copy of the original for summary
+            _consoleArguments = (string[])args.Clone();
+            // Check for -w/--whatif and remove them (including possible dupes)
+            int i;
+            while ((i = Array.FindIndex(args, a => a.ToLowerInvariant() is "-w" or "--whatif")) >= 0)
             {
                 Enabled = true;
                 args = args.Take(i).Concat(args.Skip(i + 1)).ToArray();
+            }
+            if (args.Length == 0)
+            {
+                // Don't keep a copy if empty or --whatif only
+                _consoleArguments = null;
             }
             return args;
         }
@@ -118,6 +131,11 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             logger.WriteLine();
             logger.WriteLineHeader("// * What If Summary *");
             logger.WriteLine();
+            if (_consoleArguments != null && _consoleArguments.Length != 0)
+            {
+                logger.WriteLineInfo("Console arguments: " + string.Join(" ", _consoleArguments));
+                logger.WriteLine();
+            }
             logger.WriteLineInfo(HostEnvironmentInfo.GetInformation());
             if (join)
             {
@@ -164,10 +182,5 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             }
             return !Enabled;
         }
-
-        /// <summary>
-        /// Clears and disposes the collected benchmark cases.
-        /// </summary>
-        public void Dispose() => Clear(dispose: true);
     }
 }

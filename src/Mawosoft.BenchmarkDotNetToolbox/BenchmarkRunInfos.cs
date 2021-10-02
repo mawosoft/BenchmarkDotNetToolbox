@@ -19,46 +19,73 @@ namespace Mawosoft.BenchmarkDotNetToolbox
     /// capable of overriding any global or local Job configs. For Debug and similar purposes.
     /// </summary>
     /// <remarks>
-    /// By specifying a replacement job, you can disable all global *and* local job configurations, mutators,
+    /// By specifying a override job, you can disable all global *and* local job configurations, mutators,
     /// etc. without having to temporarly modifying their respective coding and only run a single fast
     /// in-process job targeted at the methods you want to debug.
     /// </remarks>
     public class BenchmarkRunInfos
     {
-        /// <summary>Predefined Job instance that can be used as replacement job.</summary>
+        /// <summary>Predefined Job instance that can be used as override job.</summary>
         public static readonly Job FastInProcessJob =
             new Job("FastInProc", Job.Dry.WithToolchain(InProcessEmitToolchain.Instance)).Freeze();
-        /// <summary>Global config to use for subsequent ConvertXxx method calls.</summary>
+
+        private readonly List<BenchmarkRunInfo> _items = new();
+
+        /// <summary>Global config to use for subsequently added <see cref="BenchmarkRunInfo"/> items.</summary>
         public IConfig? Config { get; set; }
-        /// <summary>List of optional replacement jobs to use for subsequent ConvertXxx method calls.</summary>
-        /// <remarks>Use the <see cref="List{Job}.Add(Job)>"/> method to add a job.</remarks>
-        public List<Job> ReplacementJobs { get; }
-        /// <summary>List of <see cref="BenchmarkRunInfo"/> items created by ConvertXxx method calls.</summary>
-        public List<BenchmarkRunInfo> Items { get; } = new();
-        /// <summary>Number of <see cref="BenchmarkRunInfo"/> items created by ConvertXxx method calls.</summary>
-        public int Count => Items.Count;
+
+        /// <summary>Override job to use for subsequently added <see cref="BenchmarkRunInfo"/> items.</summary>
+        public Job? OverrideJob { get; set; }
+
+        /// <summary>
+        /// Read-only collection of <see cref="BenchmarkRunInfo"/> items added or created by conversion method calls.
+        /// </summary>
+        public IReadOnlyList<BenchmarkRunInfo> Items => _items;
+
+        /// <summary>Number of <see cref="BenchmarkRunInfo"/> items.</summary>
+        public int Count => _items.Count;
+
         /// <summary>Get the <see cref="BenchmarkRunInfo"/> item at the specified index.</summary>
-        public BenchmarkRunInfo this[int index] => Items[index];
+        public BenchmarkRunInfo this[int index] => _items[index];
+
+        /// <summary>Add a single <see cref="BenchmarkRunInfo"/> item.</summary>
+        public void Add(BenchmarkRunInfo benchmarkRunInfo) => PostProcessConverter(null, benchmarkRunInfo);
+
+        /// <summary>Add a collections of <see cref="BenchmarkRunInfo"/> items.</summary>
+        public void AddRange(IEnumerable<BenchmarkRunInfo> benchmarkRunInfos)
+            => PostProcessConverter(null, benchmarkRunInfos.ToArray());
+
+        /// <summary>
+        /// Clears the list of <see cref="BenchmarkRunInfo"/> items and optionally disposes them.
+        /// </summary>
+        public void Clear(bool dispose)
+        {
+            if (dispose)
+            {
+                _items.ForEach(bri => bri.Dispose());
+            }
+            _items.Clear();
+        }
 
         /// <summary>Initializes a new instance of the <see cref="BenchmarkRunInfos"/> class.</summary>
-        public BenchmarkRunInfos() : this(null) { }
+        public BenchmarkRunInfos() : this(null, null) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BenchmarkRunInfos"/> class with an optional global
-        /// config and optional replacement jobs.
+        /// config and an optional override job.
         /// </summary>
-        public BenchmarkRunInfos(IConfig? globalConfig, params Job[] replacementJobs)
+        public BenchmarkRunInfos(IConfig? globalConfig, Job? overrideJob)
         {
             Config = globalConfig;
-            ReplacementJobs = replacementJobs?.Length > 0 ? new(replacementJobs) : new();
+            OverrideJob = overrideJob;
         }
 
         /// <summary>
-        /// Adds a predefined replacement job when called from code compiled with the conditional
+        /// Adds a predefined override job when called from code compiled with the conditional
         /// <b>DEBUG</b> symbol defined.
         /// </summary>
         [Conditional("DEBUG")]
-        public void DebugAddDefaultReplacementJob() => ReplacementJobs.Add(FastInProcessJob);
+        public void DebugAddDefaultOverrideJob() => OverrideJob = FastInProcessJob;
 
         /// <summary>Converts all types with benchmarks in the given assembly.</summary>
         public void ConvertAssemblyToBenchmarks(Assembly assembly)
@@ -104,14 +131,14 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             => PostProcessConverter(PreProcessConverter(), BenchmarkConverter.UrlToBenchmarks(url, Config));
 
         /// <summary>Runs all converted benchmarks.</summary>
-        public Summary[] RunAll() => BenchmarkRunner.Run(Items.ToArray());
+        public Summary[] RunAll() => BenchmarkRunner.Run(_items.ToArray());
 
         private WhatifFilter? PreProcessConverter()
         {
             // If an enabled WhatifFilter exists, we want it to filter the results of our own conversion,
             // not the one performed by BenchmarkConverter. Thus, we disable it here and turn it back on
             // in the post processor.
-            if (ReplacementJobs.Count != 0
+            if (OverrideJob != null
                 && Config?.GetFilters().SingleOrDefault(f => f is WhatifFilter) is WhatifFilter filter
                 && filter.Enabled)
             {
@@ -128,14 +155,16 @@ namespace Mawosoft.BenchmarkDotNetToolbox
                 // Reenable filter after BenchmarkConverter has been called
                 whatifFilter.Enabled = true;
             }
-            if (ReplacementJobs.Count == 0)
+            if (OverrideJob == null)
             {
                 Debug.Assert(whatifFilter == null);
-                Items.AddRange(runInfos.Where(ri => ri.BenchmarksCases.Length > 0));
+                _items.AddRange(runInfos.Where(ri => ri.BenchmarksCases.Length > 0));
             }
             else
             {
-                HashSet<Job> jobs = new(ReplacementJobs);
+                // We keep the hashset here in case we want to go back to support multiple override jobs.
+                HashSet<Job> jobs = new();
+                jobs.Add(OverrideJob);
                 foreach (BenchmarkRunInfo runInfo in runInfos)
                 {
                     HashSet<BenchmarkCase> oldBenchmarkCases =
@@ -156,7 +185,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
                     }
                     if (newBenchmarkCases.Count > 0)
                     {
-                        Items.Add(new BenchmarkRunInfo(newBenchmarkCases.ToArray(), runInfo.Type, runInfo.Config));
+                        _items.Add(new BenchmarkRunInfo(newBenchmarkCases.ToArray(), runInfo.Type, runInfo.Config));
                     }
                 }
             }

@@ -82,7 +82,7 @@ namespace WhatifFilterSample
             if (whatifFilter.Enabled)
             {
                 whatifFilter.PrintAsSummaries(ConsoleLogger.Default);
-                whatifFilter.Dispose();
+                whatifFilter.Clear(dispose: true);
             }
         }
     }
