@@ -27,7 +27,7 @@ An assortment of classes to support benchmarking with [BenchmarkDotNet](https://
   </tr></thead>
   <tbody><tr valign=top>
     <td><code>BenchmarkRunInfos</code></td>
-    <td>A wrapper and extension for <code>BenchmarkConverter</code>, maintaining the involved input and output items, capable of overriding any global or local Job configs. For Debug and similar purposes.</td>
+    <td>A wrapper and extension for <code>BenchmarkConverter</code>, collecting the converted benchmarks, executing them, and optionally overriding any global and local Job configurations.</td>
   </tr>
   <tr valign=top>
     <td><code>ManualConfigExtensions</code></td>

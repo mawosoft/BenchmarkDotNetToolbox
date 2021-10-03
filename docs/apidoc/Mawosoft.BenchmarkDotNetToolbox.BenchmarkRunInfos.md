@@ -85,7 +85,7 @@ remarks: "`FastInProcessJob` is equivalent to `Job.Dry.WithToolchain(InProcessEm
 uid: Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.Config
 syntax:
     return:
-        description: The global config to use for conversions, or `null` to use BenchmarkDotNet\'s default config.
+        description: The global config to use for conversions, or `null` to use BenchmarkDotNet's default config.
 remarks: *content
 ---
 You can change the @"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.Config"
@@ -127,3 +127,110 @@ syntax:
     return:
       description: The element at the specified index.
 ---
+
+---
+uid: Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.Add(BenchmarkDotNet.Running.BenchmarkRunInfo)
+syntax:
+    parameters:
+    - id: benchmarkRunInfo
+      description: The @"BenchmarkDotNet.Running.BenchmarkRunInfo" element to be added.
+---
+> [!Note]
+> Since @"BenchmarkDotNet.Running.BenchmarkRunInfo" already contains converted benchmarks, an eventual
+> @"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.Config" will not be applied.
+
+---
+uid: Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.AddRange(System.Collections.Generic.IEnumerable{BenchmarkDotNet.Running.BenchmarkRunInfo})
+syntax:
+    parameters:
+    - id: benchmarkRunInfos
+      description: The collection of @"BenchmarkDotNet.Running.BenchmarkRunInfo" elements to be added.
+---
+> [!Note]
+> Since @"BenchmarkDotNet.Running.BenchmarkRunInfo" already contains converted benchmarks, an eventual
+> @"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.Config" will not be applied.
+
+---
+uid: Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.Clear(System.Boolean)
+syntax:
+    parameters:
+    - id: dispose
+      description: "`true` to dispose all benchmarks, `false` to only remove them from the list without disposal."
+---
+
+---
+uid: Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.ConvertAssemblyToBenchmarks(System.Reflection.Assembly)
+syntax:
+    parameters:
+    - id: assembly
+      description: The assembly containing the benchmark classes and methods.
+---
+An eventual @"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.Config" and
+@"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.OverrideJob" will be applied.
+
+---
+uid: Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.ConvertMethodsToBenchmarks(System.Type,System.Reflection.MethodInfo[])
+syntax:
+    parameters:
+    - id: containingType
+      description: "The `Type` of the class containing the benchmark methods."
+    - id: benchmarkMethods
+      description: "An array of `MethodInfo` objects describing the benchmark methods."
+---
+An eventual @"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.Config" and
+@"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.OverrideJob" will be applied.
+
+---
+uid: Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.ConvertMethodsToBenchmarks(System.Type,System.String[])
+syntax:
+    parameters:
+    - id: containingType
+      description: "The `Type` of the class containing the benchmark methods."
+    - id: benchmarkMethodNames
+      description: An array of strings containing the names of the benchmark methods.
+---
+An eventual @"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.Config" and
+@"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.OverrideJob" will be applied.
+
+> [!Note]
+> The method names must be unambigious, otherwise the conversion will fail.
+
+---
+uid: Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.ConvertSourceToBenchmarks(System.String)
+syntax:
+    parameters:
+    - id: source
+      description: A string containing the C# source code to compile.
+---
+An eventual @"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.Config" and
+@"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.OverrideJob" will be applied.
+
+---
+uid: Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.ConvertTypeToBenchmarks(System.Type)
+syntax:
+    parameters:
+    - id: type
+      description: "The `Type` of the class containing the benchmark methods."
+---
+An eventual @"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.Config" and
+@"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.OverrideJob" will be applied.
+
+---
+uid: Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.ConvertUrlToBenchmarks(System.String)
+syntax:
+    parameters:
+    - id: url
+      description: A string containing the Url to read the C# source code from.
+---
+An eventual @"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.Config" and
+@"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.OverrideJob" will be applied.
+
+---
+uid: Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.RunAll
+syntax:
+    return:
+      description: "An array of `Summary` objects containing the benchmark results."
+---
+Each @"BenchmarkDotNet.Reports.Summary" object in the returned array corresponds to a
+@"BenchmarkDotNet.Running.BenchmarkRunInfo" element in @"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.Items".
+

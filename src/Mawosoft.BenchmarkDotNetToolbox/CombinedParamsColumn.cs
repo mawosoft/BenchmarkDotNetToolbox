@@ -9,7 +9,7 @@ using BenchmarkDotNet.Running;
 namespace Mawosoft.BenchmarkDotNetToolbox
 {
     /// <summary>
-    /// An alternative to <see cref="DefaultColumnProviders.Params"/> that displays all params in a single,
+    /// An alternative to <see cref="DefaultColumnProviders.Params"/> that displays all parameters in a single,
     /// customizable column.
     /// </summary>
     public class CombinedParamsColumn : IColumn
@@ -23,7 +23,8 @@ namespace Mawosoft.BenchmarkDotNetToolbox
         /// Initializes a new instance of the <see cref="CombinedParamsColumn"/> class with optional custom
         /// formatting.
         /// </summary>
-        public CombinedParamsColumn(string formatNameValue = "{0}={1}", string separator = ", ", string prefix = "", string suffix = "")
+        public CombinedParamsColumn(string formatNameValue = "{0}={1}",
+            string separator = ", ", string prefix = "", string suffix = "")
         {
             _formatNameValue = formatNameValue;
             _separator = separator;

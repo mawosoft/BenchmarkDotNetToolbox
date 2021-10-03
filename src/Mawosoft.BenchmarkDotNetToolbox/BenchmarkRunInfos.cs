@@ -157,7 +157,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             => PostProcessConverter(PreProcessConverter(), BenchmarkConverter.UrlToBenchmarks(url, Config));
 
         /// <summary>
-        /// Runs all converted benchmarks.
+        /// Runs all converted benchmarks and returns the results.
         /// </summary>
         public Summary[] RunAll() => BenchmarkRunner.Run(_items.ToArray());
 
