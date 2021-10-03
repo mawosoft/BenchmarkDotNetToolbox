@@ -1,5 +1,7 @@
 ﻿<Project>
 
+  <!-- With explicit import of Sdk.targets, we can't use the Sdk attr on <Project> and instead
+       have to explicit import Sdk.props as well. -->
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
   <PropertyGroup>
@@ -14,8 +16,17 @@
     </PackageReference>
   </ItemGroup>
 
+  <!-- Explicit import *before* overwriting default targets-->
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 
+  <!-- Notes:
+    - A <ProjectReference> to BenchmarkDotNetToolbox is not necessary (and wouldn't work with the
+      overwritten default targets anyway).
+    - DocFx only needs the csproj provided via docfx.json and the related source files, not the
+      binaries, to convert triple-slash comments into API docs and gather all internal and external
+      references.
+  -->
+  
   <Target Name="Build">
     <CallTarget Targets="DocBuild"/>
   </Target>
@@ -25,5 +36,18 @@
   <Target Name="Clean">
     <CallTarget Targets="DocClean"/>
   </Target>
+
+  <Target Name="ExportModels">
+    <!-- Output defaults to build destination (_site), but chan be changed in docfx.json -->
+    <CallTarget Targets="SetDocParameters"/>
+    <CallTarget Targets="DocBuild"/>
+  </Target>
+  <Target Name="SetDocParameters">
+    <!-- Setting this directly in ExportModels doesn't work (it becomes "unset" in DocBuild somehow. -->
+    <PropertyGroup>
+      <DocParameters>--exportRawModel --exportViewModel --dryRun</DocParameters>
+    </PropertyGroup>
+  </Target>
+
 
 </Project>

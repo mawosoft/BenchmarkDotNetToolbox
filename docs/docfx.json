@@ -8,6 +8,7 @@
             }
         ],
         "dest": "api",
+        "filter": "filter.yml",
         "disableGitFeatures": false,
         "disableDefaultFilter": false,
         "properties": {
@@ -54,22 +55,25 @@
         "globalMetadata": {
             "_appTitle": "BenchmarkDotNet Toolbox",
             "_appFooter": "Copyright &copy; 2021 Matthias Wolf, Mawosoft",
-            "_enableSearch": true
+            "_enableSearch": true,
+            "_enableNewTab": true,
+            "_gitContribute": { "apiSpecFolder": "/docs/apidoc" }
         },
         "globalMetadataFiles": [],
         "fileMetadataFiles": [],
         "template": [
-            "default"
+            "default",
+            "templates/custom"
         ],
         "xref": [ "xrefmap-BenchmarkDotNet.yml" ],
         "xrefService": [
             "https://xref.docs.microsoft.com/query?uid={uid}"
         ],
         "postProcessors": [],
-        "markdownEngineName": "markdig",
+        "markdownEngineName": "dfm",
         "noLangKeyword": false,
         "keepFileLink": false,
-        "cleanupCacheHistory": false,
+        "cleanupCacheHistory": true,
         "disableGitFeatures": false
     }
 }

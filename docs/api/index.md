@@ -1,2 +1,7 @@
-# PLACEHOLDER
-TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL** *API Documentation*!
+# Namespaces
+
+#### [Mawosoft.BenchmarkDotNetToolbox](Mawosoft.BenchmarkDotNetToolbox.yml)
+
+<section>
+TODO: Add description or change toc to link directly to *Mawosoft.BenchmarkDotNetToolbox.yml*.
+</section>

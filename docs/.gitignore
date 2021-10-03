@@ -7,5 +7,6 @@ _site
 api/.manifest
 api/*.yml
 
-# Log
+# Log, local-only batch file
 log.txt
+serve.cmd

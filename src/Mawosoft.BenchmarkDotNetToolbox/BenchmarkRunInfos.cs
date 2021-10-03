@@ -15,48 +15,59 @@ using BenchmarkDotNet.Toolchains.InProcess.Emit;
 namespace Mawosoft.BenchmarkDotNetToolbox
 {
     /// <summary>
-    /// A wrapper and extension for <see cref="BenchmarkConverter"/>, maintaining the involved input and output items,
-    /// capable of overriding any global or local Job configs. For Debug and similar purposes.
+    /// A wrapper and extension for <see cref="BenchmarkConverter"/>, collecting the converted benchmarks,
+    /// executing them, and optionally overriding any global and local <see cref="Job"/> configurations.
     /// </summary>
-    /// <remarks>
-    /// By specifying a override job, you can disable all global *and* local job configurations, mutators,
-    /// etc. without having to temporarly modifying their respective coding and only run a single fast
-    /// in-process job targeted at the methods you want to debug.
-    /// </remarks>
     public class BenchmarkRunInfos
     {
-        /// <summary>Predefined Job instance that can be used as override job.</summary>
+        /// <summary>
+        /// A predefined Job instance that can be used as override job.
+        /// </summary>
         public static readonly Job FastInProcessJob =
             new Job("FastInProc", Job.Dry.WithToolchain(InProcessEmitToolchain.Instance)).Freeze();
 
         private readonly List<BenchmarkRunInfo> _items = new();
 
-        /// <summary>Global config to use for subsequently added <see cref="BenchmarkRunInfo"/> items.</summary>
+        /// <summary>
+        /// Gets or sets the global config to use for subsequent benchmark conversions.
+        /// </summary>
         public IConfig? Config { get; set; }
 
-        /// <summary>Override job to use for subsequently added <see cref="BenchmarkRunInfo"/> items.</summary>
+        /// <summary>
+        /// Gets or sets the override job to use for subsequent benchmark conversions.
+        /// </summary>
         public Job? OverrideJob { get; set; }
 
         /// <summary>
-        /// Read-only collection of <see cref="BenchmarkRunInfo"/> items added or created by conversion method calls.
+        /// Gets a read-only collection of the converted benchmarks.
         /// </summary>
         public IReadOnlyList<BenchmarkRunInfo> Items => _items;
 
-        /// <summary>Number of <see cref="BenchmarkRunInfo"/> items.</summary>
+        /// <summary>
+        /// Gets the number of converted <see cref="BenchmarkRunInfo"/> elements.
+        /// </summary>
         public int Count => _items.Count;
 
-        /// <summary>Get the <see cref="BenchmarkRunInfo"/> item at the specified index.</summary>
+        /// <summary>
+        /// Gets the converted <see cref="BenchmarkRunInfo"/> element at the specified index.
+        /// </summary>
         public BenchmarkRunInfo this[int index] => _items[index];
 
-        /// <summary>Add a single <see cref="BenchmarkRunInfo"/> item.</summary>
+        /// <summary>
+        /// Adds a <see cref="BenchmarkRunInfo"/> element and applies the <see cref="OverrideJob"/>
+        /// if one is specified.
+        /// </summary>
         public void Add(BenchmarkRunInfo benchmarkRunInfo) => PostProcessConverter(null, benchmarkRunInfo);
 
-        /// <summary>Add a collections of <see cref="BenchmarkRunInfo"/> items.</summary>
+        /// <summary>
+        /// Adds a collection of <see cref="BenchmarkRunInfo"/> elements and applies the <see cref="OverrideJob"/>
+        /// if one is specified.
+        /// </summary>
         public void AddRange(IEnumerable<BenchmarkRunInfo> benchmarkRunInfos)
             => PostProcessConverter(null, benchmarkRunInfos.ToArray());
 
         /// <summary>
-        /// Clears the list of <see cref="BenchmarkRunInfo"/> items and optionally disposes them.
+        /// Clears the list of <see cref="BenchmarkRunInfo"/> elements and optionally disposes them.
         /// </summary>
         public void Clear(bool dispose)
         {
@@ -67,7 +78,9 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             _items.Clear();
         }
 
-        /// <summary>Initializes a new instance of the <see cref="BenchmarkRunInfos"/> class.</summary>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BenchmarkRunInfos"/> class.
+        /// </summary>
         public BenchmarkRunInfos() : this(null, null) { }
 
         /// <summary>
@@ -81,13 +94,15 @@ namespace Mawosoft.BenchmarkDotNetToolbox
         }
 
         /// <summary>
-        /// Adds a predefined override job when called from code compiled with the conditional
-        /// <b>DEBUG</b> symbol defined.
+        /// Sets the predefined override job (<see cref="FastInProcessJob"/>) when called from code compiled
+        /// with the conditional <c>DEBUG</c> symbol defined.
         /// </summary>
         [Conditional("DEBUG")]
-        public void DebugAddDefaultOverrideJob() => OverrideJob = FastInProcessJob;
+        public void DebugDefaultOverrideJob() => OverrideJob = FastInProcessJob;
 
-        /// <summary>Converts all types with benchmarks in the given assembly.</summary>
+        /// <summary>
+        /// Converts all types with benchmarks in the given assembly and stores the results.
+        /// </summary>
         public void ConvertAssemblyToBenchmarks(Assembly assembly)
         {
             IEnumerable<Type> types = assembly.GetTypes()
@@ -102,7 +117,9 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             }
         }
 
-        /// <summary>Converts the named benchmark methods of the given type.</summary>
+        /// <summary>
+        /// Converts the named benchmark methods of the given type and stores the results.
+        /// </summary>
         public void ConvertMethodsToBenchmarks(Type containingType, params string[] benchmarkMethodNames)
             => PostProcessConverter(PreProcessConverter(),
                 BenchmarkConverter.MethodsToBenchmarks(containingType,
@@ -113,24 +130,35 @@ namespace Mawosoft.BenchmarkDotNetToolbox
                         .ToArray(),
                     Config));
 
-        /// <summary>Wrapper for <see cref="BenchmarkConverter.MethodsToBenchmarks"/></summary>
+        /// <summary>
+        /// Converts the specified benchmark methods of the given type and stores the results.
+        /// </summary>
         public void ConvertMethodsToBenchmarks(Type containingType, params MethodInfo[] benchmarkMethods)
             => PostProcessConverter(PreProcessConverter(),
                 BenchmarkConverter.MethodsToBenchmarks(containingType, benchmarkMethods, Config));
 
-        /// <summary>Wrapper for <see cref="BenchmarkConverter.SourceToBenchmarks"/></summary>
+        /// <summary>
+        /// Compiles the given C# source code, converts the contained benchmark methods, and stores the results.
+        /// </summary>
         public void ConvertSourceToBenchmarks(string source)
             => PostProcessConverter(PreProcessConverter(), BenchmarkConverter.SourceToBenchmarks(source, Config));
 
-        /// <summary>Wrapper for <see cref="BenchmarkConverter.TypeToBenchmarks"/></summary>
+        /// <summary>
+        /// Converts all benchmark methods of the given type and stores the results.
+        /// </summary>
         public void ConvertTypeToBenchmarks(Type type)
             => PostProcessConverter(PreProcessConverter(), BenchmarkConverter.TypeToBenchmarks(type, Config));
 
-        /// <summary>Wrapper for <see cref="BenchmarkConverter.UrlToBenchmarks"/></summary>
+        /// <summary>
+        /// Reads and compiles C# source code from the given Url, converts the contained benchmark methods,
+        /// and stores the results.
+        /// </summary>
         public void ConvertUrlToBenchmarks(string url)
             => PostProcessConverter(PreProcessConverter(), BenchmarkConverter.UrlToBenchmarks(url, Config));
 
-        /// <summary>Runs all converted benchmarks.</summary>
+        /// <summary>
+        /// Runs all converted benchmarks.
+        /// </summary>
         public Summary[] RunAll() => BenchmarkRunner.Run(_items.ToArray());
 
         private WhatifFilter? PreProcessConverter()
