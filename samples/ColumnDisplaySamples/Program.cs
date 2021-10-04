@@ -88,7 +88,7 @@ namespace ColumnDisplaySamples
                 }
                 if (variantDescription.Length != 0)
                 {
-                    logger.WriteLineHeader($"// * {variantDescription} *");
+                    logger.WriteLineHeader($"// {variantDescription}");
                     logger.WriteLine();
                 }
                 parts.CommonValues.ForEach(ol => logger.Write(ol.Kind, ol.Text));

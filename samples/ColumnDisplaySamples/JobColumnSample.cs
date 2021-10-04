@@ -6,6 +6,7 @@ using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Environments;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Toolchains.CsProj;
+using BenchmarkDotNet.Toolchains.DotNetCli;
 using BenchmarkDotNet.Toolchains.InProcess.Emit;
 using Mawosoft.BenchmarkDotNetToolbox;
 
@@ -60,17 +61,25 @@ namespace ColumnDisplaySamples
 
         public class SampleConfig : SampleConfigBase
         {
-            // This is the equivalent of the command line option --runtimes net48 netcoreapp3.1 net5.0
+            // There are easier ways to specify Runtime and ToolChain for a job.
+            // This however mimics the way jobs are created from the command line option
+            //     --runtimes net48 netcoreapp3.1 net5.0
             // with the first specified runtime becoming the baseline.
-            // However, we are using Job.Dry as the base job here for minimal duration.
+            // But we are using Job.Dry as the base job here for minimal duration.
             public SampleConfig() : base() =>
                 AddJob(
-                    Job.Dry.WithRuntime(ClrRuntime.Net48).WithToolchain(CsProjClassicNetToolchain.Net48)
-                        .AsBaseline().UnfreezeCopy(),
-                    Job.Dry.WithRuntime(CoreRuntime.Core31).WithToolchain(CsProjCoreToolchain.NetCoreApp31)
-                        .UnfreezeCopy(),
-                    Job.Dry.WithRuntime(CoreRuntime.Core50).WithToolchain(CsProjCoreToolchain.NetCoreApp50)
-                        .UnfreezeCopy()
+                    Job.Dry.WithRuntime(ClrRuntime.Net48)
+                           .WithToolchain(CsProjClassicNetToolchain.From(
+                               "net48"))
+                           .AsBaseline().UnfreezeCopy(),
+                    Job.Dry.WithRuntime(CoreRuntime.Core31)
+                           .WithToolchain(CsProjCoreToolchain.From(new NetCoreAppSettings(
+                               "netcoreapp3.1", null, "netcoreapp3.1")))
+                           .UnfreezeCopy(),
+                    Job.Dry.WithRuntime(CoreRuntime.Core50)
+                           .WithToolchain(CsProjCoreToolchain.From(new NetCoreAppSettings(
+                               "net5.0", null, "net5.0")))
+                           .UnfreezeCopy()
                     );
         }
 

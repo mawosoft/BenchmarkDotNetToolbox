@@ -16,7 +16,7 @@ AMD Ryzen 5 3400G with Radeon Vega Graphics, 1 CPU, 4 logical and 4 physical cor
 ```
 // *** Job Column Sample 1: Jobs with different run characteristics ***
 
-// * with BenchmarkDotNet defaults *
+// with BenchmarkDotNet defaults
 
 Toolchain=InProcessEmitToolchain  
 
@@ -33,7 +33,7 @@ Toolchain=InProcessEmitToolchain
   1 μs   : 1 Microsecond (0.000001 sec)
 ```
 ```
-// * with JobColumnSelectionProvider("-all +Job", showHiddenValuesInLegend: true) *
+// with JobColumnSelectionProvider("-all +Job", showHiddenValuesInLegend: true)
 
 Toolchain=InProcessEmitToolchain  
 
@@ -59,20 +59,20 @@ Toolchain=InProcessEmitToolchain
   Job-JFNSKS : .NET Core 3.1.19 (CoreCLR 4.700.21.41101, CoreFX 4.700.21.41603), X64 RyuJIT
   Job-DUPVIG : .NET Framework 4.8 (4.8.4400.0), X64 RyuJIT
 
-// * with BenchmarkDotNet defaults *
+// with BenchmarkDotNet defaults
 
 IterationCount=1  LaunchCount=1  RunStrategy=ColdStart  
 UnrollFactor=1  WarmupCount=1  
 
-|  Method |        Job |            Runtime |          Toolchain |     Mean | Error | Ratio |
-|-------- |----------- |------------------- |------------------- |---------:|------:|------:|
-| Method1 | Job-NNZHLG |           .NET 5.0 |           .NET 5.0 | 396.2 μs |    NA |  0.90 |
-| Method1 | Job-JFNSKS |      .NET Core 3.1 |      .NET Core 3.1 | 340.5 μs |    NA |  0.78 |
-| Method1 | Job-DUPVIG | .NET Framework 4.8 | .NET Framework 4.8 | 437.8 μs |    NA |  1.00 |
-|         |            |                    |                    |          |       |       |
-| Method2 | Job-NNZHLG |           .NET 5.0 |           .NET 5.0 | 309.7 μs |    NA |  0.92 |
-| Method2 | Job-JFNSKS |      .NET Core 3.1 |      .NET Core 3.1 | 534.4 μs |    NA |  1.59 |
-| Method2 | Job-DUPVIG | .NET Framework 4.8 | .NET Framework 4.8 | 335.8 μs |    NA |  1.00 |
+|  Method |        Job |            Runtime |     Toolchain |     Mean | Error | Ratio |
+|-------- |----------- |------------------- |-------------- |---------:|------:|------:|
+| Method1 | Job-YMVNBK |           .NET 5.0 |        net5.0 | 358.1 μs |    NA |  1.05 |
+| Method1 | Job-QHJRYG |      .NET Core 3.1 | netcoreapp3.1 | 350.5 μs |    NA |  1.02 |
+| Method1 | Job-BDEBJQ | .NET Framework 4.8 |         net48 | 342.4 μs |    NA |  1.00 |
+|         |            |                    |               |          |       |       |
+| Method2 | Job-YMVNBK |           .NET 5.0 |        net5.0 | 332.9 μs |    NA |  0.65 |
+| Method2 | Job-QHJRYG |      .NET Core 3.1 | netcoreapp3.1 | 332.5 μs |    NA |  0.65 |
+| Method2 | Job-BDEBJQ | .NET Framework 4.8 |         net48 | 512.5 μs |    NA |  1.00 |
 
   Mean  : Arithmetic mean of all measurements
   Error : Half of 99.9% confidence interval
@@ -80,20 +80,20 @@ UnrollFactor=1  WarmupCount=1
   1 μs  : 1 Microsecond (0.000001 sec)
 ```
 ```
-// * with JobColumnSelectionProvider("-Job -Toolchain", showHiddenValuesInLegend: false) *
+// with JobColumnSelectionProvider("-Job -Toolchain", showHiddenValuesInLegend: false)
 
 IterationCount=1  LaunchCount=1  RunStrategy=ColdStart  
 UnrollFactor=1  WarmupCount=1  
 
 |  Method |            Runtime |     Mean | Error | Ratio |
 |-------- |------------------- |---------:|------:|------:|
-| Method1 |           .NET 5.0 | 345.8 μs |    NA |  0.93 |
-| Method1 |      .NET Core 3.1 | 340.2 μs |    NA |  0.91 |
-| Method1 | .NET Framework 4.8 | 372.1 μs |    NA |  1.00 |
+| Method1 |           .NET 5.0 | 435.8 μs |    NA |  1.28 |
+| Method1 |      .NET Core 3.1 | 328.7 μs |    NA |  0.96 |
+| Method1 | .NET Framework 4.8 | 340.7 μs |    NA |  1.00 |
 |         |                    |          |       |       |
-| Method2 |           .NET 5.0 | 314.4 μs |    NA |  0.80 |
-| Method2 |      .NET Core 3.1 | 315.0 μs |    NA |  0.80 |
-| Method2 | .NET Framework 4.8 | 395.4 μs |    NA |  1.00 |
+| Method2 |           .NET 5.0 | 385.9 μs |    NA |  1.15 |
+| Method2 |      .NET Core 3.1 | 451.9 μs |    NA |  1.34 |
+| Method2 | .NET Framework 4.8 | 336.2 μs |    NA |  1.00 |
 
   Mean  : Arithmetic mean of all measurements
   Error : Half of 99.9% confidence interval
@@ -103,7 +103,7 @@ UnrollFactor=1  WarmupCount=1
 ```
 // *** Param Column Sample ***
 
-// * with BenchmarkDotNet defaults *
+// with BenchmarkDotNet defaults
 
 Job=Dry  Toolchain=InProcessEmitToolchain  IterationCount=1  
 LaunchCount=1  RunStrategy=ColdStart  UnrollFactor=1  
@@ -127,7 +127,7 @@ WarmupCount=1
   1 μs    : 1 Microsecond (0.000001 sec)
 ```
 ```
-// * with CombinedParamsColumn() // default formatting *
+// with CombinedParamsColumn() // default formatting
 
 Job=Dry  Toolchain=InProcessEmitToolchain  IterationCount=1  
 LaunchCount=1  RunStrategy=ColdStart  UnrollFactor=1  
@@ -148,7 +148,7 @@ WarmupCount=1
   1 μs   : 1 Microsecond (0.000001 sec)
 ```
 ```
-// * with CombinedParamsColumn(formatNameValue: "{1}", separator: "; ") *
+// with CombinedParamsColumn(formatNameValue: "{1}", separator: "; ")
 
 Job=Dry  Toolchain=InProcessEmitToolchain  IterationCount=1  
 LaunchCount=1  RunStrategy=ColdStart  UnrollFactor=1  
@@ -169,7 +169,7 @@ WarmupCount=1
   1 μs   : 1 Microsecond (0.000001 sec)
 ```
 ```
-// * with RecyclableParamsColumnProvider() // default settings *
+// with RecyclableParamsColumnProvider() // default settings
 
 Job=Dry  Toolchain=InProcessEmitToolchain  IterationCount=1  
 LaunchCount=1  RunStrategy=ColdStart  UnrollFactor=1  
@@ -191,7 +191,7 @@ WarmupCount=1
   1 μs   : 1 Microsecond (0.000001 sec)
 ```
 ```
-// * with RecyclableParamsColumnProvider(tryKeepParamName: false) *
+// with RecyclableParamsColumnProvider(tryKeepParamName: false)
 
 Job=Dry  Toolchain=InProcessEmitToolchain  IterationCount=1  
 LaunchCount=1  RunStrategy=ColdStart  UnrollFactor=1  
