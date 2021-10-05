@@ -231,6 +231,3 @@ syntax:
     return:
       description: "An array of `Summary` objects containing the benchmark results."
 ---
-Each @"BenchmarkDotNet.Reports.Summary" object in the returned array corresponds to a
-@"BenchmarkDotNet.Running.BenchmarkRunInfo" element in @"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.Items".
-

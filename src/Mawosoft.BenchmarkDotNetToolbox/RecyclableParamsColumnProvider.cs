@@ -9,21 +9,17 @@ using BenchmarkDotNet.Reports;
 namespace Mawosoft.BenchmarkDotNetToolbox
 {
     /// <summary>
-    /// An alternative to <see cref="DefaultColumnProviders.Params"/> that displays params in recyclable
-    /// columns corresponding to param position rather than param name.
+    /// An alternative to <see cref="DefaultColumnProviders.Params"/> that displays parameters in recyclable
+    /// columns corresponding to parameter position rather than name.
     /// </summary>
     public class RecyclableParamsColumnProvider : IColumnProvider
     {
         private readonly bool _tryKeepParamName;
         private readonly string _genericName;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RecyclableParamsColumnProvider"/> class.
         /// </summary>
-        /// <param name="tryKeepParamName">
-        /// If true and if all params at a position have the same name, that name will be used as column
-        /// header. Otherwise, a generic, numbered column header will be used.
-        /// </param>
-        /// <param name="genericName">Prefix for the generic, numbered column header.</param>
         public RecyclableParamsColumnProvider(bool tryKeepParamName = true, string genericName = "Param")
         {
             _tryKeepParamName = tryKeepParamName;

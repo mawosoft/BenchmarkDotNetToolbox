@@ -6,7 +6,9 @@ using BenchmarkDotNet.Running;
 
 namespace Mawosoft.BenchmarkDotNetToolbox
 {
-    /// <summary>Internal class used by <see cref="JobColumnSelectionProvider"/></summary>
+    /// <summary>
+    /// Internal class used by <see cref="JobColumnSelectionProvider"/>
+    /// </summary>
     internal class JobCharacteristicColumnWithLegend : IColumn
     {
         private readonly IColumn _inner;

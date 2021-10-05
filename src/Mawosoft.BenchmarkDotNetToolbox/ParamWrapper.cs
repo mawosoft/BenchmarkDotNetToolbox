@@ -8,16 +8,21 @@ namespace Mawosoft.BenchmarkDotNetToolbox
     /// <summary>
     /// A generic wrapper to associate strongly typed parameter or argument values with a display text.
     /// </summary>
-    /// <typeparam name="T">The type of the wrapped value.</typeparam>
     public class ParamWrapper<T> : IDisposable
     {
-        /// <summary>The strongly typed parameter or argument value.</summary>
+        /// <summary>
+        /// The strongly typed parameter or argument value.
+        /// </summary>
         public T Value;
-        /// <summary>The associated text to display in logs and summaries.</summary>
+
+        /// <summary>
+        /// The associated text to display in logs and summaries.
+        /// </summary>
         public string? DisplayText;
 
         public override string? ToString()
             => DisplayText ?? Value?.ToString() ?? ParameterInstance.NullParameterTextRepresentation;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ParamWrapper{T}"/> class with the given strongly
         /// typed value and display text.
@@ -28,7 +33,9 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             DisplayText = displayText;
         }
 
-        /// <summary>Disposes the wrapped value if it is disposable.</summary>
+        /// <summary>
+        /// Disposes the wrapped value if it implements <see cref="IDisposable"/>.
+        /// </summary>
         public void Dispose() => (Value as IDisposable)?.Dispose();
     }
 }

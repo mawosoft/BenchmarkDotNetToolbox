@@ -9,12 +9,12 @@ syntax:
     parameters:
     - id: formatNameValue
       description: |
-        A composite format string where the format item "`{0}`" will be replaced with the parameter name
-        and the format item "`{1}`" with the parameter value.
+        A composite format string where the format item `{0}` will be replaced with the parameter name
+        and the format item `{1}` with the parameter value.
 
-        The default is "`{0}={1}`".
+        The default is `"{0}={1}"`.
     - id: separator
-      description: The string to use as a separator between multiple formatted parameters. The default is "`, `".
+      description: The string to use as a separator between multiple formatted parameters. The default is `", "`.
     - id: prefix
       description: The string to use before the first formatted parameter. The default is an empty string.
     - id: suffix
@@ -39,10 +39,9 @@ ManualConfig config = ManualConfig.CreateEmpty()
     // Add other elements to the config...
 ```
 
-
-Use one of the new *Toolbox* extension methods for configs,
-@"Mawosoft.BenchmarkDotNetToolbox.ManualConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.IColumn[])?text=ReplaceColumnCategory()"
-, if you are modifying an existing config.
+If you are modifying an existing config, use
+@"Mawosoft.BenchmarkDotNetToolbox.ManualConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.IColumn[])?text=ReplaceColumnCategory()",
+one of the new config extension methods in *BenchmarkDotNetToolbox*.
 
 ```csharp
 ManualConfig config = ManualConfig.Create(DefaultConfig.Instance)
@@ -60,7 +59,7 @@ new CombinedParamsColumn("{1}", "; ")
 
 ##### Sample Output
 
-# [Toolbox Default](#tab/tabid-1)
+# [Default Formatting](#tab/tabid-1)
 <pre>
 // with CombinedParamsColumn() // default formatting
 
@@ -104,7 +103,7 @@ WarmupCount=1
   Error  : Half of 99.9% confidence interval
   1 μs   : 1 Microsecond (0.000001 sec)
 </pre>
-# [BenchmarkDotNet Default](#tab/tabid-3)
+# [BenchmarkDotNet Defaults](#tab/tabid-3)
 <pre>
 // with BenchmarkDotNet defaults
 

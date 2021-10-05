@@ -11,7 +11,7 @@ using BenchmarkDotNet.Reports;
 namespace Mawosoft.BenchmarkDotNetToolbox
 {
     /// <summary>
-    /// An alternative to <see cref="DefaultColumnProviders.Job"/> with user-defined selection of Job columns.
+    /// An alternative to <see cref="DefaultColumnProviders.Job"/>, with a user-defined selection of Job columns.
     /// </summary>
     public class JobColumnSelectionProvider : IColumnProvider
     {
@@ -20,22 +20,22 @@ namespace Mawosoft.BenchmarkDotNetToolbox
         private readonly CharacteristicFilter[] _presentableCharacteristicFilters;
 
         /// <summary>
-        /// Initializes a user-defined selection of Job columns.
+        /// Initializes a new instance of the <see cref="JobColumnSelectionProvider"/> class.
         /// </summary>
-        /// <param name="filterExpression">A space-separated list of job column or category names, prefixed
-        /// with - (minus) or + (plus) to exclude or include them. See remarks for details.</param>
-        /// <param name="showHiddenValuesInLegend">True to include a compact display of hidden values as legend,
-        /// false if not.</param>
         /// <remarks>
-        /// <para>Initially, all columns are visible, just like with the default provider.
-        /// The filter expressions are processed sequentially, e.g. <b>"-All +Job"</b> will first hide all columns
-        /// and then unhide the Job name column, and <b>"-Run +RunStrategy"</b> will hide the columns of the Run
-        /// category and then unhide RunStrategy. The alias <i>All</i> refers to all columns, and both <i>Job</i>
-        /// and <i>Id</i> can be used for the Job name colum.</para>
-        /// <para>Categories can be specified either by their name or type; e.g. <i>Run</i> and <i>RunMode</i>
-        /// are equivalent. Available categories are: <i>Environment, Gc, Run, Infrastructure, Accuracy</i>.
-        /// See the <see href="https://benchmarkdotnet.org/articles/configs/jobs.html">BenchmarkDotNet documentation</see>
-        /// for details.</para>
+        /// <para>The filter expressions are processed sequentially. Initially, all columns are visible, just
+        /// as with the default provider. The filter <c>"-All +Job"</c> will first hide all job columns and then
+        /// unhide the Job name column. <c>"-Run +RunStrategy"</c> will hide the columns of the Run category and
+        /// then unhide the RunStrategy column.</para>
+        /// <para>Each job column represents a job characteristic. Characteristics are grouped into categories,
+        /// which can be specified either by their name or by their type, e.g. <c>Run</c> and <c>RunMode</c> are
+        /// equivalent. Available categories are: <c>Environment</c>, <c>Gc</c>, <c>Run</c>,
+        /// <c>Infrastructure</c>, <c>Accuracy</c>. For more details about them, see the
+        /// <see href="https://benchmarkdotnet.org/articles/configs/jobs.html">BenchmarkDotNet
+        /// documentation</see>.</para>
+        /// <para>In addition, the alias <c>All</c> refers to all columns, and both <c>Job</c> and <c>Id</c>
+        /// can be used for the Job name colum.</para>
+        /// <para>All column and category names are case-insensitive.</para>
         /// </remarks>
         public JobColumnSelectionProvider(string filterExpression, bool showHiddenValuesInLegend = true)
         {

@@ -20,7 +20,7 @@ An assortment of classes to support benchmarking with [BenchmarkDotNet](https://
   </tr>
   <tr valign=top>
     <td><code>JobColumnSelectionProvider</code></td>
-    <td>An alternative to <code>DefaultColumnProviders.Job</code> with user-defined selection of Job columns.</td>
+    <td>An alternative to <code>DefaultColumnProviders.Job</code>, with a user-defined selection of Job columns.</td>
   </tr></tbody>
   <thead><tr>
     <th colspan=2>Configuration and Running</th>

@@ -9,7 +9,9 @@ using BenchmarkDotNet.Running;
 
 namespace Mawosoft.BenchmarkDotNetToolbox
 {
-    /// <summary>Internal class used by <see cref="RecyclableParamsColumnProvider"/></summary>
+    /// <summary>
+    /// Internal class used by <see cref="RecyclableParamsColumnProvider"/>
+    /// </summary>
     internal class RecyclableParamColumn : IColumn
     {
         [SuppressMessage("CodeQuality", "IDE0079:Remove unnecessary suppression",
