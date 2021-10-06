@@ -221,10 +221,10 @@ WarmupCount=1
 
 |     Method |                  input |     Mean | Error |
 |----------- |----------------------- |---------:|------:|
-| NotWrapped | System.IO.MemoryStream | 384.0 μs |    NA |
-| NotWrapped | System.IO.MemoryStream | 307.5 μs |    NA |
-|    Wrapped |             big stream | 347.4 μs |    NA |
-|    Wrapped |           small stream | 326.8 μs |    NA |
+| NotWrapped | System.IO.MemoryStream | 452.0 μs |    NA |
+| NotWrapped | System.IO.MemoryStream | 203.7 μs |    NA |
+|    Wrapped |             big stream | 449.4 μs |    NA |
+|    Wrapped |           small stream | 213.8 μs |    NA |
 
   input : Value of the 'input' parameter
   Mean  : Arithmetic mean of all measurements

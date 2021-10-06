@@ -38,9 +38,21 @@ namespace ColumnDisplaySamples
 
         [Benchmark]
         [ArgumentsSource(nameof(ArgumentsSource_NotWrapped))]
-        public long NotWrapped(MemoryStream input) => input.Length;
+        public void NotWrapped(MemoryStream input)
+        {
+            input.Seek(0, SeekOrigin.Begin);
+            byte[] buffer = new byte[10];
+            while (input.Read(buffer, 0, buffer.Length) == buffer.Length) { }
+        }
+
         [Benchmark]
         [ArgumentsSource(nameof(ArgumentsSource_Wrapped))]
-        public long Wrapped(ParamWrapper<MemoryStream> input) => input.Value.Length;
+        public void Wrapped(ParamWrapper<MemoryStream> input)
+        {
+            MemoryStream stream = input.Value;
+            stream.Seek(0, SeekOrigin.Begin);
+            byte[] buffer = new byte[10];
+            while (stream.Read(buffer, 0, buffer.Length) == buffer.Length) { }
+        }
     }
 }
