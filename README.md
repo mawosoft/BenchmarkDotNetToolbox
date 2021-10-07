@@ -30,7 +30,7 @@ An assortment of classes to support benchmarking with [BenchmarkDotNet](https://
     <td>A wrapper and extension for <code>BenchmarkConverter</code>, collecting the converted benchmarks, executing them, and optionally overriding any global and local Job configurations.</td>
   </tr>
   <tr valign=top>
-    <td><code>ManualConfigExtensions</code></td>
+    <td><code>ConfigExtensions</code></td>
     <td>Extension methods for <code>ManualConfig</code> and <code>IConfig</code> in general. Amongst other things, they allow you to easily replace default columns with custom ones.</td>
   </tr>
   <tr valign=top>

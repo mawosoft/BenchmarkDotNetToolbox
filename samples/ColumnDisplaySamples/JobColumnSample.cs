@@ -45,7 +45,8 @@ namespace ColumnDisplaySamples
         // Same config as above, but now with JobColumnSelectionProvider
         // - "-all +Job" hides all job columns, then unhides the Job name column.
         //   Alternatively, we could also have used just  "-Run".
-        // - ReplaceColumnCategory is one of the new extension methods in ManualConfigExtensions.
+        // - ReplaceColumnCategory is one of the new extension methods in
+        //   Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.
         public new class SampleConfig : JobColumnSample1_RunModes.SampleConfig
         {
             public SampleConfig() : base() =>

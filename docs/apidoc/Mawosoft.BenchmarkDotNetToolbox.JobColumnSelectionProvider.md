@@ -36,7 +36,7 @@ ManualConfig config = ManualConfig.CreateEmpty()
 ```
 
 If you are modifying an existing config, use
-@"Mawosoft.BenchmarkDotNetToolbox.ManualConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.ColumnCategory,BenchmarkDotNet.Columns.IColumnProvider[])?text=ReplaceColumnCategory()",
+@"Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.ColumnCategory,BenchmarkDotNet.Columns.IColumnProvider[])?text=ReplaceColumnCategory()",
 one of the new config extension methods in *BenchmarkDotNetToolbox*.
 
 ```csharp
