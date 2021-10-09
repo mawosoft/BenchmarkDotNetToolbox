@@ -35,14 +35,13 @@ ManualConfig config = ManualConfig.CreateEmpty()
 
 
 If you are modifying an existing config, use
-@"Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.ColumnCategory,BenchmarkDotNet.Columns.IColumnProvider[])?text=ReplaceColumnCategory()",
+@"Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.IColumnProvider[])?text=ReplaceColumnCategory()",
 one of the new config extension methods in *BenchmarkDotNetToolbox*.
 
 ```csharp
 ManualConfig config = ManualConfig.Create(DefaultConfig.Instance)
     // Replace the default param columns with a new RecyclableParamsColumnProvider
-    .ReplaceColumnCategory(ColumnCategory.Params, 
-        new RecyclableParamsColumnProvider());
+    .ReplaceColumnCategory(new RecyclableParamsColumnProvider());
     // Make other changes to the config...
 ```
 

@@ -121,7 +121,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
                 Characteristic = characteristicFilter.Characteristic;
                 IColumn column = Column = characteristicFilter.Column ?? throw new ArgumentNullException(nameof(Column));
                 _hide = characteristicFilter.Hide;
-                if (_available = Column.IsAvailable(summary))
+                if ((_available = Column.IsAvailable(summary)) && summary != null)
                 {
                     _multiValue = summary.BenchmarksCases.Select(b => column.GetValue(summary, b)).Distinct().Count() > 1;
                 }

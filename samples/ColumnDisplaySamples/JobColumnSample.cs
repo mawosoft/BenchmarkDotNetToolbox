@@ -50,7 +50,7 @@ namespace ColumnDisplaySamples
         public new class SampleConfig : JobColumnSample1_RunModes.SampleConfig
         {
             public SampleConfig() : base() =>
-                this.ReplaceColumnCategory(ColumnCategory.Job,
+                this.ReplaceColumnCategory(
                     new JobColumnSelectionProvider("-all +Job", showHiddenValuesInLegend: true));
         }
     }
@@ -106,7 +106,7 @@ namespace ColumnDisplaySamples
         public new class SampleConfig : JobColumnSample2_Runtimes.SampleConfig
         {
             public SampleConfig() : base() =>
-                this.ReplaceColumnCategory(ColumnCategory.Job,
+                this.ReplaceColumnCategory(
                     new JobColumnSelectionProvider("-Job -Toolchain", showHiddenValuesInLegend: false));
         }
     }

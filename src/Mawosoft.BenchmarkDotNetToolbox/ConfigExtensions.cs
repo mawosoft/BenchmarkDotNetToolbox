@@ -2,9 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Analysers;
 using BenchmarkDotNet.Columns;
@@ -24,16 +22,21 @@ namespace Mawosoft.BenchmarkDotNetToolbox
     public static class ConfigExtensions
     {
         /// <summary>
-        /// Replaces existing columns belonging to the same category or categories as <b>newColumns</b>
+        /// Replaces existing columns belonging to the same category or categories as <i>newColumns</i>
         /// with the given new ones.
         /// </summary>
         /// <returns>The existing <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig ReplaceColumnCategory(this ManualConfig config, params IColumn[] newColumns)
-            => config.RemoveColumnsByCategory(newColumns.Select(c => c.Category).Distinct().ToArray())
-                     .AddColumn(newColumns);
+        {
+            ColumnCategoryExtensions.RemoveColumnsByCategory(
+                AsList(config.GetColumnProviders()),
+                newColumns.Select(c => c.GetExtendedColumnCategory()).Distinct()
+                );
+            return config.AddColumn(newColumns);
+        }
 
         /// <summary>
-        /// Replaces existing columns belonging to the same category or categories as <b>newColumns</b>
+        /// Replaces existing columns belonging to the same category or categories as <i>newColumns</i>
         /// with the given new ones.
         /// </summary>
         /// <returns>A new instance of <see cref="ManualConfig"/> with changes applied.</returns>
@@ -41,27 +44,38 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             => ManualConfig.Create(config).ReplaceColumnCategory(newColumns);
 
         /// <summary>
-        /// Replaces existing columns of the specified category with the given new ColumnProviders.
+        /// Replaces existing columns belonging to the same category or categories as <i>newColumnProviders</i>
+        /// with the given new ones.
         /// </summary>
         /// <returns>The existing <see cref="ManualConfig"/> with changes applied.</returns>
-        public static ManualConfig ReplaceColumnCategory(this ManualConfig config, ColumnCategory columnCategory,
+        public static ManualConfig ReplaceColumnCategory(this ManualConfig config,
                                                          params IColumnProvider[] newColumnProviders)
-            => config.RemoveColumnsByCategory(columnCategory).AddColumnProvider(newColumnProviders);
+        {
+            ColumnCategoryExtensions.RemoveColumnsByCategory(
+                AsList(config.GetColumnProviders()),
+                newColumnProviders.SelectMany(cp => cp.GetExtendedColumnCategories()).Distinct()
+                );
+            return config.AddColumnProvider(newColumnProviders);
+        }
 
         /// <summary>
-        /// Replaces existing columns of the specified category with the given new ColumnProviders.
+        /// Replaces existing columns belonging to the same category or categories as <i>newColumnProviders</i>
+        /// with the given new ones.
         /// </summary>
         /// <returns>A new instance of <see cref="ManualConfig"/> with changes applied.</returns>
-        public static ManualConfig ReplaceColumnCategory(this IConfig config, ColumnCategory columnCategory,
+        public static ManualConfig ReplaceColumnCategory(this IConfig config,
                                                          params IColumnProvider[] newColumnProviders)
-            => ManualConfig.Create(config).ReplaceColumnCategory(columnCategory, newColumnProviders);
+            => ManualConfig.Create(config).ReplaceColumnCategory(newColumnProviders);
 
         /// <summary>Removes existing columns of the specified category or categories.</summary>
         /// <returns>The existing <see cref="ManualConfig"/> with changes applied.</returns>
-        public static ManualConfig RemoveColumnsByCategory(this ManualConfig config, params ColumnCategory[] categories)
+        public static ManualConfig RemoveColumnsByCategory(this ManualConfig config,
+                                                           params ColumnCategory[] categories)
         {
-            List<IColumnProvider> providers = AsList(config.GetColumnProviders());
-            RemoveColumnsByCategoryCore(providers, categories);
+            ColumnCategoryExtensions.RemoveColumnsByCategory(
+                AsList(config.GetColumnProviders()),
+                categories.Select(c => c.ToExtended())
+                );
             return config;
         }
 
@@ -207,86 +221,5 @@ namespace Mawosoft.BenchmarkDotNetToolbox
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void ClearHashSet<T>(IEnumerable<T> enumerable) => AsHashSet(enumerable).Clear();
-
-
-        private static readonly Type[] s_nonReplacableColumns = {
-            // TargetMethodColumn belongs to ColumnCategory.Job, but should not be replaced.
-            typeof(TargetMethodColumn)
-        };
-
-        // Maps known ColumnProviders (which don't report a ColumnCategory) to ColumnCategory
-        private static readonly Lazy<(Type type, ColumnCategory category)[]> s_knownColumnProviders = new(() => new[] {
-            (DefaultColumnProviders.Job.GetType(), ColumnCategory.Job),
-            (DefaultColumnProviders.Statistics.GetType(), ColumnCategory.Statistics),
-            (DefaultColumnProviders.Params.GetType(), ColumnCategory.Params),
-            (DefaultColumnProviders.Metrics.GetType(), ColumnCategory.Metric),
-            (typeof(RecyclableParamsColumnProvider), ColumnCategory.Params),
-            (typeof(JobColumnSelectionProvider), ColumnCategory.Job),
-        });
-
-        private static void RemoveColumnsByCategoryCore(List<IColumnProvider> providers, ColumnCategory[] categories)
-        {
-            for (int i = providers.Count - 1; i >= 0; i--)
-            {
-                bool remove = false;
-                IColumnProvider provider = providers[i];
-                Type providerType = provider.GetType();
-                (Type type, ColumnCategory category) =
-                    s_knownColumnProviders.Value.FirstOrDefault(item => item.type == providerType);
-                if (providerType == type)
-                {
-                    if (categories.Contains(category))
-                    {
-                        remove = true;
-                    }
-                }
-                else if (providerType == typeof(SimpleColumnProvider))
-                {
-                    FieldInfo? columnsField = typeof(SimpleColumnProvider).GetField("columns",
-                        BindingFlags.Instance | BindingFlags.NonPublic);
-                    Debug.Assert(columnsField != null);
-                    IColumn[]? columns = (columnsField?.GetValue(provider) as IColumn[])?
-                        .Where(col => s_nonReplacableColumns.Contains(col.GetType())
-                               || !categories.Contains(col.Category))
-                        .ToArray();
-                    if (columns != null)
-                    {
-                        if (columns.Length == 0)
-                        {
-                            remove = true;
-                        }
-                        else
-                        {
-                            columnsField!.SetValue(provider, columns);
-                        }
-                    }
-
-                }
-                else if (providerType == typeof(CompositeColumnProvider))
-                {
-                    FieldInfo? providersField = typeof(CompositeColumnProvider).GetField("providers",
-                        BindingFlags.Instance | BindingFlags.NonPublic);
-                    Debug.Assert(providersField != null);
-                    List<IColumnProvider>? subProviders =
-                        (providersField?.GetValue(provider) as IColumnProvider[])?.ToList();
-                    if (subProviders != null)
-                    {
-                        RemoveColumnsByCategoryCore(subProviders, categories);
-                        if (subProviders.Count == 0)
-                        {
-                            remove = true;
-                        }
-                        else
-                        {
-                            providersField!.SetValue(provider, subProviders.ToArray());
-                        }
-                    }
-                }
-                if (remove)
-                {
-                    providers.RemoveAt(i);
-                }
-            }
-        }
     }
 }

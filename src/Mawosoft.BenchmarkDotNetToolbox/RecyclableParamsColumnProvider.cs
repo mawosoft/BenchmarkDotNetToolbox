@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2021 Matthias Wolf, Mawosoft.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -28,6 +29,10 @@ namespace Mawosoft.BenchmarkDotNetToolbox
 
         public IEnumerable<IColumn> GetColumns(Summary summary)
         {
+            if (summary == null || summary.BenchmarksCases.Length == 0)
+            {
+                return Array.Empty<IColumn>();
+            }
             int maxParamCount = summary.BenchmarksCases.Max(b => b.Parameters.Count);
             List<IColumn> columns = new(maxParamCount);
             for (int paramIndex = 0; paramIndex < maxParamCount; paramIndex++)

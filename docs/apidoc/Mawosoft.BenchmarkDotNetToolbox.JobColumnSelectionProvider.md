@@ -36,14 +36,13 @@ ManualConfig config = ManualConfig.CreateEmpty()
 ```
 
 If you are modifying an existing config, use
-@"Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.ColumnCategory,BenchmarkDotNet.Columns.IColumnProvider[])?text=ReplaceColumnCategory()",
+@"Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.IColumnProvider[])?text=ReplaceColumnCategory()",
 one of the new config extension methods in *BenchmarkDotNetToolbox*.
 
 ```csharp
 ManualConfig config = ManualConfig.Create(DefaultConfig.Instance)
     // Replace the default job columns with a new JobColumnSelectionProvider
-    .ReplaceColumnCategory(ColumnCategory.Job,
-        new JobColumnSelectionProvider("-all +Job", true));
+    .ReplaceColumnCategory(new JobColumnSelectionProvider("-all +Job", true));
     // Make other changes to the config...
 ```
 

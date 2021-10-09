@@ -80,7 +80,7 @@ namespace ColumnDisplaySamples
         public new class SampleConfig : ParamColumnSample.SampleConfig
         {
             public SampleConfig() : base() =>
-                this.ReplaceColumnCategory(ColumnCategory.Params, new RecyclableParamsColumnProvider());
+                this.ReplaceColumnCategory(new RecyclableParamsColumnProvider());
         }
     }
 
@@ -93,8 +93,7 @@ namespace ColumnDisplaySamples
         public new class SampleConfig : ParamColumnSample.SampleConfig
         {
             public SampleConfig() : base() =>
-                this.ReplaceColumnCategory(ColumnCategory.Params,
-                    new RecyclableParamsColumnProvider(tryKeepParamName: false));
+                this.ReplaceColumnCategory(new RecyclableParamsColumnProvider(tryKeepParamName: false));
         }
     }
 }
