@@ -98,7 +98,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
         /// with the conditional <c>DEBUG</c> symbol defined.
         /// </summary>
         [Conditional("DEBUG")]
-        public void DebugDefaultOverrideJob() => OverrideJob = FastInProcessJob;
+        public void DebugUseDefaultOverrideJob() => OverrideJob = FastInProcessJob;
 
         /// <summary>
         /// Converts all types with benchmarks in the given assembly and stores the results.
