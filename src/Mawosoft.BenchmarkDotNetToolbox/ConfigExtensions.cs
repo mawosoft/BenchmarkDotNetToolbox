@@ -17,12 +17,13 @@ using BenchmarkDotNet.Validators;
 namespace Mawosoft.BenchmarkDotNetToolbox
 {
     /// <summary>
-    /// Extension methods for <see cref="ManualConfig"/> and <see cref="IConfig"/> in general.
+    /// <see cref="ManualConfig"/> and <see cref="IConfig"/> extension methods for replacing parts
+    /// of an existing config - for example, default columns with custom ones.
     /// </summary>
     public static class ConfigExtensions
     {
         /// <summary>
-        /// Replaces existing columns belonging to the same category or categories as <i>newColumns</i>
+        /// Replaces existing columns belonging to the same category or categories as <c>newColumns</c>
         /// with the given new ones.
         /// </summary>
         /// <returns>The existing <see cref="ManualConfig"/> with changes applied.</returns>
@@ -36,7 +37,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
         }
 
         /// <summary>
-        /// Replaces existing columns belonging to the same category or categories as <i>newColumns</i>
+        /// Replaces existing columns belonging to the same category or categories as <c>newColumns</c>
         /// with the given new ones.
         /// </summary>
         /// <returns>A new instance of <see cref="ManualConfig"/> with changes applied.</returns>
@@ -44,7 +45,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             => ManualConfig.Create(config).ReplaceColumnCategory(newColumns);
 
         /// <summary>
-        /// Replaces existing columns belonging to the same category or categories as <i>newColumnProviders</i>
+        /// Replaces existing columns belonging to the same category or categories as <c>newColumnProviders</c>
         /// with the given new ones.
         /// </summary>
         /// <returns>The existing <see cref="ManualConfig"/> with changes applied.</returns>
@@ -59,7 +60,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
         }
 
         /// <summary>
-        /// Replaces existing columns belonging to the same category or categories as <i>newColumnProviders</i>
+        /// Replaces existing columns belonging to the same category or categories as <c>newColumnProviders</c>
         /// with the given new ones.
         /// </summary>
         /// <returns>A new instance of <see cref="ManualConfig"/> with changes applied.</returns>

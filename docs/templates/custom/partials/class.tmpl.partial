@@ -10,11 +10,11 @@
   <span class="divider">|</span>
   <a href="{{docurl}}">{{__global.improveThisDoc}}</a>
 </span>{{/docurl}}
+{{/_disableContribution}}
 {{#sourceurl}}
 <span class="small pull-right mobile-hide">
   <a href="{{sourceurl}}">{{__global.viewSource}}</a>
 </span>{{/sourceurl}}
-{{/_disableContribution}}
 {{#overload}}
 <a id="{{id}}" data-uid="{{uid}}"></a>
 {{/overload}}

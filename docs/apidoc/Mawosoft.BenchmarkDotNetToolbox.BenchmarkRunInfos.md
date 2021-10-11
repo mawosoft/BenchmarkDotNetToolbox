@@ -29,6 +29,10 @@ to your `Main` method that will get executed under certain conditions.
 
 ---
 uid: Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos
+seealso:
+- linkType: HRef
+  linkId: https://github.com/mawosoft/BenchmarkDotNetToolbox/tree/master/samples
+  altText: BenchmarkRunInfos Sample on GitHub
 example:
 - *content
 ---
@@ -42,7 +46,8 @@ public static void Main(string[] args)
     {
         // Debugging scenario
         BenchmarkRunInfos runInfos = new();
-        runInfos.Config = config;
+        runInfos.Config = config
+            .WithOption(ConfigOptions.DisableOptimizationsValidator, true);
         runInfos.OverrideJob = BenchmarkRunInfos.FastInProcessJob;
         // Pick only the methods you want to debug
         runInfos.ConvertMethodsToBenchmarks(typeof(MyClass1), "Method1", "Method2");
@@ -64,7 +69,7 @@ syntax:
     - id: globalConfig
       description: The global config to use for conversions, or `null` to use BenchmarkDotNet\'s default config.
     - id: overrideJob
-      description: The override job to use or `null` to not use an override job at all.
+      description: The override job to use, or `null` to not use an override job at all.
 remarks: *content
 ---
 You can change the @"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.Config" and @"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.OverrideJob"
@@ -95,7 +100,7 @@ property at any time. This will not affect any benchmarks already converted, onl
 uid: Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.OverrideJob
 syntax:
     return:
-        description: The override job to use or `null` to not use an override job at all.
+        description: The override job to use, or `null` to not use an override job at all.
 remarks: *content
 ---
 You can change the @"Mawosoft.BenchmarkDotNetToolbox.BenchmarkRunInfos.OverrideJob"

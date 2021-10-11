@@ -57,7 +57,8 @@
             "_appFooter": "Copyright &copy; 2021 Matthias Wolf, Mawosoft",
             "_enableSearch": true,
             "_enableNewTab": true,
-            "_gitContribute": { "apiSpecFolder": "/docs/apidoc" }
+            // Templates changed to affect contribution only, but not "view source".
+            "_disableContribution": true
         },
         "globalMetadataFiles": [],
         "fileMetadataFiles": [],

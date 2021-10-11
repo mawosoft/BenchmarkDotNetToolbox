@@ -31,11 +31,11 @@ An assortment of classes to support benchmarking with [BenchmarkDotNet](https://
   </tr>
   <tr valign=top>
     <td><code>ConfigExtensions</code></td>
-    <td>Extension methods for <code>ManualConfig</code> and <code>IConfig</code> in general. Amongst other things, they allow you to easily replace default columns with custom ones.</td>
+    <td><code>ManualConfig</code> and <code>IConfig</code> extension methods for replacing parts of an existing config - for example, default columns with custom ones.</td>
   </tr>
   <tr valign=top>
     <td><code>WhatifFilter</code></td>
-    <td>A filter that allows you to see results of a particular BechmarkDotnet configuration without actually running the benchmarks.</td>
+    <td>A filter that can present the results of a particular *BechmarkDotnet* configuration without actually running the benchmarks.</td>
   </tr></tbody>
 </table>
 

@@ -1,4 +1,45 @@
 ---
+uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions
+seealso:
+- linkType: HRef
+  linkId: https://github.com/mawosoft/BenchmarkDotNetToolbox/tree/master/samples
+  altText: Config Extension Samples and Column Display Samples on GitHub
+---
+When building a config in *BenchmarkDotNet* to run your benchmarks, there are essentially two ways of doing it:
+- You can start from scratch with an empty config and most likely end up forgetting to add some essential item.
+- You can use the predefined
+@"BenchmarkDotNet.Configs.DefaultConfig.Instance?displayProperty=nameWithType"
+and probably get some ingredients you don't have any use for, but which are hard to get rid of
+once they are part of the config.
+
+This is where these extensions come in handy. You can use the default config - or any other preexisting one -
+and replace parts of it. Don't like the default three exporters (HTML, CSV, GitHub Markdown) and prefer the leaner
+Console Markdown exporter?
+```csharp
+ManualConfig config = DefaultConfig.Instance.ReplaceExporters(MarkdownExporter.Console);
+```
+
+Only want the statistical Mean column, not all the other ones, like StdDev and Error?
+```csharp
+ManualConfig config = DefaultConfig.Instance.ReplaceColumnCategory(StatisticColumn.Mean);
+```
+
+Which of course leads to the custom columns that are part of *BenchmarkDotNetToolbox*:
+```csharp
+ManualConfig config = DefaultConfig.Instance.ReplaceColumnCategory(
+    new JobColumnSelectionProvider("-run +runstrategy"),
+    new RecyclableParamsColumnProvider()
+    );
+```
+
+> [!Note]
+> When you use the extensions with a @"BenchmarkDotNet.Configs.ManualConfig", that config is modified and returned.
+>
+> When you use the extensions with any other @"BenchmarkDotNet.Configs.IConfig" (as in the examples above), the source config
+> remains untouched and a new instance of @"BenchmarkDotNet.Configs.ManualConfig" with the changes applied is returned.
+
+
+---
 uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.IColumn[])
 syntax:
     parameters:

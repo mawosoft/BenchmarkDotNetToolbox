@@ -1,5 +1,7 @@
-# Welcome
+---
+title: Welcome
+---
 
-This is still a work-in-progress.
+# BenchmarkDotNet Toolbox
 
-Click API documentation to see some of it.
+[API Documentation](api/Mawosoft.BenchmarkDotNetToolbox.yml)

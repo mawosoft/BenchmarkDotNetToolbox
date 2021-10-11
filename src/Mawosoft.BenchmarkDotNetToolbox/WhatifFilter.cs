@@ -20,31 +20,19 @@ using BenchmarkDotNet.Validators;
 namespace Mawosoft.BenchmarkDotNetToolbox
 {
     /// <summary>
-    /// This filter allows you to see results of a particular BechmarkDotnet configuration without actually
+    /// A filter that can present the results of a particular <i>BechmarkDotnet configuration</i> without actually
     /// running the benchmarks.
     /// </summary>
-    /// <remarks>
-    /// <para>The term 'configuration' here refers to the interplay of global and local configs, attribute
-    /// annotations, and console arguments. The filter can be controlled programmatically with the
-    /// <see cref="Enabled"/> property or by using <see cref="PreparseConsoleArguments"/> to scan the command
-    /// line for the option <b>--whatif</b> (short: <b>-w</b>). </para>
-    /// <para>If enabled, the filter will collect all benchmark cases produced by <see cref="BenchmarkRunner"/>,
-    /// <see cref="BenchmarkSwitcher"/> or <see cref="BenchmarkConverter"/> and suppress their actual execution.
-    /// </para>
-    /// <para>The properties <see cref="FilteredBenchmarkCases"/> and <see cref="FilteredBenchmarkRunInfos"/>
-    /// can be used to access the collected benchmarks cases.</para>
-    /// <para>With <see cref="PrintAsSummaries"/> you can output them to the console or another logger.</para>
-    /// 
-    /// </remarks>
     public class WhatifFilter : IFilter
     {
         private readonly List<BenchmarkCase> _filteredBenchmarkCases = new();
         private string[]? _consoleArguments = null;
 
         /// <summary>
-        /// Gets or sets the filter's Enabled state. When true, the filter will suppress the actual execution
-        /// of benchmarks via <see cref="BenchmarkRunner"/> or related classes, and will collect them instead.
-        /// When false, the filter will not have any effect.
+        /// Gets or sets the filter's Enabled state. If <c>true</c>, the filter is enabled and will suppress
+        /// the actual execution of benchmarks via <see cref="BenchmarkRunner"/> or related classes,
+        /// and will collect them instead.
+        /// If <c>false</c>, the filter is disabled and will not have any effect.
         /// </summary>
         public bool Enabled { get; set; }
 
@@ -61,12 +49,12 @@ namespace Mawosoft.BenchmarkDotNetToolbox
             .Select(g => new BenchmarkRunInfo(g.ToArray(), g.First().Descriptor.Type, g.First().Config));
 
         /// <summary>
-        /// Preparses the console arguments for the option <b>--whatif</b> (short: <b>-w</b>) and automatically
+        /// Preparses the console arguments for the option <c>--whatif</c> (short: <c>-w</c>) and automatically
         /// enables the filter if the option is present.
         /// </summary>
-        /// <param name="args">The array of console arguments as passed to the <b>Main</b> method of your
+        /// <param name="args">The array of console arguments as passed to the <c>Main</c> method of the
         /// application.</param>
-        /// <returns>The passed in array of console arguments with the <b>--whatif</b> option removed.</returns>
+        /// <returns>The passed in array of console arguments with the <c>--whatif</c> option removed.</returns>
         public string[] PreparseConsoleArguments(string[] args)
         {
             Enabled = false;
@@ -172,7 +160,7 @@ namespace Mawosoft.BenchmarkDotNetToolbox
         }
 
         /// <summary>
-        /// Called internally by <see cref="BenchmarkRunner"/> and related classes.
+        /// <see cref="IFilter"/> implementation.
         /// </summary>
         public bool Predicate(BenchmarkCase benchmarkCase)
         {
