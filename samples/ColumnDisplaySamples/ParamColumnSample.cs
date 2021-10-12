@@ -6,7 +6,7 @@ using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Toolchains.InProcess.Emit;
-using Mawosoft.BenchmarkDotNetToolbox;
+using Mawosoft.Extensions.BenchmarkDotNet;
 
 namespace ColumnDisplaySamples
 {
@@ -46,8 +46,7 @@ namespace ColumnDisplaySamples
         public override string SampleVariantDescription => "with CombinedParamsColumn() // default formatting";
         // Same config as above, but now with CombinedParamsColumn and a wider column width since all params
         // are displayed in the same column.
-        // - ReplaceColumnCategory is one of the new extension methods in
-        //   Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.
+        // - ReplaceColumnCategory is one of the new extension methods in this library.
         public new class SampleConfig : ParamColumnSample.SampleConfig
         {
             public SampleConfig() : base() =>

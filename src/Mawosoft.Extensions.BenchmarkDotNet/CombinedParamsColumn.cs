@@ -6,7 +6,7 @@ using BenchmarkDotNet.Parameters;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
 
-namespace Mawosoft.BenchmarkDotNetToolbox
+namespace Mawosoft.Extensions.BenchmarkDotNet
 {
     /// <summary>
     /// An alternative to <see cref="DefaultColumnProviders.Params"/> that displays all parameters in a single,

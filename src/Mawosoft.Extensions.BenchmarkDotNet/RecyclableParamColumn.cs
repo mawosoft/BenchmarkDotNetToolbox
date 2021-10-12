@@ -7,7 +7,7 @@ using BenchmarkDotNet.Parameters;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
 
-namespace Mawosoft.BenchmarkDotNetToolbox
+namespace Mawosoft.Extensions.BenchmarkDotNet
 {
     /// <summary>
     /// Internal class used by <see cref="RecyclableParamsColumnProvider"/>

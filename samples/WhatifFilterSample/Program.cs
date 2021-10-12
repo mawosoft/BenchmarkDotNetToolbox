@@ -7,7 +7,7 @@ using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
-using Mawosoft.BenchmarkDotNetToolbox;
+using Mawosoft.Extensions.BenchmarkDotNet;
 
 namespace WhatifFilterSample
 {

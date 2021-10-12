@@ -18,7 +18,7 @@ using BenchmarkDotNet.Toolchains;
 using BenchmarkDotNet.Toolchains.Results;
 using BenchmarkDotNet.Validators;
 
-namespace Mawosoft.BenchmarkDotNetToolbox
+namespace Mawosoft.Extensions.BenchmarkDotNet
 {
     internal static class ColumnCategoryExtensions
     {

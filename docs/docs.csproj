@@ -1,4 +1,4 @@
-﻿<Project>
+<Project>
 
   <!-- With explicit import of Sdk.targets, we can't use the Sdk attr on <Project> and instead
        have to explicit import Sdk.props as well. -->
@@ -20,8 +20,8 @@
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 
   <!-- Notes:
-    - A <ProjectReference> to BenchmarkDotNetToolbox is not necessary (and wouldn't work with the
-      overwritten default targets anyway).
+    - A <ProjectReference> to Mawosoft.Extensions.BenchmarkDotNet is not necessary (and wouldn't work
+      with the overwritten default targets anyway).
     - DocFx only needs the csproj provided via docfx.json and the related source files, not the
       binaries, to convert triple-slash comments into API docs and gather all internal and external
       references.

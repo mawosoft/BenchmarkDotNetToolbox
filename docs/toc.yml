@@ -3,4 +3,4 @@
   topicHref: index.md
 - name: API Documentation
   href: api/
-  topicHref: api/Mawosoft.BenchmarkDotNetToolbox.yml
+  topicHref: api/Mawosoft.Extensions.BenchmarkDotNet.yml

@@ -3,7 +3,7 @@
 using System;
 using BenchmarkDotNet.Parameters;
 
-namespace Mawosoft.BenchmarkDotNetToolbox
+namespace Mawosoft.Extensions.BenchmarkDotNet
 {
     /// <summary>
     /// A generic wrapper to associate strongly typed parameter or argument values with a display text.

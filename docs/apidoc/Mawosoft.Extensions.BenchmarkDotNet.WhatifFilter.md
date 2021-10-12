@@ -1,15 +1,15 @@
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.WhatifFilter
+uid: Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter
 seealso:
 - linkType: HRef
-  linkId: https://github.com/mawosoft/BenchmarkDotNetToolbox/tree/master/samples
+  linkId: https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/tree/master/samples
   altText: What-If Filter Sample on GitHub
 ---
 A *configuration* is the interplay of console arguments, global and local configs, and attributes.
 The `WhatifFilter` can be controlled either programmatically via the 
-@"Mawosoft.BenchmarkDotNetToolbox.WhatifFilter.Enabled" property, or by using
+@"Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter.Enabled" property, or by using
 the `--whatif` option (short: `-w`) on the command line and passing the console arguments through
-@"Mawosoft.BenchmarkDotNetToolbox.WhatifFilter.PreparseConsoleArguments(System.String[])?text=PreparseConsoleArguments()".
+@"Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter.PreparseConsoleArguments(System.String[])?text=PreparseConsoleArguments()".
 
 If enabled, the filter will collect all benchmark cases created by
 @"BenchmarkDotNet.Running.BenchmarkRunner",
@@ -17,14 +17,14 @@ If enabled, the filter will collect all benchmark cases created by
 or @"BenchmarkDotNet.Running.BenchmarkConverter"
 and suppress their execution.
 
-The properties @"Mawosoft.BenchmarkDotNetToolbox.WhatifFilter.FilteredBenchmarkCases"
-and @"Mawosoft.BenchmarkDotNetToolbox.WhatifFilter.FilteredBenchmarkRunInfos"
+The properties @"Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter.FilteredBenchmarkCases"
+and @"Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter.FilteredBenchmarkRunInfos"
 provide access to the collected benchmarks,
-while @"Mawosoft.BenchmarkDotNetToolbox.WhatifFilter.PrintAsSummaries(BenchmarkDotNet.Loggers.ILogger)?text=PrintAsSummaries()"
+while @"Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter.PrintAsSummaries(BenchmarkDotNet.Loggers.ILogger)?text=PrintAsSummaries()"
 can output them to the console or another logger.
 
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.WhatifFilter
+uid: Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter
 example:
 - *content
 ---
@@ -52,7 +52,7 @@ public static void Main(string[] args)
 ```
 
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.WhatifFilter.Enabled
+uid: Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter.Enabled
 summary: Gets or sets the filter's *Enabled* state.
 syntax:
     return:
@@ -62,34 +62,34 @@ syntax:
         If <code>false</code>, the filter is disabled and will not have any effect.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.WhatifFilter.FilteredBenchmarkCases
+uid: Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter.FilteredBenchmarkCases
 syntax:
     return:
       description: The collection of the filtered, individual benchmark cases.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.WhatifFilter.FilteredBenchmarkRunInfos
+uid: Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter.FilteredBenchmarkRunInfos
 syntax:
     return:
       description: The collection of the filtered, grouped benchmark cases.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.WhatifFilter.PreparseConsoleArguments(System.String[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter.PreparseConsoleArguments(System.String[])
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.WhatifFilter.Clear(System.Boolean)
+uid: Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter.Clear(System.Boolean)
 syntax:
     parameters:
     - id: dispose
       description: "`true` to dispose all benchmarks, `false` to only remove them from the list without disposal."
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.WhatifFilter.PrintAsSummaries(BenchmarkDotNet.Loggers.ILogger)
+uid: Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter.PrintAsSummaries(BenchmarkDotNet.Loggers.ILogger)
 syntax:
     parameters:
     - id: logger
       description: The logger to use for printing the summaries.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.WhatifFilter.Predicate(BenchmarkDotNet.Running.BenchmarkCase)
+uid: Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter.Predicate(BenchmarkDotNet.Running.BenchmarkCase)
 ---

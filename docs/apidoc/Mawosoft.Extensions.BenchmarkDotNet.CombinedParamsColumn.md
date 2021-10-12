@@ -1,9 +1,9 @@
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.CombinedParamsColumn
+uid: Mawosoft.Extensions.BenchmarkDotNet.CombinedParamsColumn
 summary: An alternative to @"BenchmarkDotNet.Columns.DefaultColumnProviders.Params?displayProperty=nameWithType" that displays all parameters in a single, customizable column.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.CombinedParamsColumn.#ctor(System.String,System.String,System.String,System.String)
+uid: Mawosoft.Extensions.BenchmarkDotNet.CombinedParamsColumn.#ctor(System.String,System.String,System.String,System.String)
 syntax:
     content: public CombinedParamsColumn(string formatNameValue = "{0}={1}", string separator = ", ", string prefix = "", string suffix = "")
     parameters:
@@ -23,7 +23,7 @@ example:
 - *content
 seealso:
 - linkType: HRef
-  linkId: https://github.com/mawosoft/BenchmarkDotNetToolbox/tree/master/samples
+  linkId: https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/tree/master/samples
   altText: Column Display Samples on GitHub
 ---
 
@@ -40,8 +40,8 @@ ManualConfig config = ManualConfig.CreateEmpty()
 ```
 
 If you are modifying an existing config, use
-@"Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.IColumn[])?text=ReplaceColumnCategory()",
-one of the new config extension methods in *BenchmarkDotNetToolbox*.
+@"Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.IColumn[])?text=ReplaceColumnCategory()",
+one of the new config extension methods in this library.
 
 ```csharp
 ManualConfig config = ManualConfig.Create(DefaultConfig.Instance)
@@ -132,50 +132,50 @@ WarmupCount=1
 
 
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.CombinedParamsColumn.AlwaysShow
+uid: Mawosoft.Extensions.BenchmarkDotNet.CombinedParamsColumn.AlwaysShow
 summary: '@"BenchmarkDotNet.Columns.IColumn" implementation.'
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.CombinedParamsColumn.Category
+uid: Mawosoft.Extensions.BenchmarkDotNet.CombinedParamsColumn.Category
 summary: '@"BenchmarkDotNet.Columns.IColumn" implementation.'
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.CombinedParamsColumn.ColumnName
+uid: Mawosoft.Extensions.BenchmarkDotNet.CombinedParamsColumn.ColumnName
 summary: '@"BenchmarkDotNet.Columns.IColumn" implementation.'
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.CombinedParamsColumn.GetValue(BenchmarkDotNet.Reports.Summary,BenchmarkDotNet.Running.BenchmarkCase)
+uid: Mawosoft.Extensions.BenchmarkDotNet.CombinedParamsColumn.GetValue(BenchmarkDotNet.Reports.Summary,BenchmarkDotNet.Running.BenchmarkCase)
 summary: '@"BenchmarkDotNet.Columns.IColumn" implementation.'
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.CombinedParamsColumn.GetValue(BenchmarkDotNet.Reports.Summary,BenchmarkDotNet.Running.BenchmarkCase,BenchmarkDotNet.Reports.SummaryStyle)
+uid: Mawosoft.Extensions.BenchmarkDotNet.CombinedParamsColumn.GetValue(BenchmarkDotNet.Reports.Summary,BenchmarkDotNet.Running.BenchmarkCase,BenchmarkDotNet.Reports.SummaryStyle)
 summary: '@"BenchmarkDotNet.Columns.IColumn" implementation.'
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.CombinedParamsColumn.Id
+uid: Mawosoft.Extensions.BenchmarkDotNet.CombinedParamsColumn.Id
 summary: '@"BenchmarkDotNet.Columns.IColumn" implementation.'
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.CombinedParamsColumn.IsAvailable(BenchmarkDotNet.Reports.Summary)
+uid: Mawosoft.Extensions.BenchmarkDotNet.CombinedParamsColumn.IsAvailable(BenchmarkDotNet.Reports.Summary)
 summary: '@"BenchmarkDotNet.Columns.IColumn" implementation.'
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.CombinedParamsColumn.IsDefault(BenchmarkDotNet.Reports.Summary,BenchmarkDotNet.Running.BenchmarkCase)
+uid: Mawosoft.Extensions.BenchmarkDotNet.CombinedParamsColumn.IsDefault(BenchmarkDotNet.Reports.Summary,BenchmarkDotNet.Running.BenchmarkCase)
 summary: '@"BenchmarkDotNet.Columns.IColumn" implementation.'
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.CombinedParamsColumn.IsNumeric
+uid: Mawosoft.Extensions.BenchmarkDotNet.CombinedParamsColumn.IsNumeric
 summary: '@"BenchmarkDotNet.Columns.IColumn" implementation.'
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.CombinedParamsColumn.Legend
+uid: Mawosoft.Extensions.BenchmarkDotNet.CombinedParamsColumn.Legend
 summary: '@"BenchmarkDotNet.Columns.IColumn" implementation.'
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.CombinedParamsColumn.PriorityInCategory
+uid: Mawosoft.Extensions.BenchmarkDotNet.CombinedParamsColumn.PriorityInCategory
 summary: '@"BenchmarkDotNet.Columns.IColumn" implementation.'
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.CombinedParamsColumn.UnitType
+uid: Mawosoft.Extensions.BenchmarkDotNet.CombinedParamsColumn.UnitType
 summary: '@"BenchmarkDotNet.Columns.IColumn" implementation.'
 ---

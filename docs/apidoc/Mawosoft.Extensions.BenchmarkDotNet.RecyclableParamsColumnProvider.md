@@ -1,9 +1,9 @@
 ﻿---
-uid: Mawosoft.BenchmarkDotNetToolbox.RecyclableParamsColumnProvider
+uid: Mawosoft.Extensions.BenchmarkDotNet.RecyclableParamsColumnProvider
 summary: An alternative to @"BenchmarkDotNet.Columns.DefaultColumnProviders.Params?displayProperty=nameWithType" that displays parameters in recyclable columns corresponding to parameter position rather than name.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.RecyclableParamsColumnProvider.#ctor(System.Boolean,System.String)
+uid: Mawosoft.Extensions.BenchmarkDotNet.RecyclableParamsColumnProvider.#ctor(System.Boolean,System.String)
 syntax:
     parameters:
     - id: tryKeepParamName
@@ -17,7 +17,7 @@ example:
 - *content
 seealso:
 - linkType: HRef
-  linkId: https://github.com/mawosoft/BenchmarkDotNetToolbox/tree/master/samples
+  linkId: https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/tree/master/samples
   altText: Column Display Samples on GitHub
 ---
 
@@ -35,8 +35,8 @@ ManualConfig config = ManualConfig.CreateEmpty()
 
 
 If you are modifying an existing config, use
-@"Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.IColumnProvider[])?text=ReplaceColumnCategory()",
-one of the new config extension methods in *BenchmarkDotNetToolbox*.
+@"Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.IColumnProvider[])?text=ReplaceColumnCategory()",
+one of the new config extension methods in this library.
 
 ```csharp
 ManualConfig config = ManualConfig.Create(DefaultConfig.Instance)
@@ -122,6 +122,6 @@ WarmupCount=1
 
 
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.RecyclableParamsColumnProvider.GetColumns(BenchmarkDotNet.Reports.Summary)
+uid: Mawosoft.Extensions.BenchmarkDotNet.RecyclableParamsColumnProvider.GetColumns(BenchmarkDotNet.Reports.Summary)
 summary: '@"BenchmarkDotNet.Columns.IColumnProvider" implementation.'
 ---

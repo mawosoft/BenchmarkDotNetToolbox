@@ -3,11 +3,11 @@
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <Description>Samples for BenchmarkDotNetToolbox</Description>
+    <Description>Samples for Mawosoft.Extensions.BenchmarkDotNet</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Mawosoft.BenchmarkDotNetToolbox\Mawosoft.BenchmarkDotNetToolbox.csproj" />
+    <ProjectReference Include="..\..\src\Mawosoft.Extensions.BenchmarkDotNet\Mawosoft.Extensions.BenchmarkDotNet.csproj" />
   </ItemGroup>
 
   <ItemGroup>

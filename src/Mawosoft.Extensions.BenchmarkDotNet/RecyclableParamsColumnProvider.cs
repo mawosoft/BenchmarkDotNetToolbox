@@ -7,7 +7,7 @@ using System.Linq;
 using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Reports;
 
-namespace Mawosoft.BenchmarkDotNetToolbox
+namespace Mawosoft.Extensions.BenchmarkDotNet
 {
     /// <summary>
     /// An alternative to <see cref="DefaultColumnProviders.Params"/> that displays parameters in recyclable

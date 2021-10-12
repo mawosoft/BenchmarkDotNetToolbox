@@ -17,7 +17,7 @@ using BenchmarkDotNet.Toolchains;
 using BenchmarkDotNet.Toolchains.Results;
 using BenchmarkDotNet.Validators;
 
-namespace Mawosoft.BenchmarkDotNetToolbox
+namespace Mawosoft.Extensions.BenchmarkDotNet
 {
     /// <summary>
     /// A filter that can present the results of a particular <i>BechmarkDotnet configuration</i> without actually

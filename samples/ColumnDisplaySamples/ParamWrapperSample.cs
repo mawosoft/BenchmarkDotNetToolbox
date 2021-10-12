@@ -6,7 +6,7 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Toolchains.InProcess.Emit;
-using Mawosoft.BenchmarkDotNetToolbox;
+using Mawosoft.Extensions.BenchmarkDotNet;
 
 namespace ColumnDisplaySamples
 {

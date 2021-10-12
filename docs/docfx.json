@@ -4,7 +4,7 @@
         "src": [
             {
                 "files": [ "**.csproj" ],
-                "src": "../src/Mawosoft.BenchmarkDotNetToolbox"
+                "src": "../src/Mawosoft.Extensions.BenchmarkDotNet"
             }
         ],
         "dest": "api",
@@ -53,7 +53,7 @@
         ],
         "dest": "_site",
         "globalMetadata": {
-            "_appTitle": "BenchmarkDotNet Toolbox",
+            "_appTitle": "Mawosoft Extensions for BenchmarkDotNet",
             "_appFooter": "Copyright &copy; 2021 Matthias Wolf, Mawosoft",
             "_enableSearch": true,
             "_enableNewTab": true,

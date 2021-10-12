@@ -8,7 +8,7 @@ using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Reports;
 
-namespace Mawosoft.BenchmarkDotNetToolbox
+namespace Mawosoft.Extensions.BenchmarkDotNet
 {
     /// <summary>
     /// An alternative to <see cref="DefaultColumnProviders.Job"/>, with a user-defined selection of Job columns.

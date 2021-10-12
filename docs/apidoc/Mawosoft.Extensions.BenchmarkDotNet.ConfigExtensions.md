@@ -1,8 +1,8 @@
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions
 seealso:
 - linkType: HRef
-  linkId: https://github.com/mawosoft/BenchmarkDotNetToolbox/tree/master/samples
+  linkId: https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/tree/master/samples
   altText: Config Extension Samples and Column Display Samples on GitHub
 ---
 When building a config in *BenchmarkDotNet* to run your benchmarks, there are essentially two ways of doing it:
@@ -24,7 +24,7 @@ Only want the statistical Mean column, not all the other ones, like StdDev and E
 ManualConfig config = DefaultConfig.Instance.ReplaceColumnCategory(StatisticColumn.Mean);
 ```
 
-Which of course leads to the custom columns that are part of *BenchmarkDotNetToolbox*:
+Which of course leads to the custom columns that are part of this library:
 ```csharp
 ManualConfig config = DefaultConfig.Instance.ReplaceColumnCategory(
     new JobColumnSelectionProvider("-run +runstrategy"),
@@ -40,7 +40,7 @@ ManualConfig config = DefaultConfig.Instance.ReplaceColumnCategory(
 
 
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.IColumn[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.IColumn[])
 syntax:
     parameters:
     - id: config
@@ -49,7 +49,7 @@ syntax:
       description: The new columns to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Columns.IColumn[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Columns.IColumn[])
 syntax:
     parameters:
     - id: config
@@ -58,7 +58,7 @@ syntax:
       description: The new columns to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.IColumnProvider[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.IColumnProvider[])
 syntax:
     parameters:
     - id: config
@@ -67,7 +67,7 @@ syntax:
       description: The new column providers to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Columns.IColumnProvider[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Columns.IColumnProvider[])
 syntax:
     parameters:
     - id: config
@@ -76,7 +76,7 @@ syntax:
       description: The new column providers to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.RemoveColumnsByCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.ColumnCategory[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.RemoveColumnsByCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.ColumnCategory[])
 syntax:
     parameters:
     - id: config
@@ -89,11 +89,11 @@ syntax:
 > real job characteristic columns, but also the @"BenchmarkDotNet.Columns.TargetMethodColumn?text=method descriptor columns" and the
 > @"BenchmarkDotNet.Columns.CategoriesColumn?text=categories column".
 >
-> *BenchmarkDotNetToolbox* **will not** remove the latter two column types if the removal of
+> This method **will not** remove the latter two column types if the removal of
 > @"BenchmarkDotNet.Columns.ColumnCategory.Job?displayProperty=nameWithType" is requested.
 
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.RemoveColumnsByCategory(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Columns.ColumnCategory[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.RemoveColumnsByCategory(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Columns.ColumnCategory[])
 syntax:
     parameters:
     - id: config
@@ -106,11 +106,11 @@ syntax:
 > real job characteristic columns, but also the @"BenchmarkDotNet.Columns.TargetMethodColumn?text=method descriptor columns" and the
 > @"BenchmarkDotNet.Columns.CategoriesColumn?text=categories column".
 >
-> *BenchmarkDotNetToolbox* **will not** remove the latter two column types if the removal of
+> This method **will not** remove the latter two column types if the removal of
 > @"BenchmarkDotNet.Columns.ColumnCategory.Job?displayProperty=nameWithType" is requested.
 
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceExporters(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Exporters.IExporter[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceExporters(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Exporters.IExporter[])
 syntax:
     parameters:
     - id: config
@@ -119,7 +119,7 @@ syntax:
       description: The new exporters to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceExporters(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Exporters.IExporter[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceExporters(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Exporters.IExporter[])
 syntax:
     parameters:
     - id: config
@@ -128,7 +128,7 @@ syntax:
       description: The new exporters to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceLoggers(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Loggers.ILogger[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceLoggers(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Loggers.ILogger[])
 syntax:
     parameters:
     - id: config
@@ -137,7 +137,7 @@ syntax:
       description: The new loggers to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceLoggers(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Loggers.ILogger[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceLoggers(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Loggers.ILogger[])
 syntax:
     parameters:
     - id: config
@@ -146,7 +146,7 @@ syntax:
       description: The new loggers to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceDiagnosers(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Diagnosers.IDiagnoser[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceDiagnosers(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Diagnosers.IDiagnoser[])
 syntax:
     parameters:
     - id: config
@@ -155,7 +155,7 @@ syntax:
       description: The new diagnosers to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceDiagnosers(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Diagnosers.IDiagnoser[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceDiagnosers(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Diagnosers.IDiagnoser[])
 syntax:
     parameters:
     - id: config
@@ -164,7 +164,7 @@ syntax:
       description: The new diagnosers to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceAnalysers(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Analysers.IAnalyser[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceAnalysers(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Analysers.IAnalyser[])
 syntax:
     parameters:
     - id: config
@@ -173,7 +173,7 @@ syntax:
       description: The new analyzers to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceAnalysers(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Analysers.IAnalyser[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceAnalysers(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Analysers.IAnalyser[])
 syntax:
     parameters:
     - id: config
@@ -182,7 +182,7 @@ syntax:
       description: The new analyzers to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceJobs(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Jobs.Job[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceJobs(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Jobs.Job[])
 syntax:
     parameters:
     - id: config
@@ -191,7 +191,7 @@ syntax:
       description: The new jobs to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceJobs(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Jobs.Job[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceJobs(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Jobs.Job[])
 syntax:
     parameters:
     - id: config
@@ -200,7 +200,7 @@ syntax:
       description: The new jobs to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceValidators(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Validators.IValidator[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceValidators(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Validators.IValidator[])
 syntax:
     parameters:
     - id: config
@@ -209,7 +209,7 @@ syntax:
       description: The new validators to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceValidators(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Validators.IValidator[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceValidators(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Validators.IValidator[])
 syntax:
     parameters:
     - id: config
@@ -218,7 +218,7 @@ syntax:
       description: The new validators to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceHardwareCounters(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Diagnosers.HardwareCounter[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceHardwareCounters(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Diagnosers.HardwareCounter[])
 syntax:
     parameters:
     - id: config
@@ -227,7 +227,7 @@ syntax:
       description: The new hardware counters to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceHardwareCounters(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Diagnosers.HardwareCounter[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceHardwareCounters(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Diagnosers.HardwareCounter[])
 syntax:
     parameters:
     - id: config
@@ -236,7 +236,7 @@ syntax:
       description: The new hardware counters to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceFilters(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Filters.IFilter[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceFilters(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Filters.IFilter[])
 syntax:
     parameters:
     - id: config
@@ -245,7 +245,7 @@ syntax:
       description: The new filters to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceFilters(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Filters.IFilter[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceFilters(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Filters.IFilter[])
 syntax:
     parameters:
     - id: config
@@ -254,7 +254,7 @@ syntax:
       description: The new filters to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceLogicalGroupRules(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Configs.BenchmarkLogicalGroupRule[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceLogicalGroupRules(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Configs.BenchmarkLogicalGroupRule[])
 syntax:
     parameters:
     - id: config
@@ -263,7 +263,7 @@ syntax:
       description: The new logical group rules to be added.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceLogicalGroupRules(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Configs.BenchmarkLogicalGroupRule[])
+uid: Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceLogicalGroupRules(BenchmarkDotNet.Configs.IConfig,BenchmarkDotNet.Configs.BenchmarkLogicalGroupRule[])
 syntax:
     parameters:
     - id: config

@@ -1,9 +1,9 @@
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.JobColumnSelectionProvider
+uid: Mawosoft.Extensions.BenchmarkDotNet.JobColumnSelectionProvider
 summary: An alternative to @"BenchmarkDotNet.Columns.DefaultColumnProviders.Job?displayProperty=nameWithType", with a user-defined selection of Job columns.
 ---
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.JobColumnSelectionProvider.#ctor(System.String,System.Boolean)
+uid: Mawosoft.Extensions.BenchmarkDotNet.JobColumnSelectionProvider.#ctor(System.String,System.Boolean)
 syntax:
     parameters:
     - id: filterExpression
@@ -18,7 +18,7 @@ example:
 - *content
 seealso:
 - linkType: HRef
-  linkId: https://github.com/mawosoft/BenchmarkDotNetToolbox/tree/master/samples
+  linkId: https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/tree/master/samples
   altText: Column Display Samples on GitHub
 ---
 
@@ -36,8 +36,8 @@ ManualConfig config = ManualConfig.CreateEmpty()
 ```
 
 If you are modifying an existing config, use
-@"Mawosoft.BenchmarkDotNetToolbox.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.IColumnProvider[])?text=ReplaceColumnCategory()",
-one of the new config extension methods in *BenchmarkDotNetToolbox*.
+@"Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.ReplaceColumnCategory(BenchmarkDotNet.Configs.ManualConfig,BenchmarkDotNet.Columns.IColumnProvider[])?text=ReplaceColumnCategory()",
+one of the new config extension methods in this library.
 
 ```csharp
 ManualConfig config = ManualConfig.Create(DefaultConfig.Instance)
@@ -147,6 +147,6 @@ UnrollFactor=1  WarmupCount=1
 ***
 
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.JobColumnSelectionProvider.GetColumns(BenchmarkDotNet.Reports.Summary)
+uid: Mawosoft.Extensions.BenchmarkDotNet.JobColumnSelectionProvider.GetColumns(BenchmarkDotNet.Reports.Summary)
 summary: '@"BenchmarkDotNet.Columns.IColumnProvider" implementation.'
 ---

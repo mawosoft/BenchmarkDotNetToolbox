@@ -2,6 +2,6 @@
 title: Welcome
 ---
 
-# BenchmarkDotNet Toolbox
+# Mawosoft Extensions for BenchmarkDotNet
 
-[API Documentation](api/Mawosoft.BenchmarkDotNetToolbox.yml)
+[API Documentation](api/Mawosoft.Extensions.BenchmarkDotNet.yml)

@@ -8,7 +8,7 @@
   <PropertyGroup>
     <Authors>Matthias Wolf</Authors>
     <Company>Mawosoft</Company>
-    <Product>Mawosoft.BenchmarkDotNetToolbox</Product>
+    <Product>Mawosoft.Extensions.BenchmarkDotNet</Product>
     <Copyright>Copyright (c) 2021 Matthias Wolf, Mawosoft</Copyright>
     <Version>0.1.0</Version>
   </PropertyGroup>

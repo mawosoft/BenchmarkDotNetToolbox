@@ -1,5 +1,5 @@
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ParamWrapper`1
+uid: Mawosoft.Extensions.BenchmarkDotNet.ParamWrapper`1
 syntax:
     typeParameters:
     - id: T
@@ -8,7 +8,7 @@ example:
 - *content
 seealso:
 - linkType: HRef
-  linkId: https://github.com/mawosoft/BenchmarkDotNetToolbox/tree/master/samples
+  linkId: https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/tree/master/samples
   altText: Column Display Samples on GitHub
 ---
 
@@ -69,7 +69,7 @@ WarmupCount=1
 </pre>
 
 ---
-uid: Mawosoft.BenchmarkDotNetToolbox.ParamWrapper`1.#ctor(`0,System.String)
+uid: Mawosoft.Extensions.BenchmarkDotNet.ParamWrapper`1.#ctor(`0,System.String)
 syntax:
     parameters:
     - id: value

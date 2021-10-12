@@ -8,7 +8,7 @@ using BenchmarkDotNet.Exporters;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Running;
-using Mawosoft.BenchmarkDotNetToolbox;
+using Mawosoft.Extensions.BenchmarkDotNet;
 
 namespace ParamWrapperBenchmarks
 {

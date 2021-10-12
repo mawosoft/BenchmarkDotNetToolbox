@@ -1,6 +1,6 @@
-# BenchmarkDotNet Toolbox
+# Mawosoft Extensions for BenchmarkDotNet
 
-An assortment of classes to support benchmarking with [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet).
+A .NET Standard 2.0 Library to support benchmarking with [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet).
 
 <table>
   <thead><tr>
@@ -39,4 +39,4 @@ An assortment of classes to support benchmarking with [BenchmarkDotNet](https://
   </tr></tbody>
 </table>
 
-For a deeper look, see the [documentation](https://mawosoft.github.io/BenchmarkDotNetToolbox/) and [samples](https://github.com/mawosoft/BenchmarkDotNetToolbox/tree/master/samples) (still work-in-progress).
+For a deeper look, see the [documentation](https://mawosoft.github.io/Mawosoft.Extensions.BenchmarkDotNet/) and [samples](https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/tree/master/samples) (still work-in-progress).
