@@ -16,12 +16,12 @@ jobs:
           dotnet-version: 5.0.x
       - name: Restore
         run: |
-          dotnet restore "src/Mawosoft.BenchmarkDotNetToolbox/Mawosoft.BenchmarkDotNetToolbox.csproj"
+          dotnet restore "src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj"
           dotnet restore "docs/docs.csproj"
       # DocFX build depends on BenchmarkDotNetToolbox for xref
       - name: DocFX Build 
         run: |
-          dotnet build --no-restore "src/Mawosoft.BenchmarkDotNetToolbox/Mawosoft.BenchmarkDotNetToolbox.csproj"
+          dotnet build --no-restore "src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj"
           dotnet build --no-restore "docs/docs.csproj"
         continue-on-error: false
       - name: Publish

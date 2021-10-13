@@ -2,8 +2,38 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <NeutralLanguage>en-US</NeutralLanguage>
     <Description>Mawosoft Extensions for BenchmarkDotNet</Description>
+    <PackageId>Mawosoft.Extensions.BenchmarkDotNet</PackageId>
+    <PackageDescription>.NETStandard2.0 library to support benchmarking with BenchmarkDotNet.</PackageDescription>
+    <PackageTags>benchmark;benchmarkdotnet;dotnet;netstandard;netstandard20;extension;extensions;library</PackageTags>
+    <PackageIcon>packageIcon.png</PackageIcon>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet</PackageProjectUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PackageReleaseNotes>
+      A reference to System.Management v5.0.0 is included to override an outdated reference in BenchmarkDotNet.
+      See https://github.com/dotnet/BenchmarkDotNet/pull/1805
+    </PackageReleaseNotes>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="Properties/packageIcon.png" Pack="true" PackagePath="/"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="all" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />

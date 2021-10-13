@@ -1,6 +1,12 @@
 # Mawosoft Extensions for BenchmarkDotNet
 
+[![NuGet](https://img.shields.io/nuget/v/Mawosoft.Extensions.BenchmarkDotNet.svg)](https://www.nuget.org/packages/Mawosoft.Extensions.BenchmarkDotNet/)
+![](https://img.shields.io/badge/netstandard-2.0-green.svg)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 A .NET Standard 2.0 Library to support benchmarking with [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet).
+
+### Overview · [Documentation](https://mawosoft.github.io/Mawosoft.Extensions.BenchmarkDotNet/) · [Samples](https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/tree/master/samples)
 
 <table>
   <thead><tr>
@@ -35,8 +41,6 @@ A .NET Standard 2.0 Library to support benchmarking with [BenchmarkDotNet](https
   </tr>
   <tr valign=top>
     <td><code>WhatifFilter</code></td>
-    <td>A filter that can present the results of a particular *BechmarkDotnet* configuration without actually running the benchmarks.</td>
+    <td>A filter that can present the results of a particular <i>BechmarkDotnet</i> configuration without actually running the benchmarks.</td>
   </tr></tbody>
 </table>
-
-For a deeper look, see the [documentation](https://mawosoft.github.io/Mawosoft.Extensions.BenchmarkDotNet/) and [samples](https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/tree/master/samples) (still work-in-progress).
