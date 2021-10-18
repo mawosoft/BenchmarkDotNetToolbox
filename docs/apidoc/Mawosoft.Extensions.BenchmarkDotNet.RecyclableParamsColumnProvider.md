@@ -119,9 +119,3 @@ WarmupCount=1
   1 μs    : 1 Microsecond (0.000001 sec)
 </pre>
 ***
-
-
----
-uid: Mawosoft.Extensions.BenchmarkDotNet.RecyclableParamsColumnProvider.GetColumns(BenchmarkDotNet.Reports.Summary)
-summary: '@"BenchmarkDotNet.Columns.IColumnProvider" implementation.'
----

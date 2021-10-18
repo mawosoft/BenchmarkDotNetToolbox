@@ -20,6 +20,9 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
         /// </summary>
         public string? DisplayText;
 
+        /// <summary>
+        /// Returns a string that represents the wrapped value.
+        /// </summary>
         public override string? ToString()
             => DisplayText ?? Value?.ToString() ?? ParameterInstance.NullParameterTextRepresentation;
 

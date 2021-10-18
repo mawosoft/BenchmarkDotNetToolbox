@@ -27,6 +27,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
             _genericName = genericName;
         }
 
+        /// <summary><see cref="IColumnProvider"/> implementation.</summary>
         public IEnumerable<IColumn> GetColumns(Summary summary)
         {
             if (summary == null || summary.BenchmarksCases.Length == 0)

@@ -4,7 +4,7 @@
 ![](https://img.shields.io/badge/netstandard-2.0-green.svg)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A .NET Standard 2.0 Library to support benchmarking with [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet).
+An extensions library to support benchmarking with [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet).
 
 ### Overview · [Documentation](https://mawosoft.github.io/Mawosoft.Extensions.BenchmarkDotNet/) · [Samples](https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/tree/master/samples)
 

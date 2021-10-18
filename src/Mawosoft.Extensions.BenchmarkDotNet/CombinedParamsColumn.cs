@@ -32,6 +32,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
             _suffix = suffix;
         }
 
+#pragma warning disable CS1591
         public string Id => nameof(CombinedParamsColumn) + "." + ColumnName;
         public string ColumnName => "Params";
         public bool IsDefault(Summary summary, BenchmarkCase benchmarkCase) => false;
@@ -47,5 +48,6 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
                 ? _prefix + string.Join(_separator, benchmarkCase.Parameters.Items.Select(p => string.Format(_formatNameValue, p.Name, p.Value?.ToString() ?? ParameterInstance.NullParameterTextRepresentation))) + _suffix
                 : ParameterInstance.NullParameterTextRepresentation;
         public string Legend => $"All parameter values";
+#pragma warning restore CS1591
     }
 }

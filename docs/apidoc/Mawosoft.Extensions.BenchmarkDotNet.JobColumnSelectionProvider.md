@@ -145,8 +145,3 @@ UnrollFactor=1  WarmupCount=1
   1 μs  : 1 Microsecond (0.000001 sec)
 </pre>
 ***
-
----
-uid: Mawosoft.Extensions.BenchmarkDotNet.JobColumnSelectionProvider.GetColumns(BenchmarkDotNet.Reports.Summary)
-summary: '@"BenchmarkDotNet.Columns.IColumnProvider" implementation.'
----

@@ -3,6 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <Description>Mawosoft Extensions for BenchmarkDotNet</Description>
     <PackageId>Mawosoft.Extensions.BenchmarkDotNet</PackageId>
     <PackageDescription>.NETStandard2.0 library to support benchmarking with BenchmarkDotNet.</PackageDescription>

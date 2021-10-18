@@ -45,6 +45,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
                 .Where(c => c.Column != null).ToArray();
         }
 
+        /// <summary><see cref="IColumnProvider"/> implementation.</summary>
         public IEnumerable<IColumn> GetColumns(Summary summary)
         {
             ColumnFilter[] columnFilters
