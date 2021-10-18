@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Exporters;
-using BenchmarkDotNet.Jobs;
+using BenchmarkDotNet.Exporters.Json;
 using BenchmarkDotNet.Loggers;
+using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
 using Mawosoft.Extensions.BenchmarkDotNet;
 
@@ -82,17 +82,42 @@ namespace ParamWrapperBenchmarks
     {
         static void Main(string[] args)
         {
-            IConfig @default = DefaultConfig.Instance;
-            ManualConfig config = ManualConfig.CreateEmpty();
-            config.AddLogger(ConsoleLogger.Unicode);
-            config.AddExporter(MarkdownExporter.Console);
-            config.AddAnalyser(@default.GetAnalysers().ToArray());
-            config.AddValidator(@default.GetValidators().ToArray());
-            config.AddColumnProvider(DefaultColumnProviders.Instance.Where(cp => cp.GetType() != DefaultColumnProviders.Job.GetType()).ToArray());
-            config.AddColumn(JobCharacteristicColumn.AllColumns[0]); // Just the job name
-            // Disassembler runs for every job. Results after DryJob are *NOT* optimized, after Job with multiple runs they eventually are.
-            config.AddDiagnoser(new DisassemblyDiagnoser(new DisassemblyDiagnoserConfig()));
-            _ = BenchmarkRunner.Run(typeof(ParamWrapperBenchmarks), config, args);
+            WhatifFilter whatifFilter = new();
+            args = whatifFilter.PreparseConsoleArguments(args);
+
+            ManualConfig config = DefaultConfig.Instance
+                .ReplaceColumnCategory(new JobColumnSelectionProvider("-all +Job"))
+                // We don't need the individual "Measurements", so JsonExporter.Brief would be sufficient,
+                // except that it also excludes "Metrics" (code size in this case).
+                .ReplaceExporters(MarkdownExporter.Console, JsonExporter.FullCompressed)
+                .ReplaceLoggers(ConsoleLogger.Unicode)
+                // Disassembler runs for every job. Results after DryJob are *NOT* optimized,
+                // after Job with multiple runs they eventually are (tiered compilation).
+                .AddDiagnoser(new DisassemblyDiagnoser(new DisassemblyDiagnoserConfig()))
+                .AddFilter(whatifFilter)
+                // Microseconds would be better, but has a few 0 values (Although decimal places of ns
+                // probably doesn't have any meaning).
+                //.WithSummaryStyle(SummaryStyle.Default.WithTimeUnit(TimeUnit.Microsecond))
+                .WithOption(ConfigOptions.DisableOptimizationsValidator, true);
+
+            Summary[] summaries;
+            if (!whatifFilter.Enabled && args.Length == 0 && Debugger.IsAttached)
+            {
+                BenchmarkRunInfos runInfos = new(config, BenchmarkRunInfos.FastInProcessJob);
+                runInfos.ConvertAssemblyToBenchmarks(typeof(Program).Assembly);
+                summaries = runInfos.RunAll();
+            }
+            else
+            {
+                summaries = BenchmarkRunner.Run(typeof(Program).Assembly, config, args);
+            }
+            _ = summaries;
+
+            if (whatifFilter.Enabled)
+            {
+                whatifFilter.PrintAsSummaries(ConsoleLogger.Unicode);
+                whatifFilter.Clear(dispose: true);
+            }
         }
     }
 }

@@ -77,6 +77,14 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
                 // Don't keep a copy if empty or --whatif only
                 _consoleArguments = null;
             }
+            if (Enabled && Array.FindIndex(args, a => a.ToLowerInvariant() == "--list") < 0)
+            {
+                // Avoid BDN displaying warnings/suggestions due to all benchmarks being filtered out
+                // by adding a --list option.
+                Array.Resize(ref args, args.Length + 2);
+                args[args.Length - 2] = "--list";
+                args[args.Length - 1] = "flat";
+            }
             return args;
         }
 
@@ -164,7 +172,18 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
         /// </summary>
         public bool Predicate(BenchmarkCase benchmarkCase)
         {
-            if (Enabled)
+            // There is no guarantee that WhatifFilter is called last, so we have to check the other
+            // filters if benchmarkCase passes and only collect it if it does.
+            // - The dupe check is paranoid - but if we cause other filters to be called twice...
+            // - BenchmarkCase only implements IComparable, not IEquatable, i.e. any lookup,
+            //   HashSet, etc defaults to ReferenceEquals() - which is good.
+            // - PERF (see WhatifFilterBenchmarks)
+            //   The brute-force sequential lookup may seem horrible, but even for large numbers it is
+            //   good enough, especially if you take jitting into account. Between Contains(), IndexOf(),
+            //   and FindIndex(lambda), the latter is fastest, but allocates the most memory.
+            if (Enabled
+                && benchmarkCase.Config.GetFilters().Where(f => f != this).All(f => f.Predicate(benchmarkCase))
+                && _filteredBenchmarkCases.IndexOf(benchmarkCase) < 0)
             {
                 _filteredBenchmarkCases.Add(benchmarkCase);
             }

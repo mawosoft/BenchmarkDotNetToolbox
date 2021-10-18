@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docs", "docs\docs.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mawosoft.Extensions.BenchmarkDotNet", "src\Mawosoft.Extensions.BenchmarkDotNet\Mawosoft.Extensions.BenchmarkDotNet.csproj", "{1FD28453-4697-4E93-AB6D-58832BCD8FBD}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WhatifFilterBenchmarks", "tests\WhatifFilterBenchmarks\WhatifFilterBenchmarks.csproj", "{67721A9C-69D2-400C-A60C-50293C789D66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{1FD28453-4697-4E93-AB6D-58832BCD8FBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FD28453-4697-4E93-AB6D-58832BCD8FBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FD28453-4697-4E93-AB6D-58832BCD8FBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67721A9C-69D2-400C-A60C-50293C789D66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67721A9C-69D2-400C-A60C-50293C789D66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67721A9C-69D2-400C-A60C-50293C789D66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67721A9C-69D2-400C-A60C-50293C789D66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,6 +71,7 @@ Global
 		{0ECC1E08-8941-4F70-B1D0-33BD6F317CA0} = {5BF6E883-8456-4EB6-BAD5-4ABFAD5976CC}
 		{F43305CB-D98F-47D9-B348-693DCC83C6D4} = {43DBE20A-B015-44D6-B001-9381FB3497B9}
 		{99AB79F8-9523-4952-81A5-24E4C5B31109} = {43DBE20A-B015-44D6-B001-9381FB3497B9}
+		{67721A9C-69D2-400C-A60C-50293C789D66} = {43DBE20A-B015-44D6-B001-9381FB3497B9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FB83BDB8-3B12-4E52-A54D-84CB6AF9A969}
