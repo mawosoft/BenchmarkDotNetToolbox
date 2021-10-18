@@ -18,7 +18,7 @@ jobs:
 
       - name: Publish on version change
         id: publish_nuget
-        uses: brandedoutcast/publish-nuget@v2
+        uses: mawosoft/publish-nuget@fc56afbdcfba7b91d719549c0612af82d1ba3e06
         with:
           # Filepath of the project to be packaged, relative to root of repository
           PROJECT_FILE_PATH: src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj
@@ -30,7 +30,7 @@ jobs:
           VERSION_FILE_PATH: Directory.Build.props
 
           # Regex pattern to extract version info in a capturing group
-          # VERSION_REGEX: ^\s*<Version>(.*)<\/Version>\s*$
+          VERSION_REGEX: ^\s*<Version>(.*)<\/Version>\s*$
           
           # Useful with external providers like Nerdbank.GitVersioning, ignores VERSION_FILE_PATH & VERSION_REGEX
           # VERSION_STATIC: 1.0.0
@@ -48,4 +48,5 @@ jobs:
           NUGET_SOURCE: https://api.nuget.org
 
           # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
-          INCLUDE_SYMBOLS: true
+          # (Not needed, defined in *.csproj)
+          # INCLUDE_SYMBOLS: true
