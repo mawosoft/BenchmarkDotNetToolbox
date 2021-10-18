@@ -2,9 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
-using System.Reflection;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
@@ -47,9 +46,12 @@ namespace ColumnDisplaySamples
         {
             if (summaries.Count <= 1)
                 return;
+
             // Append to both console and logfile
             using StreamLogger streamLogger = new(summaries.First().LogFilePath, append: true);
-            ILogger logger = CreateCompositeLogger(SampleBase.SampleConfigBase.Console, streamLogger);
+            ILogger logger = ImmutableConfigBuilder.Create(
+                ManualConfig.CreateEmpty().AddLogger(SampleBase.SampleConfigBase.Console, streamLogger)
+                ).GetCompositeLogger();
 
             List<LogParser.SummaryParts> captured = LogParser.GetSummaries();
             if (captured.Count != summaries.Count)
@@ -95,20 +97,6 @@ namespace ColumnDisplaySamples
                 parts.Table.ForEach(ol => logger.Write(ol.Kind, ol.Text));
                 parts.Legend.ForEach(ol => logger.Write(ol.Kind, ol.Text));
             }
-        }
-
-        // Use BDN's internal CompositeLogger instead of writing a new one.
-        private static ILogger CreateCompositeLogger(params ILogger[] loggers)
-        {
-            string compositeLoggerFullName = "BenchmarkDotNet.Loggers.CompositeLogger";
-            return Activator.CreateInstance(
-                typeof(ILogger).Assembly.GetType(compositeLoggerFullName, throwOnError: true)!,
-                BindingFlags.Instance | BindingFlags.NonPublic,
-                null,
-                new object[] { ImmutableHashSet.Create(loggers) },
-                null) as ILogger
-                ?? throw new MissingMemberException(compositeLoggerFullName,
-                    "ctor(ImmutableHashSet<ILogger>)");
         }
     }
 }
