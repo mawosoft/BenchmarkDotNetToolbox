@@ -1,5 +1,8 @@
 <Project>
 
+  <!-- Dependencies-->
+  <Import Project="Versions.props" />
+
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
@@ -10,7 +13,7 @@
     <Company>Mawosoft</Company>
     <Product>Mawosoft.Extensions.BenchmarkDotNet</Product>
     <Copyright>Copyright (c) 2021 Matthias Wolf, Mawosoft</Copyright>
-    <Version>0.2.0</Version>
+    <Version>0.2.1-dev</Version>
   </PropertyGroup>
 
 </Project>
