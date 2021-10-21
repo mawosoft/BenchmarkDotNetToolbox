@@ -21,7 +21,7 @@ The properties @"Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter.FilteredBenchm
 and @"Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter.FilteredBenchmarkRunInfos"
 provide access to the collected benchmarks,
 while @"Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter.PrintAsSummaries(BenchmarkDotNet.Loggers.ILogger)?text=PrintAsSummaries()"
-can output them to the console or another logger.
+outputs them to the console or another logger.
 
 ---
 uid: Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter
@@ -50,6 +50,11 @@ public static void Main(string[] args)
     }
 }
 ```
+<p style="height:0px;">&#160;</p>
+
+> [!div class="detailsHolder"]
+> <summary class="h5">Sample Output</summary>
+> [!include[Sample Output](Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter.SampleOutput.md)]
 
 ---
 uid: Mawosoft.Extensions.BenchmarkDotNet.WhatifFilter.Enabled

@@ -20,8 +20,8 @@ using BenchmarkDotNet.Validators;
 namespace Mawosoft.Extensions.BenchmarkDotNet
 {
     /// <summary>
-    /// A filter that can present the results of a particular <i>BechmarkDotnet configuration</i> without actually
-    /// running the benchmarks.
+    /// An alternative to BenchmarkDotNet's <c>--list</c> command line option that prints a mock
+    /// summary of all available benchmarks according to the current effective BenchmarkDotNet configuration.
     /// </summary>
     public class WhatifFilter : IFilter
     {

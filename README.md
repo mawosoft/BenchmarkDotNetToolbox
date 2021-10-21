@@ -41,6 +41,5 @@ An extensions library to support benchmarking with [BenchmarkDotNet](https://git
   </tr>
   <tr valign=top>
     <td><code>WhatifFilter</code></td>
-    <td>A filter that can present the results of a particular <i>BechmarkDotnet</i> configuration without actually running the benchmarks.</td>
-  </tr></tbody>
+    <td>An alternative to BenchmarkDotNet's <code>--list</code> command line option that prints a mock summary of all available benchmarks according to the current effective BechmarkDotnet configuration.</td>  </tr></tbody>
 </table>

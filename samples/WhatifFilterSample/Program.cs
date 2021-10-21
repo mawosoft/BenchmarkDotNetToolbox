@@ -47,12 +47,18 @@ namespace WhatifFilterSample
     {
         public static void Main(string[] args)
         {
-            _ = args; // make it not 'unused'
+            bool runAllPredefinedSamples = false;
+            string sampleCmdLine;
 
-            // Sample command line
-            // If you want to use actual command line arguments, comment this line out.
+            // With no arguments given, this runs a predefined sample command line.
+            // Alternatively, you can experiment with different arguments.
 
-            args = "--runtimes net5.0 netcoreapp31 net48 --whatif".Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (args.Length == 0)
+            {
+                runAllPredefinedSamples = true;
+                sampleCmdLine = "--runtimes net5.0 netcoreapp31 net48 --whatif";
+                args = sampleCmdLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            }
 
             // Create the WhatifFilter and let it process the --whatif (or -w for short) argument if one exists.
             // If the argument is present, the filter is enabled and the argument removed from the returned args,
@@ -83,6 +89,32 @@ namespace WhatifFilterSample
             {
                 whatifFilter.PrintAsSummaries(ConsoleLogger.Default);
                 whatifFilter.Clear(dispose: true);
+            }
+
+            // Addendum: Run BDN's own --list options for comparison
+
+            if (runAllPredefinedSamples)
+            {
+                whatifFilter.Enabled = false;
+
+                ILogger logger = ConsoleLogger.Default;
+                logger.WriteLine();
+                logger.WriteLineHeader("// ***** Addendum: BenchmarkDotNet --list option for comparison *****");
+
+                sampleCmdLine = "--runtimes net5.0 netcoreapp31 net48 --list flat";
+                logger.WriteLine();
+                logger.WriteLineInfo("Console arguments: " + sampleCmdLine);
+                logger.WriteLine();
+                args = sampleCmdLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                _ = BenchmarkRunner.Run(typeof(Program).Assembly, config, args);
+
+                sampleCmdLine = "--runtimes net5.0 netcoreapp31 net48 --list tree";
+                logger.WriteLine();
+                logger.WriteLineInfo("Console arguments: " + sampleCmdLine);
+                logger.WriteLine();
+                args = sampleCmdLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                _ = BenchmarkRunner.Run(typeof(Program).Assembly, config, args);
+
             }
         }
     }
