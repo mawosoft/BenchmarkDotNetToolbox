@@ -91,3 +91,11 @@ pre > code {
     word-break: normal;
     word-wrap: normal;
 }
+
+/*
+    docfx.vendor.css has summary { display: block; }
+*/
+summary {
+    display: list-item;
+    cursor: pointer;
+}
