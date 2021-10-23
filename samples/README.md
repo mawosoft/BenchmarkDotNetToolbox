@@ -2,6 +2,8 @@
 
 ### Column Display Samples
 
+Demonstrates the use of `JobColumnSelectionProvider`, `CombinedParamsColumn`, `RecyclableParamsColumnProvider`, and `ParamWrapper<T>`.
+
 <details>
   <summary>Sample Output</summary>
 
@@ -344,8 +346,8 @@ WhatifFilterSample
 
 ### BenchmarkRunInfos Sample
 
-Coming soon.
+Coming soon. In the meantime, see the example in the [API documentation](https://mawosoft.github.io/Mawosoft.Extensions.BenchmarkDotNet/api/Mawosoft.Extensions.BenchmarkDotNet.BenchmarkRunInfos.html).
 
 ### ConfigExtensions Sample
 
-Coming soon.
+Coming soon. In the meantime, see the examples in the [API documentation](https://mawosoft.github.io/Mawosoft.Extensions.BenchmarkDotNet/api/Mawosoft.Extensions.BenchmarkDotNet.ConfigExtensions.html).
