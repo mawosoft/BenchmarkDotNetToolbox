@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 Matthias Wolf, Mawosoft.
+﻿// Copyright (c) 2021-2022 Matthias Wolf, Mawosoft.
 
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;

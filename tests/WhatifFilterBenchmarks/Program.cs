@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Copyright (c) 2021-2022 Matthias Wolf, Mawosoft.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
