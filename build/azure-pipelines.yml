@@ -24,7 +24,7 @@ variables:
 
 steps:
 - checkout: self
-- pwsh: dotnet build ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj -c Debug /p:TargetFrameworks=net5.0
+- pwsh: dotnet build ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj -c Debug
   displayName: Build
 - pwsh: ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj -c Debug -f net5.0 -v detailed -r ./TestResults -s ./tests/./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests/coverlet.runsettings
   displayName: Test
