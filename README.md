@@ -1,12 +1,13 @@
 # Mawosoft Extensions for BenchmarkDotNet
 
 [![NuGet](https://img.shields.io/nuget/v/Mawosoft.Extensions.BenchmarkDotNet.svg)](https://www.nuget.org/packages/Mawosoft.Extensions.BenchmarkDotNet/)
-![](https://img.shields.io/badge/netstandard-2.0-green.svg)
+[![CI/CD](https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/actions/workflows/ci.yml/badge.svg)](https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![](https://img.shields.io/badge/netstandard-2.0-green.svg)
 
 An extensions library to support benchmarking with [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet).
 
-### Overview · [Documentation](https://mawosoft.github.io/Mawosoft.Extensions.BenchmarkDotNet/) · [Samples](https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/tree/master/samples)
+### Overview ï¿½ [Documentation](https://mawosoft.github.io/Mawosoft.Extensions.BenchmarkDotNet/) ï¿½ [Samples](https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/tree/master/samples)
 
 <table>
   <thead><tr>
