@@ -7,7 +7,7 @@
 
 An extensions library to support benchmarking with [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet).
 
-### Overview � [Documentation](https://mawosoft.github.io/Mawosoft.Extensions.BenchmarkDotNet/) � [Samples](https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/tree/master/samples)
+### Overview · [Documentation](https://mawosoft.github.io/Mawosoft.Extensions.BenchmarkDotNet/) · [Samples](https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/tree/master/samples)
 
 <table>
   <thead><tr>
