@@ -1,0 +1,13 @@
+codecov:
+  strict_yaml_branch: master
+  require_ci_to_pass: no
+
+coverage:
+  status:
+    project: false
+    patch: false
+
+github_checks:
+  annotations: false
+
+comment: false

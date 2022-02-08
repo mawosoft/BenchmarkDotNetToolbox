@@ -17,18 +17,9 @@
     <RepositoryUrl>https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet</RepositoryUrl>
     <PackageProjectUrl>https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet</PackageProjectUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <DebugType>embedded</DebugType>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <PackageReleaseNotes>
-      A reference to System.Management v5.0.0 is included to override an outdated reference in BenchmarkDotNet.
-      See https://github.com/dotnet/BenchmarkDotNet/pull/1805
-    </PackageReleaseNotes>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-    <Deterministic>true</Deterministic>
+    <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,18 +27,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" />
-    <!-- Referencing 5.0.0 only to fix outdated ref in BenchmarkDotNet.
+    <!-- Referencing 6.0.0 only to fix outdated ref in BenchmarkDotNet.
          Should no longer be necessary in 0.13.2 -->
     <PackageReference Include="System.Management" />
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="$(AssemblyName).Tests" />
+    <InternalsVisibleTo Include="$(AssemblyName).Tests.StableBDN" />
+    <InternalsVisibleTo Include="$(AssemblyName).Tests.NightlyBDN" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project>
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0</TargetFrameworks>
+    <TargetFrameworks>net5.0;$(NetFxTfm)</TargetFrameworks>
+    <RootNamespace>Mawosoft.Extensions.BenchmarkDotNet.Tests</RootNamespace>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <UseDataCollector />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)*.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
