@@ -169,7 +169,7 @@ jobs:
 
   gh-pages:
     needs: Build
-    if: ${{ needs.Build.outputs.release != '' && (github.event_name == 'push' }}
+    if: ${{ needs.Build.outputs.release != '' && github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
     - name: Download Docs Website
