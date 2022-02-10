@@ -79,8 +79,9 @@ jobs:
         . ./build/startNativeExecution.ps1
         Set-Alias exec Start-NativeExecution
         exec { dotnet restore -bl:./Binlogs/restore.binlog }
-        exec { dotnet build -c Debug --no-restore -bl:./Binlogs/build_debug.binlog }
+        exec { dotnet build -c Debug --no-restore -bl:./Binlogs/build_debug.binlog /p:BuildDocFx=false }
         exec { dotnet build -c Release --no-restore -bl:./Binlogs/build_release.binlog /p:BuildDocFx=false }
+        exec { dotnet build ./docs/docs.csproj -c Debug --no-restore -bl:./Binlogs/build_docfx.binlog }
         exec { dotnet pack ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-build -o ./Packages -bl:./Binlogs/pack.binlog }
     - name: Upload Binlogs
       if: ${{ failure() || github.event_name == 'workflow_dispatch' }}

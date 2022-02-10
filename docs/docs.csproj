@@ -6,7 +6,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <LogLevel>Info</LogLevel>
     <DocParameters>--warningsAsErrors</DocParameters>
-    <BuildInParallel>false</BuildInParallel>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +15,7 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(BuildDocFx)' != 'false'">
     <ProjectReference Include="..\src\Mawosoft.Extensions.BenchmarkDotNet\Mawosoft.Extensions.BenchmarkDotNet.csproj" />
   </ItemGroup>
 
