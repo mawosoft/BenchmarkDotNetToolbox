@@ -9,12 +9,10 @@ resources:
 trigger:
   batch: true
   branches: { include: [master] }
-  paths: { exclude: [README.md, assets/**, tests/benchmarks/** ] }
 
 pr:
   autoCancel: true
   branches: { include: [master] }
-  paths: { exclude: [README.md, assets, tests/benchmarks ] }
 
 pool:
   vmImage: ubuntu-latest

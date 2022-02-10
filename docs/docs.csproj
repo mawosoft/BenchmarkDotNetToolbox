@@ -1,12 +1,11 @@
 <Project>
 
-  <!-- With explicit import of Sdk.targets, we can't use the Sdk attr on <Project> and instead
-       have to explicit import Sdk.props as well. -->
-  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  <Import Project="Sdk.props" Sdk="Microsoft.Build.NoTargets" Version="3.3.0" />
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LogLevel>Info</LogLevel>
+    <DocParameters>--warningsAsErrors</DocParameters>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,38 +15,12 @@
     </PackageReference>
   </ItemGroup>
 
-  <!-- Explicit import *before* overwriting default targets-->
-  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+  <ItemGroup>
+    <ProjectReference Include="..\src\Mawosoft.Extensions.BenchmarkDotNet\Mawosoft.Extensions.BenchmarkDotNet.csproj" />
+  </ItemGroup>
 
-  <!-- Notes:
-    - A <ProjectReference> to Mawosoft.Extensions.BenchmarkDotNet is not necessary (and wouldn't work
-      with the overwritten default targets anyway).
-    - DocFx only needs the csproj provided via docfx.json and the related source files, not the
-      binaries, to convert triple-slash comments into API docs and gather all internal and external
-      references.
-  -->
-  
-  <Target Name="Build">
-    <CallTarget Targets="DocBuild"/>
-  </Target>
-  <Target Name="Rebuild">
-    <CallTarget Targets="DocRebuild"/>
-  </Target>
-  <Target Name="Clean">
-    <CallTarget Targets="DocClean"/>
-  </Target>
+  <Import Project="Sdk.targets" Sdk="Microsoft.Build.NoTargets" />
 
-  <Target Name="ExportModels">
-    <!-- Output defaults to build destination (_site), but chan be changed in docfx.json -->
-    <CallTarget Targets="SetDocParameters"/>
-    <CallTarget Targets="DocBuild"/>
-  </Target>
-  <Target Name="SetDocParameters">
-    <!-- Setting this directly in ExportModels doesn't work (it becomes "unset" in DocBuild somehow. -->
-    <PropertyGroup>
-      <DocParameters>--exportRawModel --exportViewModel --dryRun</DocParameters>
-    </PropertyGroup>
-  </Target>
-
+  <Target Name="GetCopyToOutputDirectoryItems" />
 
 </Project>

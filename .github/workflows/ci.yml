@@ -26,10 +26,8 @@ on:
         type: boolean
   push:
     branches: master
-    paths-ignore: [README.md, assets/**, tests/benchmarks/** ]
   pull_request:
     branches: master
-    paths-ignore: [README.md, assets/**, tests/benchmarks/** ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -74,14 +72,6 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    # TODO net5.0 and net3.1 should be installed by default
-    #- name: Setup DotNet
-    #  uses: actions/setup-dotnet@v1
-    #  with:
-    #    dotnet-version: |
-    #      3.1.x
-    #      5.0.x
-    #      6.0.x
     - name: DotNet Info
       run: dotnet --info
     - name: Build
@@ -89,8 +79,9 @@ jobs:
         . ./build/startNativeExecution.ps1
         Set-Alias exec Start-NativeExecution
         exec { dotnet restore -bl:./Binlogs/restore.binlog }
-        exec { dotnet build -c Debug --no-restore -bl:./Binlogs/build_debug.binlog }
-        exec { dotnet build -c Release --no-restore -bl:./Binlogs/build_release.binlog }
+        exec { dotnet build -c Debug --no-restore -bl:./Binlogs/build_debug.binlog /p:BuildDocFx=false }
+        exec { dotnet build -c Release --no-restore -bl:./Binlogs/build_release.binlog /p:BuildDocFx=false }
+        exec { dotnet build ./docs/docs.csproj -c Debug --no-restore -bl:./Binlogs/build_docfx.binlog }
         exec { dotnet pack ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-build -o ./Packages -bl:./Binlogs/pack.binlog }
     - name: Upload Binlogs
       if: ${{ failure() || github.event_name == 'workflow_dispatch' }}
@@ -104,6 +95,12 @@ jobs:
       with:
         name: Packages
         path: ./Packages/
+    - name: Upload Docs Website
+      if: ${{ matrix.os == 'ubuntu-latest' || strategy.job-total == 1 }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: DocsWebsite
+        path: ./docs/_site/
     - name: Set Deployment and Release Outputs
       id: set_output
       if: ${{ (matrix.os == 'ubuntu-latest' || strategy.job-total == 1) && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
@@ -169,6 +166,23 @@ jobs:
         path: ./Packages/
     - name: Publish to Nuget
       run: dotnet nuget push ./Packages/*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+
+  gh-pages:
+    needs: Build
+    if: ${{ needs.Build.outputs.release != '' && (github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download Docs Website
+      uses: actions/download-artifact@v2
+      with:
+        name: DocsWebsite
+        path: ./DocsWebsite/
+    - name: Publish to gh-pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./DocsWebsite/
+        force_orphan: true
 
   Release:
     needs: Build
