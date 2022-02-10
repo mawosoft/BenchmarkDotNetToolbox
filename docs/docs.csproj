@@ -6,6 +6,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <LogLevel>Info</LogLevel>
     <DocParameters>--warningsAsErrors</DocParameters>
+    <BuildInParallel>false</BuildInParallel>
   </PropertyGroup>
 
   <ItemGroup>
