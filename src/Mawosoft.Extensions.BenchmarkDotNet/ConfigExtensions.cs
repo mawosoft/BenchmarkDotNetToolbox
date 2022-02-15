@@ -89,7 +89,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
         /// <returns>The existing <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig ReplaceExporters(this ManualConfig config, params IExporter[] newExporters)
         {
-            ClearList(config.GetExporters());
+            ClearEnumerable(config.GetExporters());
             return config.AddExporter(newExporters);
         }
 
@@ -102,7 +102,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
         /// <returns>The existing <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig ReplaceLoggers(this ManualConfig config, params ILogger[] newLoggers)
         {
-            ClearList(config.GetLoggers());
+            ClearEnumerable(config.GetLoggers());
             return config.AddLogger(newLoggers);
         }
 
@@ -115,7 +115,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
         /// <returns>The existing <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig ReplaceDiagnosers(this ManualConfig config, params IDiagnoser[] newDiagnosers)
         {
-            ClearList(config.GetDiagnosers());
+            ClearEnumerable(config.GetDiagnosers());
             return config.AddDiagnoser(newDiagnosers);
         }
 
@@ -128,7 +128,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
         /// <returns>The existing <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig ReplaceAnalysers(this ManualConfig config, params IAnalyser[] newAnalysers)
         {
-            ClearList(config.GetAnalysers());
+            ClearEnumerable(config.GetAnalysers());
             return config.AddAnalyser(newAnalysers);
         }
 
@@ -141,7 +141,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
         /// <returns>The existing <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig ReplaceJobs(this ManualConfig config, params Job[] newJobs)
         {
-            ClearList(config.GetJobs());
+            ClearEnumerable(config.GetJobs());
             return config.AddJob(newJobs);
         }
 
@@ -154,7 +154,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
         /// <returns>The existing <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig ReplaceValidators(this ManualConfig config, params IValidator[] newValidators)
         {
-            ClearList(config.GetValidators());
+            ClearEnumerable(config.GetValidators());
             return config.AddValidator(newValidators);
         }
 
@@ -168,7 +168,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
         public static ManualConfig ReplaceHardwareCounters(this ManualConfig config,
                                                            params HardwareCounter[] newHardwareCounters)
         {
-            ClearHashSet(config.GetHardwareCounters());
+            ClearEnumerable(config.GetHardwareCounters());
             return config.AddHardwareCounters(newHardwareCounters);
         }
 
@@ -182,7 +182,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
         /// <returns>The existing <see cref="ManualConfig"/> with changes applied.</returns>
         public static ManualConfig ReplaceFilters(this ManualConfig config, params IFilter[] newFilters)
         {
-            ClearList(config.GetFilters());
+            ClearEnumerable(config.GetFilters());
             return config.AddFilter(newFilters);
         }
 
@@ -196,7 +196,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
         public static ManualConfig ReplaceLogicalGroupRules(this ManualConfig config,
                                                             params BenchmarkLogicalGroupRule[] newLogicalGroupRules)
         {
-            ClearHashSet(config.GetLogicalGroupRules());
+            ClearEnumerable(config.GetLogicalGroupRules());
             return config.AddLogicalGroupRules(newLogicalGroupRules);
         }
 
@@ -213,14 +213,15 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
             ?? throw new InvalidOperationException($"Failed to get List<{typeof(T).Name}>.");
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static HashSet<T> AsHashSet<T>(IEnumerable<T> enumerable)
-            => enumerable as HashSet<T>
-            ?? throw new InvalidOperationException($"Failed to get HashSet<{typeof(T).Name}>.");
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void ClearList<T>(IEnumerable<T> enumerable) => AsList(enumerable).Clear();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void ClearHashSet<T>(IEnumerable<T> enumerable) => AsHashSet(enumerable).Clear();
+        private static void ClearEnumerable<T>(IEnumerable<T> enumerable)
+        {
+            if (enumerable is List<T> list)
+                list.Clear();
+            else if (enumerable is HashSet<T> set)
+                set.Clear();
+            else
+                throw new InvalidOperationException(
+                    $"Failed to get List<{typeof(T).Name}> or HashSet<{typeof(T).Name}>.");
+        }
     }
 }

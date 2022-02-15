@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
@@ -14,9 +14,6 @@
 
   <ItemGroup>
     <PackageReference Update ="@(PackageVersion)" Version="%(PackageVersion.Version)"></PackageReference>
-    <!-- Highest version does not necessarly reflect latest BDN master build.
-         See https://github.com/dotnet/BenchmarkDotNet/issues/1922 -->
-    <!--<PackageReference Update="BenchmarkDotNet" Version="*-*"></PackageReference>-->
-    <PackageReference Update="BenchmarkDotNet" Version="0.13.1.1696"></PackageReference>
+    <PackageReference Update="BenchmarkDotNet" Version="*-*"></PackageReference>
   </ItemGroup>
 </Project>
