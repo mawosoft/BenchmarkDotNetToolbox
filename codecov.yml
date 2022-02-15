@@ -4,10 +4,25 @@ codecov:
 
 coverage:
   status:
-    project: false
-    patch: false
+    project:
+      default: false
+      src:
+        paths:
+          - src
+        target: auto
+        threshold: 2%
+        informational: true
+        if_ci_failed: success
+    patch:
+      default:
+        target: auto
+        threshold: 5%
+        informational: true
+        if_ci_failed: success
 
 github_checks:
   annotations: false
 
-comment: false
+comment:
+  layout: diff, files
+  behavior: default
