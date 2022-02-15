@@ -105,15 +105,30 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
                 );
             GenerateResult generateResult = GenerateResult.Success(ArtifactsPaths.Empty, Array.Empty<string>());
             BuildResult buildResult = BuildResult.Success(generateResult);
-            BenchmarkReport benchmarkReport = new(
-                true, benchmarkCase,
-                generateResult,
-                buildResult,
-                Array.Empty<ExecuteResult>(),
-                new[] { new Measurement(1, IterationMode.Workload, IterationStage.Result, 1, 1, 1) },
-                default,
-                new[] { new Metric(new MockMetricDescriptor(), 1) }
-                );
+            // HACK Adjust for breaking API changes. This needs to be separated into a separate compat layer
+            // since it also affects WhatifFilter and further changes may appear at any time.
+            BenchmarkReport benchmarkReport;
+            List<ExecuteResult> executeResults = new();
+            List<Measurement> allMeasurements = new();
+            allMeasurements.Add(new Measurement(1, IterationMode.Workload, IterationStage.Result, 1, 1, 1));
+            GcStats gcStats = default;
+            Metric[] metrics = new[] { new Metric(new MockMetricDescriptor(), 1) };
+            try
+            {
+                //benchmarkReport = new(success: true, benchmarkCase, generateResult, buildResult, executeResults,
+                //    allMeasurements, gcStats, metrics);
+                benchmarkReport = (BenchmarkReport)Activator.CreateInstance(typeof(BenchmarkReport),
+                    new object[] { true, benchmarkCase, generateResult, buildResult, executeResults,
+                        allMeasurements, gcStats, metrics });
+            }
+            catch (Exception)
+            {
+                executeResults.Add((ExecuteResult) Activator.CreateInstance(typeof(ExecuteResult),
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null,
+                    new object[] { allMeasurements, gcStats, (ThreadingStats) default }, null));
+                benchmarkReport = (BenchmarkReport)Activator.CreateInstance(typeof(BenchmarkReport),
+                    new object[] { true, benchmarkCase, generateResult, buildResult, executeResults, metrics });
+            }
             return new Summary(
                 string.Empty, ImmutableArray.Create(benchmarkReport), HostEnvironmentInfo.GetCurrent(),
                 string.Empty, string.Empty, TimeSpan.Zero, SummaryExtensions.GetCultureInfo(null),
