@@ -1,0 +1,30 @@
+name: Breaking BDN Changes
+
+on:
+  workflow_dispatch:
+  schedule:
+  - cron: '0 5 * * *'
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  Breaking:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+    - name: Check breaking BDN changes
+      id: breaking
+      run: |
+        $token = ConvertTo-SecureString ${{ secrets.GITHUB_TOKEN }} -AsPlainText
+        ./build/checkBreakingBDNChange.ps1 -Token $token
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ steps.breaking.outputs.ArtifactName }}
+        path: ${{ steps.breaking.outputs.ArtifactPath }}
+        retention-days: 5
