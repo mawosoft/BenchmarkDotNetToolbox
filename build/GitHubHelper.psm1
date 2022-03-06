@@ -129,10 +129,11 @@ function Find-ArtifactsFromPreviousRun {
         # end up here to request all data.
         Write-Verbose "Artifacts not found on first GitHub API result page. Retrieving all results."
         $result = Invoke-RestMethod -Uri $uri -FollowRelLink @auth
-        $result.workflow_runs | Where-Object {
+        $runs = $result.workflow_runs | Where-Object {
             $_.run_number -le $runNumber -and $_.run_number -ge $MinRunNumber
-        } | Sort-Object -Property run_number -Descending | ForEach-Object {
-            $retVal = GetArtifacts $_
+        } | Sort-Object -Property run_number -Descending
+        foreach ($run in $runs) {
+            $retVal = GetArtifacts $run
             if ($retVal) { return $retVal }
         }
     }
