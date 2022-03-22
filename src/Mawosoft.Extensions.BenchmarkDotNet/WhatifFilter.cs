@@ -17,6 +17,8 @@ using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Toolchains;
 using BenchmarkDotNet.Toolchains.Results;
 using BenchmarkDotNet.Validators;
+using Mawosoft.Extensions.BenchmarkDotNet.ApiCompat;
+
 
 namespace Mawosoft.Extensions.BenchmarkDotNet
 {
@@ -111,56 +113,14 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
 
             bool join = _filteredBenchmarkCases.Any(bc => (bc.Config.Options & ConfigOptions.JoinSummary) != 0);
 
-            // HACK Adjust for breaking API changes. See also ColumnCategoryExtensions
-            ConstructorInfo ctorExecuteResult = null!;
-            ConstructorInfo ctorBenchmarkReport = typeof(BenchmarkReport).GetConstructor(
-                new Type[] {
-                    typeof(bool), typeof(BenchmarkCase), typeof(GenerateResult), typeof(BuildResult),
-                    typeof(IReadOnlyList<ExecuteResult>), typeof(IReadOnlyList<Measurement>), typeof(GcStats),
-                    typeof(IReadOnlyList<Metric>)
-                });
-            if (ctorBenchmarkReport == null)
-            {
-                ctorBenchmarkReport = typeof(BenchmarkReport).GetConstructor(
-                    new Type[] {
-                        typeof(bool), typeof(BenchmarkCase), typeof(GenerateResult), typeof(BuildResult),
-                        typeof(IReadOnlyList<ExecuteResult>), typeof(IReadOnlyList<Metric>)
-                    })
-                    ?? throw new MissingMethodException(nameof(BenchmarkReport), ".ctor");
-                ctorExecuteResult = typeof(ExecuteResult).GetConstructor(
-                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null,
-                    new Type[] {
-                        typeof(List<Measurement>), typeof(GcStats), typeof(ThreadingStats)
-                    }, null)
-                    ?? throw new MissingMethodException(nameof(ExecuteResult), ".ctor");
-            }
-
-            GenerateResult generateResult = GenerateResult.Success(ArtifactsPaths.Empty, Array.Empty<string>());
+            GenerateResult generateResult = GenerateResultWrapper.Success();
             BuildResult buildResult = BuildResult.Success(generateResult);
-            IEnumerable<BenchmarkReport> reports;
-            if (ctorExecuteResult == null)
-            {
-                reports = _filteredBenchmarkCases.Select((bc, i)
-                    => (BenchmarkReport)ctorBenchmarkReport.Invoke(new object[] {
-                        true, bc, generateResult, buildResult, Array.Empty<ExecuteResult>(),
-                        new[] { new Measurement(1, IterationMode.Workload, IterationStage.Result, 1, 1,
+            IEnumerable<BenchmarkReport> reports = _filteredBenchmarkCases.Select((bc, i)
+                => BenchmarkReportWrapper.Create(
+                    true, bc, generateResult, buildResult, Array.Empty<ExecuteResult>(),
+                    new[] { new Measurement(1, IterationMode.Workload, IterationStage.Result, 1, 1,
                                             100_000_000 + i * 1_000_000) },
-                        (GcStats)default, Array.Empty<Metric>() }));
-            }
-            else
-            {
-                reports = _filteredBenchmarkCases.Select((bc, i) =>
-                {
-                    List<Measurement> allMeasurements = new();
-                    allMeasurements.Add(new Measurement(1, IterationMode.Workload, IterationStage.Result,
-                        1, 1, 100_000_000 + i * 1_000_000));
-                    List<ExecuteResult> executeResults = new();
-                    executeResults.Add((ExecuteResult)ctorExecuteResult.Invoke(new object[] {
-                        allMeasurements, (GcStats)default, (ThreadingStats)default}));
-                    return (BenchmarkReport)ctorBenchmarkReport.Invoke(new object[] {
-                        true, bc, generateResult, buildResult, executeResults, Array.Empty<Metric>() });
-            });
-            }
+                    (GcStats)default, Array.Empty<Metric>()));
 
             HostEnvironmentInfo hostEnvironmentInfo = HostEnvironmentInfo.GetCurrent();
             // This is the way BDN does it. SummaryStyle.CultureInfo seems to be getting ignored.
