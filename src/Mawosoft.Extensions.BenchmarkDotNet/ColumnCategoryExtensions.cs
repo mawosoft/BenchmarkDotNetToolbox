@@ -17,6 +17,7 @@ using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Toolchains;
 using BenchmarkDotNet.Toolchains.Results;
 using BenchmarkDotNet.Validators;
+using Mawosoft.Extensions.BenchmarkDotNet.ApiCompat;
 
 namespace Mawosoft.Extensions.BenchmarkDotNet
 {
@@ -103,37 +104,20 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
                     1, SummaryStyle.Default) }),
                 DefaultConfig.Instance.CreateImmutableConfig()
                 );
-            GenerateResult generateResult = GenerateResult.Success(ArtifactsPaths.Empty, Array.Empty<string>());
+            GenerateResult generateResult = GenerateResultWrapper.Success();
             BuildResult buildResult = BuildResult.Success(generateResult);
-            // HACK Adjust for breaking API changes. This needs to be separated into a separate compat layer
-            // since it also affects WhatifFilter and further changes may appear at any time.
-            BenchmarkReport benchmarkReport;
-            List<ExecuteResult> executeResults = new();
-            List<Measurement> allMeasurements = new();
-            allMeasurements.Add(new Measurement(1, IterationMode.Workload, IterationStage.Result, 1, 1, 1));
-            GcStats gcStats = default;
+            ExecuteResult[] executeResults = Array.Empty<ExecuteResult>();
+            Measurement[] allMeasurements = new[] {
+                new Measurement(1, IterationMode.Workload, IterationStage.Result, 1, 1, 1)
+            };
             Metric[] metrics = new[] { new Metric(new MockMetricDescriptor(), 1) };
-            try
-            {
-                //benchmarkReport = new(success: true, benchmarkCase, generateResult, buildResult, executeResults,
-                //    allMeasurements, gcStats, metrics);
-                benchmarkReport = (BenchmarkReport)Activator.CreateInstance(typeof(BenchmarkReport),
-                    new object[] { true, benchmarkCase, generateResult, buildResult, executeResults,
-                        allMeasurements, gcStats, metrics });
-            }
-            catch (Exception)
-            {
-                executeResults.Add((ExecuteResult) Activator.CreateInstance(typeof(ExecuteResult),
-                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null,
-                    new object[] { allMeasurements, gcStats, (ThreadingStats) default }, null));
-                benchmarkReport = (BenchmarkReport)Activator.CreateInstance(typeof(BenchmarkReport),
-                    new object[] { true, benchmarkCase, generateResult, buildResult, executeResults, metrics });
-            }
+            BenchmarkReport benchmarkReport = BenchmarkReportWrapper.Create(
+                true, benchmarkCase, generateResult, buildResult, executeResults, allMeasurements,
+                (GcStats)default, metrics);
             return new Summary(
                 string.Empty, ImmutableArray.Create(benchmarkReport), HostEnvironmentInfo.GetCurrent(),
                 string.Empty, string.Empty, TimeSpan.Zero, SummaryExtensions.GetCultureInfo(null),
-                ImmutableArray.Create<ValidationError>()
-                );
+                ImmutableArray.Create<ValidationError>());
         });
 
         // Get the default columns from provider
