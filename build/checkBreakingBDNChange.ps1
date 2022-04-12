@@ -62,7 +62,7 @@ $packageDiffs.Add([PackageDiff]::new('BenchmarkDotNet.Diagnostics.Windows', '0.1
 [string]$nightlyFeed = 'https://ci.appveyor.com/nuget/benchmarkdotnet'
 
 # GitHub data about current workflow run and repository
-[int]$runId = $env:GITHUB_RUN_ID
+[long]$runId = $env:GITHUB_RUN_ID
 [int]$runNumber = $env:GITHUB_RUN_NUMBER
 [string]$ownerRepo = $env:GITHUB_REPOSITORY
 if (-not $runId -or -not $runNumber -or -not $ownerRepo) {
@@ -75,7 +75,7 @@ if (-not $runId -or -not $runNumber -or -not $ownerRepo) {
 [string]$artifactFile = Join-Path $artifactDirectory 'LastChecked.json'
 $null = [Directory]::CreateDirectory($artifactDirectory)
 if ($runNumber -gt 1) {
-    [int]$workflowId = Get-WorkflowId $ownerRepo $runId -Token $GitHubToken
+    [long]$workflowId = Get-WorkflowId $ownerRepo $runId -Token $GitHubToken
     $artifacts = Find-ArtifactsFromPreviousRun $ownerRepo $ArtifactName -WorkflowId $workflowId `
         -MaxRunNumber ($runNumber - 1) -Token $GitHubToken
     if ($artifacts) {
