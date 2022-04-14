@@ -78,7 +78,8 @@ jobs:
       run: |
         . ./build/startNativeExecution.ps1
         Set-Alias exec Start-NativeExecution
-        exec { dotnet restore -bl:./Binlogs/restore.binlog }
+        $BDNNightlyVersion = & ./build/findLatestBdnNightlyVersion.ps1 -Verbose
+        exec { dotnet restore "-p:BDNNightlyVersion=$BDNNightlyVersion" -bl:./Binlogs/restore.binlog }
         # Parallel builds causing trouble here
         exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Debug --no-restore -bl:./Binlogs/build_MEB_debug.binlog }
         exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-restore -bl:./Binlogs/build_MEB_release.binlog }
@@ -132,8 +133,7 @@ jobs:
       run: |
         $tfms = @("net5.0")
         if ($IsWindows) { $tfms += "net461" }
-        $BDNNightlyVersion = & ./build/findLatestBdnNightlyVersion.ps1 -Verbose
-        ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj, ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug, Release -f $tfms -v detailed -r ./TestResults -ff:$${{ strategy.fail-fast }} -a "-p:BDNNightlyVersion=$BDNNightlyVersion"
+        ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj, ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug, Release -f $tfms -v detailed -r ./TestResults -ff:$${{ strategy.fail-fast }}
     - name: Upload Test results
       if: ${{ always() && steps.test.outcome != 'skipped' }}
       uses: actions/upload-artifact@v2
