@@ -30,7 +30,9 @@ steps:
     exec { dotnet build ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj -c Debug --no-restore }
     exec { dotnet build ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug --no-restore }
   displayName: Build
-- pwsh: ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj, ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug -f net5.0 -v detailed -r ./TestResults -s ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/coverlet.runsettings
+- pwsh: |
+    $BDNNightlyVersion = & ./build/findLatestBdnNightlyVersion.ps1 -Verbose
+    ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj, ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug -f net5.0 -v detailed -r ./TestResults -s ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/coverlet.runsettings -a "-p:BDNNightlyVersion=$BDNNightlyVersion"
   displayName: Test
 - task: reportgenerator@5
   condition: succeededOrFailed()

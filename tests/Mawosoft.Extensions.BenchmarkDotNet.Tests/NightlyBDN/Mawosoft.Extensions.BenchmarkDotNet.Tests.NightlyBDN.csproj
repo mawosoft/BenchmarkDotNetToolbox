@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <BDNNightlyVersion Condition="'$(BDNNightlyVersion)' == ''">*-*</BDNNightlyVersion>
     <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
     <RestoreNoCache>true</RestoreNoCache>
     <!-- These work with both msbuild console builds and VStudio 2019 builds.
@@ -14,6 +15,6 @@
 
   <ItemGroup>
     <PackageReference Update ="@(PackageVersion)" Version="%(PackageVersion.Version)"></PackageReference>
-    <PackageReference Update="BenchmarkDotNet" Version="*-*"></PackageReference>
+    <PackageReference Update="BenchmarkDotNet" Version="$(BDNNightlyVersion)"></PackageReference>
   </ItemGroup>
 </Project>

@@ -132,7 +132,8 @@ jobs:
       run: |
         $tfms = @("net5.0")
         if ($IsWindows) { $tfms += "net461" }
-        ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj, ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug, Release -f $tfms -v detailed -r ./TestResults -ff:$${{ strategy.fail-fast }}
+        $BDNNightlyVersion = & ./build/findLatestBdnNightlyVersion.ps1 -Verbose
+        ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj, ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug, Release -f $tfms -v detailed -r ./TestResults -ff:$${{ strategy.fail-fast }} -a "-p:BDNNightlyVersion=$BDNNightlyVersion"
     - name: Upload Test results
       if: ${{ always() && steps.test.outcome != 'skipped' }}
       uses: actions/upload-artifact@v2
