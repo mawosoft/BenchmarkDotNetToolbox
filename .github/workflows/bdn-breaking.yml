@@ -2,6 +2,10 @@ name: Breaking BDN Changes
 
 on:
   workflow_dispatch:
+    inputs:
+      previous-version:
+        description: 'Previous Version Override'
+        type: string
   schedule:
   - cron: '0 5 * * *'
 
@@ -21,7 +25,7 @@ jobs:
       id: breaking
       run: |
         $token = ConvertTo-SecureString ${{ secrets.GITHUB_TOKEN }} -AsPlainText
-        ./build/checkBreakingBDNChange.ps1 -Token $token
+        ./build/checkBreakingBDNChange.ps1 -Token $token -PreviousVersionOverride '${{ github.event.inputs.previous-version }}'
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:

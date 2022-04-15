@@ -24,9 +24,14 @@ param (
     [Parameter(Mandatory)]
     [Alias('Token', 't')]
     [securestring]$GitHubToken,
+
+    [Alias('pvo')]
+    [string]$PreviousVersionOverride,
+
     [ValidateNotNullOrEmpty()]
     [Alias('Artifact', 'a')]
     [string]$ArtifactName = 'BreakingBDNChange',
+
     [Alias('Labels', 'l')]
     [string[]]$IssueLabels = @('BDN change')
 )
@@ -89,10 +94,35 @@ if ($runNumber -gt 1) {
     }
 }
 
+# Use override vor previous version if specified
+if ($PreviousVersionOverride) {
+    Write-Host "::warning::Overriding previous version $(
+        $packageDiffs | Select-Object PreviousVersion -Unique | 
+                        Join-String PreviousVersion -Separator ', '
+    ) with $PreviousVersionOverride"
+    $packageDiffs | ForEach-Object {
+        $_.PreviousVersion = $PreviousVersionOverride
+    }
+}
+
 # Find latest versions and run new comparisons if necessary
+
 Write-Host "Searching for latest package versions..."
+[string]$currentVersion = & "$PSSCriptRoot/findLatestBdnNightlyVersion.ps1" -Verbose
+if ($currentVersion) {
+    $packageDiffs | ForEach-Object {
+        $_.CurrentVersion = $currentVersion
+    }
+}
+
 $packageDiffs | ForEach-Object {
-    [SoftwareIdentity]$currentPkg = Find-Package $_.Name -Source $nightlyFeed -AllowPrereleaseVersions
+    [SoftwareIdentity]$currentPkg = $null
+    if ($_.CurrentVersion) {
+        $currentPkg = Find-Package $_.Name -RequiredVersion $_.CurrentVersion -Source $nightlyFeed
+    }
+    else {
+        $currentPkg = Find-Package $_.Name -Source $nightlyFeed -AllowPrereleaseVersions
+    }
     $_.CurrentVersion = $currentPkg.Version
     Write-Host "$($_.Name) $($_.CurrentVersion)" -NoNewline
     if ($_.CurrentVersion -eq $_.PreviousVersion) {
@@ -106,7 +136,7 @@ $packageDiffs | ForEach-Object {
             Write-Host " (was $($_.PreviousVersion))"
             if ([NuGet.Versioning.NuGetVersion]$_.CurrentVersion -lt
                 [NuGet.Versioning.NuGetVersion]$_.PreviousVersion) {
-                throw "Find-Package failed to find latest version."
+                throw "Latest version is lower than previous version."
             }
             [SoftwareIdentity]$previousPkg = Find-Package $_.Name -RequiredVersion $_.PreviousVersion `
                 -Source $nightlyFeed
