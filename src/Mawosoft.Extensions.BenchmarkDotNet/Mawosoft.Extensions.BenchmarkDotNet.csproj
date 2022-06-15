@@ -20,6 +20,8 @@
     <DebugType>embedded</DebugType>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <PackageReleaseNotes></PackageReleaseNotes>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageValidationBaselineVersion>0.2.1</PackageValidationBaselineVersion>
   </PropertyGroup>
 
   <ItemGroup>
