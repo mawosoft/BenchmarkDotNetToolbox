@@ -1,0 +1,127 @@
+name: BDN API Compatibility Check
+
+on:
+  workflow_dispatch:
+    inputs:
+      previous-version:
+        description: 'Previous Version Override'
+        type: string
+      issue-type:
+        description: 'Issue Type'
+        type: choice
+        default: ReportAndSummary
+        options:
+        - Report
+        - ReportAndSummary
+        - Summary
+        - None
+
+  schedule:
+  - cron: '0 5 * * *'
+
+defaults:
+  run:
+    shell: pwsh
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  ApiCompat:
+    outputs:
+      LastCheckedVersion: ${{ steps.apicompat.outputs.LastCheckedVersion }}
+      IssueNumber: ${{ steps.apicompat.outputs.IssueNumber }}
+      IsBreaking: ${{ steps.apicompat.outputs.IsBreaking }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+    - name: Check BDN API Compatibility
+      id: apicompat
+      run: |
+        $token = ConvertTo-SecureString ${{ secrets.GITHUB_TOKEN }} -AsPlainText
+        $issueType = '${{ github.event.inputs.issue-type }}'
+        if (-not $issueType) { $issueType = 'ReportAndSummary' }
+        ./build/checkBdnApiCompatibility.ps1 -Token $token -IssueType $issueType -PreviousVersionOverride '${{ github.event.inputs.previous-version }}'
+    - name: Upload Status
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ steps.apicompat.outputs.StatusArtifactName }}
+        path: ${{ steps.apicompat.outputs.StatusArtifactPath }}
+        retention-days: 5
+    - name: Upload Logs
+      if: ${{ steps.apicompat.outputs.LogArtifactName != '' }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ steps.apicompat.outputs.LogArtifactName }}
+        path: ${{ steps.apicompat.outputs.LogArtifactPath }}
+
+  Test:
+    needs: ApiCompat
+    if: ${{ needs.ApiCompat.outputs.IsBreaking == 'true' }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest]
+      fail-fast: true
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+    - name: DotNet Info
+      run: dotnet --info
+    - name: Build
+      run: |
+        . ./build/startNativeExecution.ps1
+        Set-Alias exec Start-NativeExecution
+        $BDNNightlyVersion = '${{ needs.ApiCompat.outputs.LastCheckedVersion }}'
+        exec { dotnet restore "-p:BDNNightlyVersion=$BDNNightlyVersion" -bl:./Binlogs/restore.binlog }
+        # Parallel builds causing trouble here
+        exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Debug --no-restore -bl:./Binlogs/build_MEB_debug.binlog }
+        exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-restore -bl:./Binlogs/build_MEB_release.binlog }
+        exec { dotnet build -c Debug --no-restore -bl:./Binlogs/build_debug.binlog /p:BuildDocFx=false }
+        exec { dotnet build -c Release --no-restore -bl:./Binlogs/build_release.binlog /p:BuildDocFx=false }
+    - name: Upload Binlogs
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.os }}-Binlogs
+        path: ./Binlogs/
+    - name: Test
+      id: test
+      run: |
+        $tfms = @("net5.0")
+        if ($IsWindows) { $tfms += "net461" }
+        ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj, ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug, Release -f $tfms -v detailed -r ./TestResults -ff:$${{ strategy.fail-fast }}
+    - name: Upload Test results
+      if: ${{ failure() && steps.test.outcome != 'skipped' }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.os }}-Testresults
+        path: ./TestResults/
+
+  Feedback:
+    needs: [ApiCompat, Test]
+    if: ${{ always() && needs.ApiCompat.outputs.IssueNumber != '' }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Update Issue with Test Status
+      run: |
+        $uri = 'https://api.github.com/repos/${{ github.repository }}/issues/${{ needs.ApiCompat.outputs.IssueNumber }}'
+        $auth = @{
+          Authentication = 'Bearer'
+          Token = (ConvertTo-SecureString ${{ secrets.GITHUB_TOKEN }} -AsPlainText)
+        }
+        $response = Invoke-RestMethod -Uri $uri @auth
+        $find = 'Test%20Run-pending-lightgrey'
+        $replace = '${{ needs.Test.result }}' -eq 'success' ? 'Test%20Run-succeeded-4FCA5D' : 'Test%20Run-failed-CC1A4B'
+        $body = $response.body
+        $pos = $body.IndexOf($find)
+        $body = $body.Substring(0, $pos) + $replace + $body.Substring($pos + $find.Length)
+        $param = @{ body = $body }
+        $response = $param | ConvertTo-Json -EscapeHandling EscapeNonAscii | Invoke-RestMethod -Uri $uri -Method Patch @auth
