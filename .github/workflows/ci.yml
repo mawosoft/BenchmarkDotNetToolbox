@@ -49,7 +49,8 @@ jobs:
     - name: Prepare Build matrix
       id: prep
       run: |
-        $os = "[""windows-latest"", ""ubuntu-latest"", ""macos-latest""]"
+        #$os = "[""windows-latest"", ""ubuntu-latest"", ""macos-latest""]"
+        $os = "[""ubuntu-latest""]"
         if ($${{ github.event.inputs.os != 'matrix' && github.event.inputs.os != '' }}) {
           $os = "[""${{ github.event.inputs.os }}""]"
         }
@@ -82,10 +83,11 @@ jobs:
         exec { dotnet restore "-p:BDNNightlyVersion=$BDNNightlyVersion" -bl:./Binlogs/restore.binlog }
         # Parallel builds causing trouble here
         exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Debug --no-restore -bl:./Binlogs/build_MEB_debug.binlog }
-        exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-restore -bl:./Binlogs/build_MEB_release.binlog }
-        exec { dotnet build -c Debug --no-restore -bl:./Binlogs/build_debug.binlog }
-        exec { dotnet build -c Release --no-restore -bl:./Binlogs/build_release.binlog /p:BuildDocFx=false }
-        exec { dotnet pack ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-build -o ./Packages -bl:./Binlogs/pack.binlog }
+        exec { dotnet build .docs/docs.csproj -c Debug --no-restore -bl:./Binlogs/build_docs_debug.binlog }
+        #exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-restore -bl:./Binlogs/build_MEB_release.binlog }
+        #exec { dotnet build -c Debug --no-restore -bl:./Binlogs/build_debug.binlog }
+        #exec { dotnet build -c Release --no-restore -bl:./Binlogs/build_release.binlog /p:BuildDocFx=false }
+        #exec { dotnet pack ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-build -o ./Packages -bl:./Binlogs/pack.binlog }
     - name: Upload Binlogs
       if: ${{ failure() || github.event_name == 'workflow_dispatch' }}
       uses: actions/upload-artifact@v2
@@ -93,7 +95,7 @@ jobs:
         name: ${{ matrix.os }}-Binlogs
         path: ./Binlogs/
     - name: Upload Packages
-      if: ${{ matrix.os == 'ubuntu-latest' || strategy.job-total == 1 }}
+      if: false #${{ matrix.os == 'ubuntu-latest' || strategy.job-total == 1 }}
       uses: actions/upload-artifact@v2
       with:
         name: Packages
@@ -129,7 +131,7 @@ jobs:
         Write-Host "::set-output name=release::$release"
     - name: Test
       id: test
-      if: ${{ github.event.inputs.skip-tests != 'true' }}
+      if: false #${{ github.event.inputs.skip-tests != 'true' }}
       run: |
         $tfms = @("net5.0")
         if ($IsWindows) { $tfms += "net461" }
