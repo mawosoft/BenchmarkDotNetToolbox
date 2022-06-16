@@ -75,6 +75,12 @@ jobs:
         fetch-depth: 0
     - name: DotNet Info
       run: dotnet --info
+    - name: DotNet Setup
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+    - name: DotNet Info
+      run: dotnet --info
     - name: Build
       env:
         MSBuildDebugEngine: 1
