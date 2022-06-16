@@ -50,7 +50,7 @@ jobs:
       id: prep
       run: |
         #$os = "[""windows-latest"", ""ubuntu-latest"", ""macos-latest""]"
-        $os = "[""ubuntu-latest""]"
+        $os = "[""macos-latest""]"
         if ($${{ github.event.inputs.os != 'matrix' && github.event.inputs.os != '' }}) {
           $os = "[""${{ github.event.inputs.os }}""]"
         }
@@ -97,8 +97,6 @@ jobs:
         name: ${{ matrix.os }}-Binlogs
         path: |
           **/MSBuild_Logs/*
-          ./docs/MSBuild_Logs/*
-          ./docs/**/MSBuild_Logs/*
     - name: Upload Packages
       if: false #${{ matrix.os == 'ubuntu-latest' || strategy.job-total == 1 }}
       uses: actions/upload-artifact@v2
