@@ -97,8 +97,8 @@ jobs:
         name: ${{ matrix.os }}-Binlogs
         path: |
           **/MSBuild_Logs/*
-          ./**/MSBuild_Logs/*
-          */**/MSBuild_Logs/*
+          ./docs/MSBuild_Logs/*
+          ./docs/**/MSBuild_Logs/*
     - name: Upload Packages
       if: false #${{ matrix.os == 'ubuntu-latest' || strategy.job-total == 1 }}
       uses: actions/upload-artifact@v2
