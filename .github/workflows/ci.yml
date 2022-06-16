@@ -83,7 +83,8 @@ jobs:
         # Parallel builds causing trouble here
         exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Debug --no-restore -bl:./Binlogs/build_MEB_debug.binlog }
         exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-restore -bl:./Binlogs/build_MEB_release.binlog }
-        exec { dotnet build -c Debug --no-restore -bl:./Binlogs/build_debug.binlog }
+        # DocFx build temporarly disabled for -c Debug
+        exec { dotnet build -c Debug --no-restore -bl:./Binlogs/build_debug.binlog /p:BuildDocFx=false }
         exec { dotnet build -c Release --no-restore -bl:./Binlogs/build_release.binlog /p:BuildDocFx=false }
         exec { dotnet pack ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-build -o ./Packages -bl:./Binlogs/pack.binlog }
     - name: Upload Binlogs
@@ -99,7 +100,8 @@ jobs:
         name: Packages
         path: ./Packages/
     - name: Upload Docs Website
-      if: ${{ matrix.os == 'ubuntu-latest' || strategy.job-total == 1 }}
+      # DocFx build temporarly disabled
+      if: false # ${{ matrix.os == 'ubuntu-latest' || strategy.job-total == 1 }}
       uses: actions/upload-artifact@v2
       with:
         name: DocsWebsite
