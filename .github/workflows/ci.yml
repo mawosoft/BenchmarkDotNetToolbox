@@ -83,7 +83,7 @@ jobs:
         exec { dotnet restore "-p:BDNNightlyVersion=$BDNNightlyVersion" -bl:./Binlogs/restore.binlog }
         # Parallel builds causing trouble here
         exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Debug --no-restore -bl:./Binlogs/build_MEB_debug.binlog }
-        exec { dotnet build .docs/docs.csproj -c Debug --no-restore -bl:./Binlogs/build_docs_debug.binlog }
+        exec { dotnet build ./docs/docs.csproj -c Debug --no-restore -bl:./Binlogs/build_docs_debug.binlog }
         #exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-restore -bl:./Binlogs/build_MEB_release.binlog }
         #exec { dotnet build -c Debug --no-restore -bl:./Binlogs/build_debug.binlog }
         #exec { dotnet build -c Release --no-restore -bl:./Binlogs/build_release.binlog /p:BuildDocFx=false }
