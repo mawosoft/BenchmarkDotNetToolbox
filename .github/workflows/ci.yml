@@ -74,25 +74,34 @@ jobs:
         fetch-depth: 0
     - name: DotNet Info
       run: dotnet --info
+    - name: DotNet Setup
+      if: ${{ matrix.os == 'macos-latest' }}
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x      
+    - name: DotNet Info
+      if: ${{ matrix.os == 'macos-latest' }}
+      run: dotnet --info
     - name: Build
+      env:
+        MSBuildDebugEngine: 1 # Auto-creates binlogs in ./MSBuild_Logs
       run: |
         . ./build/startNativeExecution.ps1
         Set-Alias exec Start-NativeExecution
-        $BDNNightlyVersion = & ./build/findLatestBdnNightlyVersion.ps1 -Verbose
-        exec { dotnet restore "-p:BDNNightlyVersion=$BDNNightlyVersion" -bl:./Binlogs/restore.binlog }
+        $BdnNightlyVersion = & ./build/findLatestBdnNightlyVersion.ps1 -Verbose
+        exec { dotnet restore "-p:BDNNightlyVersion=$BdnNightlyVersion" }
         # Parallel builds causing trouble here
-        exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Debug --no-restore -bl:./Binlogs/build_MEB_debug.binlog }
-        exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-restore -bl:./Binlogs/build_MEB_release.binlog }
-        # DocFx build temporarly disabled for -c Debug
-        exec { dotnet build -c Debug --no-restore -bl:./Binlogs/build_debug.binlog /p:BuildDocFx=false }
-        exec { dotnet build -c Release --no-restore -bl:./Binlogs/build_release.binlog /p:BuildDocFx=false }
-        exec { dotnet pack ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-build -o ./Packages -bl:./Binlogs/pack.binlog }
+        exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Debug --no-restore }
+        exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-restore }
+        exec { dotnet build -c Debug --no-restore }
+        exec { dotnet build -c Release --no-restore }
+        exec { dotnet pack ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-build -o ./Packages }
     - name: Upload Binlogs
       if: ${{ failure() || github.event_name == 'workflow_dispatch' }}
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}-Binlogs
-        path: ./Binlogs/
+        path: '**/MSBuild_Logs/*'
     - name: Upload Packages
       if: ${{ matrix.os == 'ubuntu-latest' || strategy.job-total == 1 }}
       uses: actions/upload-artifact@v2
@@ -100,8 +109,7 @@ jobs:
         name: Packages
         path: ./Packages/
     - name: Upload Docs Website
-      # DocFx build temporarly disabled
-      if: false # ${{ matrix.os == 'ubuntu-latest' || strategy.job-total == 1 }}
+      if: ${{ matrix.os == 'ubuntu-latest' || strategy.job-total == 1 }}
       uses: actions/upload-artifact@v2
       with:
         name: DocsWebsite
