@@ -31,14 +31,11 @@
 #>
 
 #Requires -Version 7
-#Requires -Modules PackageManagement
 
 using namespace System
 using namespace System.IO
 using namespace System.Collections.Generic
 using namespace System.Text
-#using module PackageManagement
-using namespace Microsoft.PackageManagement.Packaging
 
 
 [CmdletBinding()]
@@ -72,6 +69,7 @@ $ErrorActionPreference = 'Stop'
 
 Import-Module "$PSScriptRoot/ApiCompat/ApiCompatHelper.psm1" -Force
 Import-Module "$PSScriptRoot/GitHubHelper.psm1" -Force
+. "$PSScriptRoot/startNativeExecution.ps1"
 
 # .SYNOPSIS
 #   General BDN package descriptor
@@ -90,6 +88,8 @@ class BdnPackageSet {
     static [string]$BaselineFeed = 'https://api.nuget.org/v3/index.json'
     static [string]$NightlyFeed = 'https://ci.appveyor.com/nuget/benchmarkdotnet'
     static [string]$BaselineVersion = '0.13.1'
+    static [string]$DownloadProjectFilePath = (Join-Path $script:PSScriptRoot "ApiCompat/BdnDownload/BdnDownload.proj")
+    static [string]$NugetPackageRootPath = (Join-Path ([Environment]::GetFolderPath('UserProfile')) '.nuget/packages')
     static [ValidateNotNullOrEmpty()][BdnPackageInfo[]]$Infos = @(
         [BdnPackageInfo]::new('BenchmarkDotNet')
         [BdnPackageInfo]::new('BenchmarkDotNet.Annotations')
@@ -99,40 +99,40 @@ class BdnPackageSet {
     [ValidateNotNullOrEmpty()][string]$Version
     [List[string]]$AssemblyFilePaths
     [List[string]]$AssemblyDirectoryPaths
-    [List[SoftwareIdentity]]$Packages
-    hidden [ValidateNotNullOrEmpty()][string]$_destination
 
-    BdnPackageSet([string]$version, [string]$destination) {
+    BdnPackageSet([string]$version) {
         $this.Version = $version
-        $this._destination = $destination
     }
 
     [bool]IsRestored() {
-        return $this.Packages?.Count -gt 0
+        if (-not $this.AssemblyFilePaths -or -not $this.AssemblyDirectoryPaths) {
+            $this.AssemblyFilePaths = [List[string]]::new()
+            $this.AssemblyDirectoryPaths = [List[string]]::new()
+            foreach ($info in [BdnPackageSet]::Infos) {
+                [string]$pkgdir = Join-Path ([BdnPackageSet]::NugetPackageRootPath) "$($info.Name)/$($this.Version)"
+                foreach ($path in $info.RelativeAsmPaths) {
+                    [string]$fullFilePath = Join-Path $pkgdir $path
+                    $this.AssemblyFilePaths.Add($fullFilePath)
+                    [string]$fullDirPath = Split-Path $fullFilePath -Parent
+                    if ($this.AssemblyDirectoryPaths -notcontains $fullDirPath) {
+                        $this.AssemblyDirectoryPaths.Add($fullDirPath)
+                    }
+                }
+            }
+        }
+        foreach ($path in $this.AssemblyFilePaths) {
+            if (-not (Test-Path $path)) { return $false }
+        }
+        return $true
     }
 
     [void]Restore() {
         [string]$feed = $this.Version -eq [BdnPackageSet]::BaselineVersion ? [BdnPackageSet]::BaselineFeed : [BdnPackageSet]::NightlyFeed
-        $this.Packages = [List[SoftwareIdentity]]::new()
         $this.AssemblyFilePaths = [List[string]]::new()
         $this.AssemblyDirectoryPaths = [List[string]]::new()
-        foreach ($info in [BdnPackageSet]::Infos) {
-            [SoftwareIdentity]$pkg = Get-Package $info.Name -RequiredVersion $this.Version -Destination $this._destination -ErrorAction Ignore
-            if (-not $pkg) {
-                $pkg = Find-Package $info.Name -RequiredVersion $this.Version -Source $feed
-                $pkg = Install-Package $pkg -SkipDependencies -Force -Destination $this._destination
-                $pkg = Get-Package -Name $pkg.Name -RequiredVersion $pkg.Version -Destination $this._destination
-            }
-            $this.Packages.Add($pkg)
-            [string]$pkgdir = Split-Path $pkg.Source -Parent
-            foreach ($path in $info.RelativeAsmPaths) {
-                [string]$fullFilePath = Join-Path $pkgdir $path
-                $this.AssemblyFilePaths.Add($fullFilePath)
-                [string]$fullDirPath = Split-Path $fullFilePath -Parent
-                if ($this.AssemblyDirectoryPaths -notcontains $fullDirPath) {
-                    $this.AssemblyDirectoryPaths.Add($fullDirPath)
-                }
-            }
+        Start-NativeExecution { dotnet restore ([BdnPackageSet]::DownloadProjectFilePath) "-p:BdnFeed=$feed" "-p:BdnVersion=$($this.Version)" } -VerboseOutputOnError
+        if (-not $this.IsRestored()) {
+            throw "Restore of $($this.Name) $($this.Version) failed."
         }
     }
 }
@@ -450,10 +450,6 @@ if (-not $env:GITHUB_RUN_ID -or -not $env:GITHUB_RUN_NUMBER -or -not $env:GITHUB
     throw "GitHub environment variables are not defined."
 }
 
-# Don't use '.nuget/packages' here. Powershell package management uses a different layout.
-[string]$packageDirectory = Join-Path ([Path]::GetTempPath()) ([Path]::GetRandomFileName())
-$null = New-Item $packageDirectory -ItemType 'Directory' -Force
-
 # Prepare artifacts
 [hashtable]$lastRunStatus = @{
     LastCheckedVersion = [BdnPackageSet]::BaselineVersion
@@ -513,14 +509,14 @@ if ($latestVersion -eq $previousVersion) {
 else {
     [List[string]]$notice = [List[string]]::new()
     Write-Host "Comparing BDN $previousVersion with latest version $latestVersion"
-    [BdnPackageSet]$latestSet = [BdnPackageSet]::new($latestVersion, $packageDirectory)
-    [BdnPackageSet]$previousSet = [BdnPackageSet]::new($previousVersion, $packageDirectory)
+    [BdnPackageSet]$latestSet = [BdnPackageSet]::new($latestVersion)
+    [BdnPackageSet]$previousSet = [BdnPackageSet]::new($previousVersion)
     [DiffReport]$incrementalReport = [DiffRunner]::new($previousSet, $latestSet).RunAll($true, '  ')
     $notice.Add("BDN $previousVersion vs. ${latestVersion}: $($incrementalReport.GetStatusText())")
     [DiffReport]$baselineReport = $null
     if ($incrementalReport.IsBreaking() -or $FullCompare.IsPresent -and $previousVersion -ne [BdnPackageSet]::BaselineVersion) {
         Write-Host "Comparing BDN $([BdnPackageSet]::BaselineVersion) with latest version $latestVersion"
-        [BdnPackageSet]$baselineSet = [BdnPackageSet]::new([BdnPackageSet]::BaselineVersion, $packageDirectory)
+        [BdnPackageSet]$baselineSet = [BdnPackageSet]::new([BdnPackageSet]::BaselineVersion)
         $baselineReport = [DiffRunner]::new($baselineSet, $latestSet).RunAll($true, '  ')
         $notice.Add("BDN $([BdnPackageSet]::BaselineVersion) vs. ${latestVersion}: $($baselineReport.GetStatusText())")
     }

@@ -24,8 +24,8 @@ $ErrorActionPreference = 'Stop'
 [string]$script:AsmDiffDll = $null
 [string]$script:ApiCompatDll = $null
 
-[string]$restoreProjectFilePath = Join-Path $PSScriptRoot "ApiCompatRestore.proj"
-[string]$restoreNugetFilePath = Join-Path $PSScriptRoot "obj/ApiCompatRestore.proj.nuget.g.props"
+[string]$restoreProjectFilePath = Join-Path $PSScriptRoot "ToolRestore/ToolRestore.proj"
+[string]$restoreNugetFilePath = Join-Path $PSScriptRoot "ToolRestore/obj/ToolRestore.proj.nuget.g.props"
 [string]$symbolWithAttributeFinderPath = Join-Path $PSScriptRoot "SymbolWithAttributeFinder.cs"
 
 # .SYNOPSIS
@@ -46,7 +46,7 @@ function Install-ApiCompatTools {
     }
     if (-not $script:AsmDiffDll -or -not $script:ApiCompatDll) {
         if (-not (Test-Path $restoreNugetFilePath -PathType Leaf)) {
-            Start-NativeExecution { dotnet restore $restoreProjectFilePath }
+            Start-NativeExecution { dotnet restore $restoreProjectFilePath -bl } -VerboseOutputOnError
         }
         [XmlNode]$docElem = (Select-Xml -Path $restoreNugetFilePath -XPath '/*').Node
         [hashtable]$xmlns = @{ ns = $docElem.NamespaceURI }

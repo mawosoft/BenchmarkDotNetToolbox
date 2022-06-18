@@ -1,0 +1,29 @@
+<!-- Copyright (c) 2022 Matthias Wolf, Mawosoft. -->
+<Project>
+
+  <PropertyGroup>
+    <ImportDirectoryBuildProps>false</ImportDirectoryBuildProps>
+    <ImportDirectoryPackagesProps>false</ImportDirectoryPackagesProps>
+    <ImportDirectoryBuildTargets>false</ImportDirectoryBuildTargets>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <NoBuild>true</NoBuild>
+    <RestoreSources>$(BdnFeed)</RestoreSources>
+    <RestoreRootConfigDirectory>$(MSBuildThisFileDirectory)</RestoreRootConfigDirectory>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageDownload Include="BenchmarkDotNet" Version="[$(BdnVersion)]" />
+    <PackageDownload Include="BenchmarkDotNet.Annotations" Version="[$(BdnVersion)]" />
+    <PackageDownload Include="BenchmarkDotNet.Diagnostics.Windows" Version="[$(BdnVersion)]" />
+  </ItemGroup>
+
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+
+</Project>
