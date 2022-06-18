@@ -46,7 +46,7 @@ function Install-ApiCompatTools {
     }
     if (-not $script:AsmDiffDll -or -not $script:ApiCompatDll) {
         if (-not (Test-Path $restoreNugetFilePath -PathType Leaf)) {
-            Start-NativeExecution { dotnet restore $restoreProjectFilePath -bl } -VerboseOutputOnError
+            Start-NativeExecution { dotnet restore $restoreProjectFilePath } -VerboseOutputOnError
         }
         [XmlNode]$docElem = (Select-Xml -Path $restoreNugetFilePath -XPath '/*').Node
         [hashtable]$xmlns = @{ ns = $docElem.NamespaceURI }

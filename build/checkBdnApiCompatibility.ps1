@@ -109,7 +109,7 @@ class BdnPackageSet {
             $this.AssemblyFilePaths = [List[string]]::new()
             $this.AssemblyDirectoryPaths = [List[string]]::new()
             foreach ($info in [BdnPackageSet]::Infos) {
-                [string]$pkgdir = Join-Path ([BdnPackageSet]::NugetPackageRootPath) "$($info.Name)/$($this.Version)"
+                [string]$pkgdir = Join-Path ([BdnPackageSet]::NugetPackageRootPath) "$($info.Name.ToLower())/$($this.Version)"
                 foreach ($path in $info.RelativeAsmPaths) {
                     [string]$fullFilePath = Join-Path $pkgdir $path
                     $this.AssemblyFilePaths.Add($fullFilePath)
@@ -542,7 +542,7 @@ else {
         Write-Host "::set-output name=IsBreaking::true"
     }
 
-    if ($IssueType -ne 'None' -and $incrementalReport.IsBreaking() -or ${baselineReport}?.IsBreaking() -or $DebugIsPresent) {
+    if ($IssueType -ne 'None' -and ($incrementalReport.IsBreaking() -or ${baselineReport}?.IsBreaking() -or $DebugIsPresent)) {
         [string]$incrementalIssue = $null
         [string]$baselineIssue = $null
         $incrementalReport.AddWorkflowHeader($env:GITHUB_REPOSITORY, $workflowId, $env:GITHUB_RUN_ID, $BadgeUri, $GitHubToken)
