@@ -63,7 +63,7 @@ namespace ColumnDisplaySamples
         {
             // There are easier ways to specify Runtime and ToolChain for a job.
             // This however mimics the way jobs are created from the command line option
-            //     --runtimes net48 netcoreapp3.1 net5.0
+            //     --runtimes net48 netcoreapp3.1 net6.0
             // with the first specified runtime becoming the baseline.
             // But we are using Job.Dry as the base job here for minimal duration.
             public SampleConfig() : base() =>
@@ -76,9 +76,9 @@ namespace ColumnDisplaySamples
                            .WithToolchain(CsProjCoreToolchain.From(new NetCoreAppSettings(
                                "netcoreapp3.1", null, "netcoreapp3.1")))
                            .UnfreezeCopy(),
-                    Job.Dry.WithRuntime(CoreRuntime.Core50)
+                    Job.Dry.WithRuntime(CoreRuntime.Core60)
                            .WithToolchain(CsProjCoreToolchain.From(new NetCoreAppSettings(
-                               "net5.0", null, "net5.0")))
+                               "net6.0", null, "net6.0")))
                            .UnfreezeCopy()
                     );
         }

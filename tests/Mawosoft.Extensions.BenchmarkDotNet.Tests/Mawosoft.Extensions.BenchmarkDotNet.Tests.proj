@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;$(NetFxTfm)</TargetFrameworks>
+    <TargetFrameworks>net6.0;$(NetFxTfm)</TargetFrameworks>
     <RootNamespace>Mawosoft.Extensions.BenchmarkDotNet.Tests</RootNamespace>
   </PropertyGroup>
 

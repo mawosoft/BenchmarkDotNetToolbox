@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net5.0;netcoreapp3.1;$(NetFxTfm)</TargetFrameworks>
+    <TargetFrameworks>net6.0;netcoreapp3.1;$(NetFxTfm)</TargetFrameworks>
   </PropertyGroup>
 
 </Project>
