@@ -31,19 +31,19 @@ steps:
     exec { dotnet build ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj -c Debug --no-restore }
     exec { dotnet build ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug --no-restore }
   displayName: Build
-- pwsh: ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj, ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug -f net5.0 -v detailed -r ./TestResults -s ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/coverlet.runsettings
+- pwsh: ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj, ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug -f net6.0 -v detailed -r ./TestResults -s ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/coverlet.runsettings
   displayName: Test
 - task: reportgenerator@5
   condition: succeededOrFailed()
   inputs:
-    reports: ./TestResults/*/Debug/net5.0/*.xml
+    reports: ./TestResults/*/Debug/net6.0/*.xml
     targetdir: ./TestResults/report
     reporttypes: Cobertura;HtmlInline_AzurePipelines
 - task: PublishTestResults@2
   condition: succeededOrFailed()
   inputs:
     testResultsFormat: VSTest
-    testResultsFiles: '*/Debug/net5.0/*.trx'
+    testResultsFiles: '*/Debug/net6.0/*.trx'
     searchFolder: ./TestResults
     publishRunAttachments: false
 - task: PublishCodeCoverageResults@1
