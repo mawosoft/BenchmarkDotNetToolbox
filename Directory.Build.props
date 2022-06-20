@@ -27,7 +27,7 @@
     <Company>Mawosoft</Company>
     <Product>Mawosoft.Extensions.BenchmarkDotNet</Product>
     <Copyright>Copyright (c) 2021-2022 Matthias Wolf, Mawosoft</Copyright>
-    <Version>0.2.2</Version>
+    <Version>0.2.3-dev</Version>
   </PropertyGroup>
 
   <ItemGroup>

@@ -109,7 +109,7 @@ class BdnPackageSet {
             $this.AssemblyFilePaths = [List[string]]::new()
             $this.AssemblyDirectoryPaths = [List[string]]::new()
             foreach ($info in [BdnPackageSet]::Infos) {
-                [string]$pkgdir = Join-Path ([BdnPackageSet]::NugetPackageRootPath) "$($info.Name.ToLower())/$($this.Version)"
+                [string]$pkgdir = Join-Path ([BdnPackageSet]::NugetPackageRootPath) "$($info.Name.ToLowerInvariant())/$($this.Version.ToLowerInvariant())"
                 foreach ($path in $info.RelativeAsmPaths) {
                     [string]$fullFilePath = Join-Path $pkgdir $path
                     $this.AssemblyFilePaths.Add($fullFilePath)
