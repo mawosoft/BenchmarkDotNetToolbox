@@ -182,5 +182,3 @@ else {
     Write-Host "::set-output name=IssueNumber::$($issue.number)"
     Write-Host "::notice::Created Tool Dependency Alert. Issue #$($issue.number): $($issue.html_url)"
 }
-
-

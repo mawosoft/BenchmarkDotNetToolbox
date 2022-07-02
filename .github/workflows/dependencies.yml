@@ -20,7 +20,10 @@ jobs:
     - name: dotnet Version
       run: dotnet --version
     - name: Restore
-      run: dotnet restore
+      run: |
+        . ./build/startNativeExecution.ps1
+        $BdnNightlyVersion = & ./build/findLatestBdnNightlyVersion.ps1 -Verbose
+        Start-NativeExecution { dotnet restore "-p:BDNNightlyVersion=$BdnNightlyVersion" }
     - name: Check project dependencies
       id: dependencies
       run: ./build/checkDependencies.ps1 -Token (ConvertTo-SecureString ${{ secrets.GITHUB_TOKEN }} -AsPlainText)

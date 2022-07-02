@@ -192,7 +192,7 @@ if ($diffToplevel -or $diffTransitive -or (-not $previousResult -and ($toplevel 
     $uri = "https://api.github.com/repos/$env:GITHUB_REPOSITORY/issues"
     $issue = $params | ConvertTo-Json -EscapeHandling EscapeNonAscii | Invoke-RestMethod -Uri $uri -Method Post @auth
     Write-Host "::set-output name=IssueNumber::$($issue.number)"
-    $notice.Add("Created Dependency Alert. Issue #$($issue.number)")
+    $notice.Add("Created Dependency Alert. Issue #$($issue.number): $($issue.html_url)")
 }
 if ($notice.Count -gt 0) {
     # Note: While %0A will appear as newline in the console log,
