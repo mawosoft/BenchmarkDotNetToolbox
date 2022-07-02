@@ -21,14 +21,21 @@ jobs:
       run: dotnet --version
     - name: Restore
       run: dotnet restore
-    - name: Check dependencies
+    - name: Check project dependencies
       id: dependencies
-      run: |
-        $token = ConvertTo-SecureString ${{ secrets.GITHUB_TOKEN }} -AsPlainText
-        ./build/checkDependencies.ps1 -Token $token
+      run: ./build/checkDependencies.ps1 -Token (ConvertTo-SecureString ${{ secrets.GITHUB_TOKEN }} -AsPlainText)
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
         name: ${{ steps.dependencies.outputs.ArtifactName }}
         path: ${{ steps.dependencies.outputs.ArtifactPath }}
+        retention-days: 5
+    - name: Check tool dependencies
+      id: tooldependencies
+      run: ./build/checkToolDependencies.ps1 -Token (ConvertTo-SecureString ${{ secrets.GITHUB_TOKEN }} -AsPlainText)
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ steps.tooldependencies.outputs.ArtifactName }}
+        path: ${{ steps.tooldependencies.outputs.ArtifactPath }}
         retention-days: 5
