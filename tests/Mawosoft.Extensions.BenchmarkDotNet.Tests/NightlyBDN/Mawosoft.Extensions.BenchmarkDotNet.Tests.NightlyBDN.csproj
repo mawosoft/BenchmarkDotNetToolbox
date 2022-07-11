@@ -17,4 +17,19 @@
     <PackageReference Update ="@(PackageVersion)" Version="%(PackageVersion.Version)"></PackageReference>
     <PackageReference Update="BenchmarkDotNet" Version="$(BDNNightlyVersion)"></PackageReference>
   </ItemGroup>
+
+  <Target Name="FindBdnNightly" Condition="'$(BDNNightlyVersion)' == '' or '$(BDNNightlyVersion)' == '*-*'"  BeforeTargets="CollectPackageReferences">
+    <!-- Last ditch effort to select proper BDN nightly. Consider showing a warning only if Condition="'$(BuildingInsideVisualStudio)' != 'true'"  -->
+    <Warning Text="BDNNightlyVersion should be set as environment variable to avoid multiple lookups during restore/build." />
+    <Exec Command="pwsh -NonInteractive -Command &quot;&amp; '$(MSBuildThisFileDirectory)../../../build/findLatestBdnNightlyVersion.ps1' &quot;"
+          ConsoleToMSBuild="true" IgnoreExitCode="false" StandardErrorImportance="high" StandardOutputImportance="low">
+      <Output TaskParameter="ExitCode" PropertyName="MSBuildLastExitCode" />
+      <Output Condition="'$(MSBuildLastExitCode)' == '0'"
+              TaskParameter="ConsoleOutput" PropertyName="BDNNightlyVersion" />
+    </Exec>
+    <ItemGroup>
+      <PackageReference Condition="'%(Identity)' == 'BenchmarkDotNet'" Version="$(BDNNightlyVersion)"></PackageReference>
+    </ItemGroup>
+  </Target>
+
 </Project>
