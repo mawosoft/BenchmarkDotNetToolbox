@@ -334,7 +334,7 @@ class DiffRunner {
             $messages = Get-Content $outFile | Split-ApiCompatMessage
             $issues = ($messages | Where-Object Issue -NE $null)?.Issue
             $errors = ($messages | Where-Object { $null -ne $_.Trace -and -not $_.Trace.IsResolver })?.Trace
-            [array]$unknowns = ($messages | Where-Object Original -NE $null)?.Unknown
+            [array]$unknowns = ($messages | Where-Object Unknown -NE $null)?.Unknown
             [int]$total = ($messages | Measure-Object -Property Total -Sum)?.Sum
             [StringBuilder]$sb = [StringBuilder]::new()
             if ($errors -or $unknowns -or ${issues}?.Count + 0 -ne $total) {
