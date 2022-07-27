@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <BDNNightlyVersion Condition="'$(BDNNightlyVersion)' == ''">*-*</BDNNightlyVersion>
-    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
-    <RestoreNoCache>true</RestoreNoCache>
     <!-- These work with both msbuild console builds and VStudio 2019 builds.
          - RestoreAdditionalProjectSources, RestoreSources
          These don't work in VStudio 2019 builds
@@ -14,8 +12,7 @@
   <Import Project="$(MSBuildThisFileDirectory)../Mawosoft.Extensions.BenchmarkDotNet.Tests.proj" />
 
   <ItemGroup>
-    <PackageReference Update ="@(PackageVersion)" Version="%(PackageVersion.Version)"></PackageReference>
-    <PackageReference Update="BenchmarkDotNet" Version="$(BDNNightlyVersion)"></PackageReference>
+    <PackageReference Include="BenchmarkDotNet" VersionOverride="$(BDNNightlyVersion)"></PackageReference>
   </ItemGroup>
 
   <Target Name="FindBdnNightly" Condition="'$(CI)' != 'true' and ('$(BDNNightlyVersion)' == '' or '$(BDNNightlyVersion)' == '*-*')"  BeforeTargets="CollectPackageReferences">
@@ -28,7 +25,7 @@
               TaskParameter="ConsoleOutput" PropertyName="BDNNightlyVersion" />
     </Exec>
     <ItemGroup>
-      <PackageReference Condition="'%(Identity)' == 'BenchmarkDotNet'" Version="$(BDNNightlyVersion)"></PackageReference>
+      <PackageReference Condition="'%(Identity)' == 'BenchmarkDotNet'" VersionOverride="$(BDNNightlyVersion)"></PackageReference>
     </ItemGroup>
   </Target>
 
