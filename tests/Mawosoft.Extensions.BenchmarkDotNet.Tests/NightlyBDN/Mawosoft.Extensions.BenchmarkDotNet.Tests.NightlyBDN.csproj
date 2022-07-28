@@ -12,7 +12,12 @@
   <Import Project="$(MSBuildThisFileDirectory)../Mawosoft.Extensions.BenchmarkDotNet.Tests.proj" />
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" VersionOverride="$(BDNNightlyVersion)"></PackageReference>
+    <!-- Just specifying VersionOverride on Include doesn't work. Somehow the reference has been already included
+         and Include here adds a duplicate that later gets removed. 
+         The Include here is not strictly necessary, Update alone would be sufficient. However, using Update
+         with a nonexisting identity would not produce any error or warning, so better safe than sorry. -->
+    <PackageReference Include="BenchmarkDotNet" />
+    <PackageReference Update="BenchmarkDotNet" VersionOverride="$(BDNNightlyVersion)" />
   </ItemGroup>
 
   <Target Name="FindBdnNightly" Condition="'$(CI)' != 'true' and ('$(BDNNightlyVersion)' == '' or '$(BDNNightlyVersion)' == '*-*')"  BeforeTargets="CollectPackageReferences">
