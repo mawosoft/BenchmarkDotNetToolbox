@@ -33,9 +33,6 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" />
-    <!-- Referencing 6.0.0 only to fix outdated ref in BenchmarkDotNet.
-         Should no longer be necessary in 0.13.2 -->
-    <PackageReference Include="System.Management" />
   </ItemGroup>
 
   <ItemGroup>
