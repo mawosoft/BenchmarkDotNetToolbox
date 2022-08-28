@@ -104,20 +104,18 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
                     1, SummaryStyle.Default) }),
                 DefaultConfig.Instance.CreateImmutableConfig()
                 );
-            GenerateResult generateResult = GenerateResultWrapper.Success();
+            GenerateResult generateResult = GenerateResult.Success(ArtifactsPaths.Empty, Array.Empty<string>(), false);
             BuildResult buildResult = BuildResult.Success(generateResult);
-            ExecuteResult[] executeResults = Array.Empty<ExecuteResult>();
             Measurement[] allMeasurements = new[] {
                 new Measurement(1, IterationMode.Workload, IterationStage.Result, 1, 1, 1)
             };
+            ExecuteResult[] executeResults = new[] { ExecuteResultWrapper.Create(allMeasurements, default, default) };
             Metric[] metrics = new[] { new Metric(new MockMetricDescriptor(), 1) };
-            BenchmarkReport benchmarkReport = BenchmarkReportWrapper.Create(
-                true, benchmarkCase, generateResult, buildResult, executeResults, allMeasurements,
-                (GcStats)default, metrics);
+            BenchmarkReport benchmarkReport = new(true, benchmarkCase, generateResult, buildResult, executeResults, metrics);
             return new Summary(
                 string.Empty, ImmutableArray.Create(benchmarkReport), HostEnvironmentInfo.GetCurrent(),
                 string.Empty, string.Empty, TimeSpan.Zero, SummaryExtensions.GetCultureInfo(null),
-                ImmutableArray.Create<ValidationError>());
+                ImmutableArray.Create<ValidationError>(), ImmutableArray.Create<IColumnHidingRule>());
         });
 
         // Get the default columns from provider

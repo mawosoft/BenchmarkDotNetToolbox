@@ -19,10 +19,7 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <DebugType>embedded</DebugType>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <PackageReleaseNotes>
-- This release supports the official BenchmarkDotNet 0.13.1 release and BenchmarkDotNet Nightly builds up to at least 0.13.1.1795.
-- A reference to System.Management v6.0.0 is included to override an outdated reference in BenchmarkDotNet 0.13.1. See https://github.com/dotnet/BenchmarkDotNet/pull/1805
-    </PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
     <EnablePackageValidation>true</EnablePackageValidation>
     <PackageValidationBaselineVersion>0.2.1</PackageValidationBaselineVersion>
   </PropertyGroup>

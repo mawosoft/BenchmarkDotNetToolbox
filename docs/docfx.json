@@ -66,7 +66,7 @@
             "default",
             "templates/custom"
         ],
-        "xref": [ "xrefmap-BenchmarkDotNet.yml" ],
+        "xref": [ "https://github.com/dotnet/BenchmarkDotNet/raw/gh-pages/xrefmap.yml" ],
         "xrefService": [
             "https://xref.docs.microsoft.com/query?uid={uid}"
         ],

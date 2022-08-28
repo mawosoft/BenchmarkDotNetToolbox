@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Environments;
@@ -111,17 +112,18 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
             if (_filteredBenchmarkCases.Count == 0)
                 return;
 
-            bool join = _filteredBenchmarkCases.Any(bc => (bc.Config.Options & ConfigOptions.JoinSummary) != 0);
+            IConfig? joinedConfig = _filteredBenchmarkCases.FirstOrDefault(bc => (bc.Config.Options & ConfigOptions.JoinSummary) != 0)?.Config;
 
-            GenerateResult generateResult = GenerateResultWrapper.Success();
+            GenerateResult generateResult = GenerateResult.Success(ArtifactsPaths.Empty, Array.Empty<string>(), false);
             BuildResult buildResult = BuildResult.Success(generateResult);
             IEnumerable<BenchmarkReport> reports = _filteredBenchmarkCases.Select((bc, i)
-                => BenchmarkReportWrapper.Create(
-                    true, bc, generateResult, buildResult, Array.Empty<ExecuteResult>(),
-                    new[] { new Measurement(1, IterationMode.Workload, IterationStage.Result, 1, 1,
-                                            100_000_000 + i * 1_000_000) },
-                    (GcStats)default, Array.Empty<Metric>()));
-
+                => new BenchmarkReport(true, bc, generateResult, buildResult,
+                        new[] {
+                            ExecuteResultWrapper.Create(
+                                new[] { new Measurement(1, IterationMode.Workload, IterationStage.Result, 1, 1, 100_000_000 + (i * 1_000_000)) },
+                                default, default)
+                        },
+                        Array.Empty<Metric>()));
             HostEnvironmentInfo hostEnvironmentInfo = HostEnvironmentInfo.GetCurrent();
             // This is the way BDN does it. SummaryStyle.CultureInfo seems to be getting ignored.
             CultureInfo cultureInfo = _filteredBenchmarkCases.First().Config.CultureInfo
@@ -137,10 +139,11 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
                 logger.WriteLine();
             }
             logger.WriteLineInfo(HostEnvironmentInfo.GetInformation());
-            if (join)
+            if (joinedConfig != null)
             {
                 Summary summary = new(string.Empty, reports.ToImmutableArray(), hostEnvironmentInfo,
-                                      string.Empty, string.Empty, TimeSpan.Zero, cultureInfo, validationErrors);
+                                      string.Empty, string.Empty, TimeSpan.Zero, cultureInfo, validationErrors,
+                                      joinedConfig.GetColumnHidingRules().ToImmutableArray());
                 PrintSummary(summary, logger);
             }
             else
@@ -151,7 +154,8 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
                          reports.GroupBy(r => r.BenchmarkCase.Descriptor.Type))
                 {
                     Summary summary = new(string.Empty, group.ToImmutableArray(), hostEnvironmentInfo,
-                                          string.Empty, string.Empty, TimeSpan.Zero, cultureInfo, validationErrors);
+                                          string.Empty, string.Empty, TimeSpan.Zero, cultureInfo, validationErrors,
+                                          group.First().BenchmarkCase.Config.GetColumnHidingRules().ToImmutableArray());
                     logger.WriteLine();
                     logger.WriteLineHeader($"// {(useFullName ? group.Key.FullName : group.Key.Name)}");
                     logger.WriteLine();

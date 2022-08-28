@@ -46,7 +46,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.Tests
             // to discover any new additions not covered by test.
             public GetExtendedColumnCategory_TheoryData()
             {
-                Func<Type, bool> predicate = t => t.IsClass && !t.IsAbstract && typeof(IColumn).IsAssignableFrom(t);
+                static bool predicate(Type t) => t.IsClass && !t.IsAbstract && typeof(IColumn).IsAssignableFrom(t);
 
                 IEnumerable<Type> columnTypes =
                     typeof(IColumn).Assembly.GetTypes().Where(predicate)
@@ -103,11 +103,9 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.Tests
                             Add(TargetMethodColumn.Type, ExtendedColumnCategory.TargetMethod);
                             Add(TargetMethodColumn.Method, ExtendedColumnCategory.TargetMethod);
                             break;
-                        // BenchmarkDotNet 0.13.1.x-nightly
+                        // BenchmarkDotNet 0.13.2
                         case "BaselineAllocationRatioColumn":
-                            IColumn barc = (Activator.CreateInstance(type) as IColumn)!;
-                            Assert.NotNull(barc);
-                            Add(barc, ExtendedColumnCategory.Metric);
+                            Add(BaselineAllocationRatioColumn.RatioMean, ExtendedColumnCategory.Metric);
                             break;
                         // Mawosoft.Extensions.BenchmarkDotNet
                         case "CombinedParamsColumn":

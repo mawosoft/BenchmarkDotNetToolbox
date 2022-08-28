@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using BenchmarkDotNet.Analysers;
+using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Exporters;
@@ -29,13 +30,13 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.Tests
                 .Where(m => !m.IsSpecialName
                             && m.ReturnType.IsGenericType
                             && typeof(IEnumerable).IsAssignableFrom(m.ReturnType));
-            Assert.Equal(10, getter.Count());
+            Assert.Equal(11, getter.Count());
             (MethodInfo m, Type? t)[] adder = typeof(ManualConfig)
                 .GetMethods()
                 .Where(m => !m.IsSpecialName
                             && m.ReturnType == typeof(ManualConfig)
-                            && m.Name != "AddColumn"
-                            && m.Name.StartsWith("Add", StringComparison.Ordinal))
+                            && ((m.Name.StartsWith("Add", StringComparison.Ordinal) && m.Name != "AddColumn")
+                                || m.Name == "HideColumns"))
                 .Select(m =>
                 {
                     Type? retType = null;
@@ -71,6 +72,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.Tests
             config.ArtifactsPath = source.ArtifactsPath;
             config.CultureInfo = source.CultureInfo;
             config.Options = source.Options;
+            config.BuildTimeout = source.BuildTimeout;
             return config;
         }
 
