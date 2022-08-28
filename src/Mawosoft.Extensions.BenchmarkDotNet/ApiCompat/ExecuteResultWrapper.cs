@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Reports;
@@ -11,23 +12,23 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.ApiCompat
 {
     internal static class ExecuteResultWrapper
     {
-        private static readonly ConstructorInfo? s_ctorNightly;
+        private static readonly ConstructorInfo? s_ctorInternalStable;
 
         static ExecuteResultWrapper()
         {
-            s_ctorNightly = typeof(ExecuteResult).GetConstructor(
+            s_ctorInternalStable = typeof(ExecuteResult).GetConstructor(
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null,
                 new Type[] { typeof(List<Measurement>), typeof(GcStats), typeof(ThreadingStats) },
                 null);
         }
 
-        public static ExecuteResult CreateNightly(
-            List<Measurement> measurements,
+        public static ExecuteResult Create(
+            IEnumerable<Measurement> measurements,
             GcStats gcStats,
             ThreadingStats threadingStats)
         {
-            return s_ctorNightly != null
-                ? (ExecuteResult)s_ctorNightly.Invoke(new object[] { measurements, gcStats, threadingStats })
+            return s_ctorInternalStable != null
+                ? (ExecuteResult)s_ctorInternalStable.Invoke(new object[] { measurements.ToList(), gcStats, threadingStats })
                 : throw new MissingMethodException(nameof(ExecuteResult), ".ctor");
         }
     }
