@@ -25,9 +25,9 @@
         IsBreaking          - 'true' if a new breaking issue has been reported.
 
 .NOTES
-    This is currently designed for single-TFM because BDN packages target netstandard2.0.
-    The exception is BenchmarkDotNet.Annotations which includes netstandard1.0 as a legacy TFM.
-    If BDN ever becomes multi-TFM, we need to change our approach.
+    TODO: Add multi-TFM support.
+    - BenchmarkDotNet: netstandard2.0 + net6.0
+    - BenchmarkDotNet.Annotations: netstandard2.0 + netstandard1.0
 #>
 
 #Requires -Version 7
@@ -87,7 +87,7 @@ class BdnPackageInfo {
 class BdnPackageSet {
     static [string]$BaselineFeed = 'https://api.nuget.org/v3/index.json'
     static [string]$NightlyFeed = 'https://ci.appveyor.com/nuget/benchmarkdotnet'
-    static [string]$BaselineVersion = '0.13.1'
+    static [string]$BaselineVersion = '0.13.2'
     static [string]$DownloadProjectFilePath = (Join-Path $script:PSScriptRoot "ApiCompat/BdnDownload/BdnDownload.proj")
     static [string]$NugetPackageRootPath = (Join-Path ([Environment]::GetFolderPath('UserProfile')) '.nuget/packages')
     static [ValidateNotNullOrEmpty()][BdnPackageInfo[]]$Infos = @(
