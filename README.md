@@ -45,8 +45,8 @@ To consume the latest CI build, add the following feed to your `Nuget.Config`:
 </configuration>
 ```
 The CI builds have the next expected version number and are tagged as `-dev.<number>`.
-- Example of an official release: `Mawosoft.Extensions.BenchmarkDotNet.0.2.2.nupkg`
-- Example of CI build: `Mawosoft.Extensions.BenchmarkDotNet.0.2.3-dev.98.nupkg`  
+- Example of an official release: `Mawosoft.Extensions.BenchmarkDotNet.0.2.3.nupkg`
+- Example of CI build: `Mawosoft.Extensions.BenchmarkDotNet.0.2.4-dev.112.nupkg`  
 To always use the latest CI build, use a package reference like  
 `<PackageReference Include="Mawosoft.Extensions.BenchmarkDotNet" Version="*-*" />`
 

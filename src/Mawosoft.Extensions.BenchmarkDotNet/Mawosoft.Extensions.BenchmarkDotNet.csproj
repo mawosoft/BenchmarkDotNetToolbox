@@ -19,7 +19,7 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <DebugType>embedded</DebugType>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageReleaseNotes>This release supports BenchmarkDotNet 0.13.2</PackageReleaseNotes>
     <EnablePackageValidation>true</EnablePackageValidation>
     <PackageValidationBaselineVersion>0.2.1</PackageValidationBaselineVersion>
   </PropertyGroup>
