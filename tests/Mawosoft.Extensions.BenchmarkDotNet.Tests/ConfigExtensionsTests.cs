@@ -90,6 +90,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.Tests
             Assert.Equal(expected.ArtifactsPath, actual.ArtifactsPath);
             Assert.Equal(expected.CultureInfo, actual.CultureInfo);
             Assert.Equal(expected.Options, actual.Options);
+            Assert.Equal(expected.BuildTimeout, actual.BuildTimeout);
         }
 
         private static ManualConfig CreateSourceConfig()
