@@ -74,10 +74,6 @@ jobs:
         fetch-depth: 0
     - name: DotNet Info
       run: dotnet --info
-    - name: Temp. disable DocFx build on Windows
-      # See https://github.com/dotnet/docfx/issues/8097
-      if: ${{ matrix.os == 'windows-latest' }}
-      run: dotnet sln .\Mawosoft.Extensions.BenchmarkDotNet.sln remove .\docs\docs.csproj
     - name: Build
       env:
         MSBuildDebugEngine: 1 # Auto-creates binlogs in ./MSBuild_Logs
