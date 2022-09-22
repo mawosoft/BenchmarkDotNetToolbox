@@ -104,7 +104,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
                     1, SummaryStyle.Default) }),
                 DefaultConfig.Instance.CreateImmutableConfig()
                 );
-            GenerateResult generateResult = GenerateResult.Success(ArtifactsPaths.Empty, Array.Empty<string>(), false);
+            GenerateResult generateResult = GenerateResultWrapper.Success();
             BuildResult buildResult = BuildResult.Success(generateResult);
             Measurement[] allMeasurements = new[] {
                 new Measurement(1, IterationMode.Workload, IterationStage.Result, 1, 1, 1)
