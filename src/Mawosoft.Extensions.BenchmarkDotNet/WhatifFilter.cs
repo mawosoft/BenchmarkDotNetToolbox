@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
-using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Environments;
@@ -15,7 +13,6 @@ using BenchmarkDotNet.Filters;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
-using BenchmarkDotNet.Toolchains;
 using BenchmarkDotNet.Toolchains.Results;
 using BenchmarkDotNet.Validators;
 using Mawosoft.Extensions.BenchmarkDotNet.ApiCompat;
@@ -114,7 +111,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
 
             IConfig? joinedConfig = _filteredBenchmarkCases.FirstOrDefault(bc => (bc.Config.Options & ConfigOptions.JoinSummary) != 0)?.Config;
 
-            GenerateResult generateResult = GenerateResult.Success(ArtifactsPaths.Empty, Array.Empty<string>(), false);
+            GenerateResult generateResult = GenerateResultWrapper.Success();
             BuildResult buildResult = BuildResult.Success(generateResult);
             IEnumerable<BenchmarkReport> reports = _filteredBenchmarkCases.Select((bc, i)
                 => new BenchmarkReport(true, bc, generateResult, buildResult,
