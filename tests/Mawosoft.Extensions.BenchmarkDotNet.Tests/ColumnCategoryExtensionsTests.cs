@@ -3,9 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using BenchmarkDotNet.Columns;
 using Xunit;
-using Xunit.Abstractions;
 
 using static Mawosoft.Extensions.BenchmarkDotNet.ColumnCategoryExtensions;
 
@@ -13,6 +13,21 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.Tests
 {
     public class ColumnCategoryExtensionsTests
     {
+        private static IEnumerable<Type> GetTypesWrapper(Assembly assembly)
+        {
+            List<Type> types = new();
+            try
+            {
+                types.AddRange(assembly.GetTypes());
+            }
+            catch (ReflectionTypeLoadException rtle)
+            {
+                types.AddRange(rtle.Types.Where(t => t != null).Select(t => t!));
+
+            }
+            return types;
+        }
+
         [Fact]
         public void ToExtended_ExistingCategoriesMatch()
         {
@@ -49,7 +64,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.Tests
                 static bool predicate(Type t) => t.IsClass && !t.IsAbstract && typeof(IColumn).IsAssignableFrom(t);
 
                 IEnumerable<Type> columnTypes =
-                    typeof(IColumn).Assembly.GetTypes().Where(predicate)
+                    GetTypesWrapper(typeof(IColumn).Assembly).Where(predicate)
                     .Concat(typeof(ColumnCategoryExtensions).Assembly.GetTypes().Where(predicate)
                     .Distinct());
 
@@ -140,10 +155,10 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.Tests
             // to discover any new additions not covered by test.
             public GetExtendedColumnCategories_TheoryData()
             {
-                Func<Type, bool> predicate = t => t.IsClass && !t.IsAbstract && typeof(IColumnProvider).IsAssignableFrom(t);
+                static bool predicate(Type t) => t.IsClass && !t.IsAbstract && typeof(IColumnProvider).IsAssignableFrom(t);
 
                 IEnumerable<Type> providerTypes =
-                    typeof(IColumn).Assembly.GetTypes().Where(predicate)
+                    GetTypesWrapper(typeof(IColumnProvider).Assembly).Where(predicate)
                     .Concat(typeof(ColumnCategoryExtensions).Assembly.GetTypes().Where(predicate)
                     .Distinct());
 
