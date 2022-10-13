@@ -69,7 +69,7 @@ jobs:
       fail-fast: ${{ github.event.inputs.fail-fast == 'true' }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: DotNet Info
@@ -90,19 +90,19 @@ jobs:
         exec { dotnet pack ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-build -o ./Packages }
     - name: Upload Binlogs
       if: ${{ failure() || github.event_name == 'workflow_dispatch' }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ matrix.os }}-Binlogs
         path: '**/MSBuild_Logs/*'
     - name: Upload Packages
       if: ${{ matrix.os == 'ubuntu-latest' || strategy.job-total == 1 }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: Packages
         path: ./Packages/
     - name: Upload Docs Website
       if: ${{ matrix.os == 'ubuntu-latest' || strategy.job-total == 1 }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: DocsWebsite
         path: ./docs/_site/
@@ -138,7 +138,7 @@ jobs:
         ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj, ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug, Release -f $tfms -v detailed -r ./TestResults -ff:$${{ strategy.fail-fast }}
     - name: Upload Test results
       if: ${{ always() && steps.test.outcome != 'skipped' }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ matrix.os }}-Testresults
         path: ./TestResults/
@@ -149,7 +149,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download Packages
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: Packages
         path: ./Packages/
@@ -166,7 +166,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download Packages
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: Packages
         path: ./Packages/
@@ -179,7 +179,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download Docs Website
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: DocsWebsite
         path: ./DocsWebsite/
@@ -196,7 +196,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 1
     - name: Create GitHub release
