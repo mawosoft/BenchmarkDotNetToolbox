@@ -16,8 +16,19 @@
     <PackageReference Update="BenchmarkDotNet" VersionOverride="$(BDNNightlyVersion)" />
   </ItemGroup>
 
-  <Target Name="FindBdnNightly" Condition="'$(CI)' != 'true' and ('$(BDNNightlyVersion)' == '' or '$(BDNNightlyVersion)' == '*-*')"  BeforeTargets="CollectPackageReferences">
-    <!-- Last ditch effort to select proper BDN nightly. Consider showing a warning only if Condition="'$(BuildingInsideVisualStudio)' != 'true'" -->
+  <!--
+    ============================================================
+
+    FindBdnNightly
+
+    Last ditch effort to select proper BDN nightly.
+    Consider showing a warning only if Condition="'$(BuildingInsideVisualStudio)' != 'true'"
+
+    ============================================================
+  -->
+
+  <Target Name="FindBdnNightly" BeforeTargets="CollectPackageReferences"
+          Condition="'$(CI)' != 'true' and ('$(BDNNightlyVersion)' == '' or '$(BDNNightlyVersion)' == '*-*')">
     <Warning Text="BDNNightlyVersion should be set as environment variable to avoid multiple lookups during restore/build." />
     <Exec Command="pwsh -NonInteractive -Command &quot;&amp; '$(MSBuildThisFileDirectory)../../../build/findLatestBdnNightlyVersion.ps1' &quot;"
           ConsoleToMSBuild="true" IgnoreExitCode="false" StandardErrorImportance="high" StandardOutputImportance="low">
@@ -27,6 +38,42 @@
     </Exec>
     <ItemGroup>
       <PackageReference Condition="'%(Identity)' == 'BenchmarkDotNet'" VersionOverride="$(BDNNightlyVersion)"></PackageReference>
+    </ItemGroup>
+  </Target>
+
+  <!--
+    ============================================================
+
+    MonoPosixHack
+
+    BenchmarkDotNet >= 0.13.2.1920 has a dependency on Mono.Posix.NETStandard 1.0.0.
+    Force using the netstandard2.0 version of Mono.Posix.NETStandard when building for .NETFramework.
+    The package contains a net40 ref assembly, which forwards to Mono.Posix, which may not exist.
+
+    Currently for Tests.NightlyBDN only, but we may have to use this for samples as well,
+    if this will part of BDN 0.13.3.
+    ============================================================
+  -->
+
+  <Target Name="MonoPosixHack" BeforeTargets="ResolveLockFileReferences" DependsOnTargets="ResolvePackageAssets"
+          Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
+    <ItemGroup>
+      <_MonoPosixFrameworkAssemblies Include="@(ResolvedFrameworkAssemblies)"
+          Condition="'%(ResolvedFrameworkAssemblies.NuGetPackageId)' == 'Mono.Posix.NETStandard'" />
+      <_MonoPosixCompileFileDefinitions Include="@(ResolvedCompileFileDefinitions)"
+          Condition="'%(ResolvedCompileFileDefinitions.NuGetPackageId)' == 'Mono.Posix.NETStandard'" />
+    </ItemGroup>
+    <ItemGroup
+        Condition="@(_MonoPosixFrameworkAssemblies->Count()) == 1 and
+                   @(_MonoPosixCompileFileDefinitions->Count()) == 1">
+      <ResolvedFrameworkAssemblies Remove="@(_MonoPosixFrameworkAssemblies)" />
+      <ResolvedCompileFileDefinitions Remove="@(_MonoPosixCompileFileDefinitions)" />
+      <!-- This must be a transform in order to copy all metadata of the item.
+           Fully qualified item metadata name because it might not exist. -->
+      <ResolvedCompileFileDefinitions Include="@(_MonoPosixCompileFileDefinitions->'$([System.Text.RegularExpressions.Regex]::Replace(%(_MonoPosixCompileFileDefinitions.Identity), '((?:^|[\\/])ref[\\/])net40([\\/])', '$1netstandard2.0$2'))')">
+        <HintPath Condition="'%(_MonoPosixCompileFileDefinitions.HintPath)' != ''">$([System.Text.RegularExpressions.Regex]::Replace(%(_MonoPosixCompileFileDefinitions.HintPath), '((?:^|[\\/])ref[\\/])net40([\\/])', '$1netstandard2.0$2'))</HintPath>
+        <PathInPackage Condition="'%(_MonoPosixCompileFileDefinitions.PathInPackage)' != ''">$([System.Text.RegularExpressions.Regex]::Replace(%(_MonoPosixCompileFileDefinitions.PathInPackage), '((?:^|[\\/])ref[\\/])net40([\\/])', '$1netstandard2.0$2'))</PathInPackage>
+      </ResolvedCompileFileDefinitions>
     </ItemGroup>
   </Target>
 
