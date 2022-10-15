@@ -43,7 +43,8 @@ Set-StrictMode -Version 3.0
 $ErrorActionPreference = 'Stop'
 
 # GitHub data about current workflow run and repository
-if (-not $env:GITHUB_RUN_ID -or -not $env:GITHUB_RUN_NUMBER -or -not $env:GITHUB_REPOSITORY) {
+if (-not $env:GITHUB_RUN_ID -or -not $env:GITHUB_RUN_NUMBER -or
+    -not $env:GITHUB_REPOSITORY -or -not $env:GITHUB_OUTPUT) {
     throw 'GitHub environment variables are not defined.'
 }
 
@@ -100,8 +101,8 @@ if ($runNumber -gt 1) {
 # Update and save changes to artifact
 $monorepos.UpdateLatest()
 $monorepos.ToJson() | Set-Content $monoreposFile
-Write-Host "::set-output name=ArtifactName::$ArtifactName"
-Write-Host "::set-output name=ArtifactPath::$monoreposFile"
+Write-Output "ArtifactName=$ArtifactName" >>$env:GITHUB_OUTPUT
+Write-Output "ArtifactPath=$monoreposFile" >>$env:GITHUB_OUTPUT
 
 # Report updated paths and outdated packages
 # GetNewOutdatedPackages() accounts for the following special case:
@@ -179,6 +180,6 @@ else {
     if ($IssueLabels) { $params.labels = $IssueLabels }
     $uri = "https://api.github.com/repos/$env:GITHUB_REPOSITORY/issues"
     $issue = $params | ConvertTo-Json -EscapeHandling EscapeNonAscii | Invoke-RestMethod -Uri $uri -Method Post @auth
-    Write-Host "::set-output name=IssueNumber::$($issue.number)"
+    Write-Output "IssueNumber=$($issue.number)" >>$env:GITHUB_OUTPUT
     Write-Host "::notice::Created Tool Dependency Alert. Issue #$($issue.number): $($issue.html_url)"
 }

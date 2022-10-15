@@ -446,8 +446,9 @@ class DiffRunner {
 [bool]$DebugIsPresent = $PSBoundParameters['Debug'] -eq $true
 
 # GitHub data about current workflow run and repository
-if (-not $env:GITHUB_RUN_ID -or -not $env:GITHUB_RUN_NUMBER -or -not $env:GITHUB_REPOSITORY) {
-    throw "GitHub environment variables are not defined."
+if (-not $env:GITHUB_RUN_ID -or -not $env:GITHUB_RUN_NUMBER -or
+    -not $env:GITHUB_REPOSITORY -or -not $env:GITHUB_OUTPUT) {
+    throw 'GitHub environment variables are not defined.'
 }
 
 # Prepare artifacts
@@ -458,8 +459,8 @@ if (-not $env:GITHUB_RUN_ID -or -not $env:GITHUB_RUN_NUMBER -or -not $env:GITHUB
 $null = New-Item $artifactDirectory -ItemType 'Directory' -Force
 [string]$statusFile = Join-Path $artifactDirectory 'BdnApiCompatStatus.json'
 [string[]]$logFiles = @()
-Write-Host "::set-output name=StatusArtifactName::$StatusArtifactName"
-Write-Host "::set-output name=StatusArtifactPath::$statusFile"
+Write-Output "StatusArtifactName=$StatusArtifactName" >>$env:GITHUB_OUTPUT
+Write-Output "StatusArtifactPath=$statusFile" >>$env:GITHUB_OUTPUT
 
 # Download artifact from previous workflow run
 [int]$runNumber = $env:GITHUB_RUN_NUMBER
@@ -500,7 +501,7 @@ if ($latestLowerThanPrevious) {
 }
 
 $lastRunStatus.LastCheckedVersion = $latestVersion
-Write-Host "::set-output name=LastCheckedVersion::$latestVersion"
+Write-Output "LastCheckedVersion=$latestVersion" >>$env:GITHUB_OUTPUT
 
 if ($latestVersion -eq $previousVersion) {
     Write-Host "::notice::Latest BDN version is $latestVersion (unchanged)"
@@ -534,12 +535,12 @@ else {
 
     # Make sure artifacts are available even if we die later
     if ($logFiles) {
-        Write-Host "::set-output name=LogArtifactName::$LogArtifactName"
-        Write-Host "::set-output name=LogArtifactPath::$($logFiles -join '%0A')"
+        Write-Output "LogArtifactName=$LogArtifactName" >>$env:GITHUB_OUTPUT
+        Write-Output 'LogArtifactPath<<::', $logFiles, '::' >>$env:GITHUB_OUTPUT
     }
     $lastRunStatus | ConvertTo-Json | Set-Content $statusFile
     if ($incrementalReport.IsBreaking() -or $DebugIsPresent) {
-        Write-Host "::set-output name=IsBreaking::true"
+        Write-Output 'IsBreaking=true' >>$env:GITHUB_OUTPUT
     }
 
     if ($IssueType -ne 'None' -and ($incrementalReport.IsBreaking() -or ${baselineReport}?.IsBreaking() -or $DebugIsPresent)) {
@@ -581,7 +582,7 @@ else {
         if ($IssueLabels) { $params.labels = $IssueLabels }
         [string]$uri = "https://api.github.com/repos/$env:GITHUB_REPOSITORY/issues"
         $issue = $params | ConvertTo-Json -EscapeHandling EscapeNonAscii | Invoke-RestMethod -Uri $uri -Method Post @auth
-        Write-Host "::set-output name=IssueNumber::$($issue.number)"
+        Write-Output "IssueNumber=$($issue.number)" >>$env:GITHUB_OUTPUT
         $notice.Add("Created issue #$($issue.number): $($issue.html_url)")
         if ($baselineIssue) {
             $params = @{ body = $baselineIssue }

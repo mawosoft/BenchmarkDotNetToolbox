@@ -53,7 +53,7 @@ jobs:
         if ($${{ github.event.inputs.os != 'matrix' && github.event.inputs.os != '' }}) {
           $os = "[""${{ github.event.inputs.os }}""]"
         }
-        Write-Host "::set-output name=os::$os"
+        echo "os=$os" >>$env:GITHUB_OUTPUT
     outputs:
       matrix_os: ${{ steps.prep.outputs.os }}
 
@@ -127,8 +127,8 @@ jobs:
           $release = "v$version"
         }
         Write-Host "Version: $version, Deploy: $deploy, Release: $release"
-        Write-Host "::set-output name=deploy::$deploy"
-        Write-Host "::set-output name=release::$release"
+        echo "deploy=$deploy" >>$env:GITHUB_OUTPUT
+        echo "release=$release" >>$env:GITHUB_OUTPUT
     - name: Test
       id: test
       if: ${{ github.event.inputs.skip-tests != 'true' }}
