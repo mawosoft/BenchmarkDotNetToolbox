@@ -87,9 +87,6 @@ jobs:
         Set-Alias exec Start-NativeExecution
         $BdnNightlyVersion = & ./build/findLatestBdnNightlyVersion.ps1 -Verbose
         exec { dotnet restore "-p:BDNNightlyVersion=$BdnNightlyVersion" }
-        # Parallel builds causing trouble here
-        exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Debug --no-restore }
-        exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-restore }
         exec { dotnet build -c Debug --no-restore }
         exec { dotnet build -c Release --no-restore /p:BuildDocFx=false }
         exec { dotnet pack ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-build -o ./Packages }
