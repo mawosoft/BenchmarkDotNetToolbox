@@ -15,13 +15,18 @@ pr:
   branches: { include: [master] }
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: windows-latest
 
 variables:
   disable.coverage.autogenerate: true
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 steps:
 - checkout: self
+- pwsh: dotnet --info
+  displayName: DotNet Info
 - pwsh: |
     . ./build/startNativeExecution.ps1
     Set-Alias exec Start-NativeExecution
@@ -31,19 +36,30 @@ steps:
     exec { dotnet build ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj -c Debug --no-restore }
     exec { dotnet build ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug --no-restore }
   displayName: Build
-- pwsh: ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj, ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug -f net6.0 -v detailed -r ./TestResults -s ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/coverlet.runsettings
+  env:
+    MSBuildDebugEngine: 1 # Auto-creates binlogs in ./MSBuild_Logs
+    # Fix incomplete binlogs in MSBuild <=17.3.x. See https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/issues/146
+    MSBUILDLOGTASKINPUTS: 1
+    MSBUILDTARGETOUTPUTLOGGING: true
+    MSBUILDLOGIMPORTS: 1
+    MSBUILDLOGALLENVIRONMENTVARIABLES: true
+- publish: ./MSBuild_Logs
+  condition: succeededOrFailed()
+  artifact: azp-Binlogs
+  displayName: Upload Binlogs
+- pwsh: ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj, ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug -f net6.0, net462 -v detailed -r ./TestResults -s ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/coverlet.runsettings
   displayName: Test
 - task: reportgenerator@5
   condition: succeededOrFailed()
   inputs:
-    reports: ./TestResults/*/Debug/net6.0/*.xml
+    reports: ./TestResults/*/Debug/*/*.xml
     targetdir: ./TestResults/report
     reporttypes: Cobertura;HtmlInline_AzurePipelines
 - task: PublishTestResults@2
   condition: succeededOrFailed()
   inputs:
     testResultsFormat: VSTest
-    testResultsFiles: '*/Debug/net6.0/*.trx'
+    testResultsFiles: '*/Debug/*/*.trx'
     searchFolder: ./TestResults
     publishRunAttachments: false
 - task: PublishCodeCoverageResults@1
@@ -52,9 +68,8 @@ steps:
     codeCoverageTool: Cobertura
     summaryFileLocation: ./TestResults/report/Cobertura.xml
     reportDirectory: ./TestResults/report
-- bash: |
-    curl -o "./codecov" -s https://uploader.codecov.io/latest/linux/codecov
-    chmod +x "./codecov"
-    "./codecov" -f ./TestResults/report/Cobertura.xml -t $(CODECOV_TOKEN)
+- pwsh: |
+    $null = Invoke-WebRequest -Uri https://uploader.codecov.io/latest/windows/codecov.exe -OutFile ./codecov.exe
+    ./codecov.exe -f ./TestResults/report/Cobertura.xml -t $(CODECOV_TOKEN)
   condition: succeededOrFailed()
   displayName: Upload to codecov.io

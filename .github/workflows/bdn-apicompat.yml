@@ -78,6 +78,11 @@ jobs:
     - name: Build
       env:
         MSBuildDebugEngine: 1 # Auto-creates binlogs in ./MSBuild_Logs
+        # Fix incomplete binlogs in MSBuild <=17.3.x. See https://github.com/mawosoft/Mawosoft.Extensions.BenchmarkDotNet/issues/146
+        MSBUILDLOGTASKINPUTS: 1
+        MSBUILDTARGETOUTPUTLOGGING: true
+        MSBUILDLOGIMPORTS: 1
+        MSBUILDLOGALLENVIRONMENTVARIABLES: true
       run: |
         . ./build/startNativeExecution.ps1
         Set-Alias exec Start-NativeExecution
@@ -88,7 +93,7 @@ jobs:
         exec { dotnet build ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug --no-restore }
         exec { dotnet build ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Release --no-restore }
     - name: Upload Binlogs
-      if: ${{ failure() }}
+      if: ${{ failure() || github.event_name == 'workflow_dispatch' }}
       uses: actions/upload-artifact@v3
       with:
         name: ${{ matrix.os }}-Binlogs
@@ -100,7 +105,7 @@ jobs:
         if ($IsWindows) { $tfms += "net462" }
         ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug, Release -f $tfms -v detailed -r ./TestResults -ff:$${{ strategy.fail-fast }}
     - name: Upload Test results
-      if: ${{ failure() && steps.test.outcome != 'skipped' }}
+      if: ${{ (failure() || github.event_name == 'workflow_dispatch') && steps.test.outcome != 'skipped' }}
       uses: actions/upload-artifact@v3
       with:
         name: ${{ matrix.os }}-Testresults
