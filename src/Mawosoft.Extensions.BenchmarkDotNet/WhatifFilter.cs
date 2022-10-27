@@ -118,7 +118,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
                         new[] {
                             ExecuteResultWrapper.Create(
                                 new[] { new Measurement(1, IterationMode.Workload, IterationStage.Result, 1, 1, 100_000_000 + (i * 1_000_000)) },
-                                default, default)
+                                default, default, default)
                         },
                         Array.Empty<Metric>()));
             HostEnvironmentInfo hostEnvironmentInfo = HostEnvironmentInfo.GetCurrent();
