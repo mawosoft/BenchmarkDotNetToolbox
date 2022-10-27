@@ -109,7 +109,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
             Measurement[] allMeasurements = new[] {
                 new Measurement(1, IterationMode.Workload, IterationStage.Result, 1, 1, 1)
             };
-            ExecuteResult[] executeResults = new[] { ExecuteResultWrapper.Create(allMeasurements, default, default) };
+            ExecuteResult[] executeResults = new[] { ExecuteResultWrapper.Create(allMeasurements, default, default, default) };
             Metric[] metrics = new[] { new Metric(new MockMetricDescriptor(), 1) };
             BenchmarkReport benchmarkReport = new(true, benchmarkCase, generateResult, buildResult, executeResults, metrics);
             return new Summary(
