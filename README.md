@@ -36,6 +36,8 @@ An alternative to BenchmarkDotNet's `--list` command line option that prints a m
 
 ### [CI Feed](https://dev.azure.com/mawosoft-de/public/_packaging?_a=feed&feed=public)
 
+If you use BenchmarkDotNet's CI builds (nightlies), you also need to use the latest CI builds here, because BenchmarkDotNet frequently introduces breaking API changes within their builds.
+
 To consume the latest CI build, add the following feed to your `Nuget.Config`:
 ```
 <configuration>
