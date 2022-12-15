@@ -55,8 +55,13 @@ function Install-ApiCompatTools {
         if (-not $AsmDiffPkg -or -not $ApiCompatPkg) {
             throw 'Unable to restore ApiCompat tools.'
         }
-        $script:AsmDiffDll = Join-Path $AsmDiffPkg 'tools/netcoreapp3.1/any/Microsoft.DotNet.AsmDiff.dll'
-        $script:ApiCompatDll = Join-Path $ApiCompatPkg 'tools/netcoreapp3.1/Microsoft.DotNet.ApiCompat.dll'
+        $docElem = (Select-Xml -Path $restoreProjectFilePath -XPath '/*').Node
+        $script:AsmDiffDll = Join-Path $AsmDiffPkg -ChildPath (
+            Select-Xml -xml $docElem -XPath '//ns:PackageReference[@Include="Microsoft.DotNet.AsmDiff"]' -Namespace $xmlns
+        ).Node.RelativeToolPath
+        $script:ApiCompatDll = Join-Path $ApiCompatPkg -ChildPath (
+            Select-Xml -xml $docElem -XPath '//ns:PackageReference[@Include="Microsoft.DotNet.ApiCompat"]' -Namespace $xmlns
+        ).Node.RelativeToolPath
     }
     # Notes:
     # - If the type source is unchanged, Add-Type would not trow any error if adding it again.
