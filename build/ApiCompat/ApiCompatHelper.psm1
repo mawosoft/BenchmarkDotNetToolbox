@@ -56,6 +56,7 @@ function Install-ApiCompatTools {
             throw 'Unable to restore ApiCompat tools.'
         }
         $docElem = (Select-Xml -Path $restoreProjectFilePath -XPath '/*').Node
+        $xmlns = @{ ns = $docElem.NamespaceURI }
         $script:AsmDiffDll = Join-Path $AsmDiffPkg -ChildPath (
             Select-Xml -xml $docElem -XPath '//ns:PackageReference[@Include="Microsoft.DotNet.AsmDiff"]' -Namespace $xmlns
         ).Node.RelativeToolPath
