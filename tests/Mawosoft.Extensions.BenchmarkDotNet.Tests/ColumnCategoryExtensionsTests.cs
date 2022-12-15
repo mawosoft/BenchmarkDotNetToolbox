@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using BenchmarkDotNet.Columns;
+using BenchmarkDotNet.Reports;
 using Xunit;
 
 using static Mawosoft.Extensions.BenchmarkDotNet.ColumnCategoryExtensions;
@@ -57,6 +58,19 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.Tests
 
         private class GetExtendedColumnCategory_TheoryData : TheoryData<IColumn, ExtendedColumnCategory>
         {
+            private class MockMetricDescriptor : IMetricDescriptor
+            {
+                public string Id => nameof(MockMetricDescriptor);
+                public string DisplayName => nameof(MockMetricDescriptor);
+                public string Legend => nameof(MockMetricDescriptor);
+                public string NumberFormat => "0.##";
+                public UnitType UnitType => UnitType.Size;
+                public string Unit => SizeUnit.B.Name;
+                public bool TheGreaterTheBetter => false;
+                public int PriorityInCategory => 0;
+
+            }
+
             // We get all existing IColumn classes via reflection and handle them by name
             // to discover any new additions not covered by test.
             public GetExtendedColumnCategory_TheoryData()
@@ -96,7 +110,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.Tests
                             Add(new LogicalGroupColumn(), ExtendedColumnCategory.Meta);
                             break;
                         case "MetricColumn":
-                            Add(new MetricColumn(null), ExtendedColumnCategory.Metric);
+                            Add(new MetricColumn(new MockMetricDescriptor()), ExtendedColumnCategory.Metric);
                             break;
                         case "ParamColumn":
                             Add(new ParamColumn("head"), ExtendedColumnCategory.Params);

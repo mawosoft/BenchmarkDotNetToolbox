@@ -66,11 +66,11 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.Tests
                 retVal = genericToArray.MakeGenericMethod(item).Invoke(null, new object?[] { retVal });
                 add.Invoke(config, new object?[] { retVal });
             }
-            config.Orderer = source.Orderer;
+            config.Orderer = source.Orderer!;
             config.SummaryStyle = source.SummaryStyle;
             config.UnionRule = source.UnionRule;
             config.ArtifactsPath = source.ArtifactsPath;
-            config.CultureInfo = source.CultureInfo;
+            config.CultureInfo = source.CultureInfo!;
             config.Options = source.Options;
             config.BuildTimeout = source.BuildTimeout;
             return config;
