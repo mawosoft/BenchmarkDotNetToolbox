@@ -34,7 +34,7 @@ namespace WhatifFilterBenchmarks
             BenchmarkCase bcBase = BenchmarkCase.Create(
                 new Descriptor(
                     typeof(ListVsHashSetBenchmarks),
-                    typeof(ListVsHashSetBenchmarks).GetMethod(nameof(ListVsHashSetBenchmarks.ListPlusHashSet_ExplicitComparer))),
+                    typeof(ListVsHashSetBenchmarks).GetMethod(nameof(ListVsHashSetBenchmarks.ListPlusHashSet_ExplicitComparer))!),
                 Job.Default, new ParameterInstances(Array.Empty<ParameterInstance>()),
                 DefaultConfig.Instance.CreateImmutableConfig());
             for (int i = 0; i < MaxBenchmarks; i++)

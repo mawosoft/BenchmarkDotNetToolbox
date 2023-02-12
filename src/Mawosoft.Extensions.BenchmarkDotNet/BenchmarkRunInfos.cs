@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
+// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
 using System;
 using System.Collections.Generic;
@@ -128,33 +128,33 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
                             bmn => containingType.GetMethod(bmn)
                                    ?? throw new MissingMethodException(containingType.Name, bmn))
                         .ToArray(),
-                    Config));
+                    Config!));
 
         /// <summary>
         /// Converts the specified benchmark methods of the given type and stores the results.
         /// </summary>
         public void ConvertMethodsToBenchmarks(Type containingType, params MethodInfo[] benchmarkMethods)
             => PostProcessConverter(PreProcessConverter(),
-                BenchmarkConverter.MethodsToBenchmarks(containingType, benchmarkMethods, Config));
+                BenchmarkConverter.MethodsToBenchmarks(containingType, benchmarkMethods, Config!));
 
         /// <summary>
         /// Compiles the given C# source code, converts the contained benchmark methods, and stores the results.
         /// </summary>
         public void ConvertSourceToBenchmarks(string source)
-            => PostProcessConverter(PreProcessConverter(), BenchmarkConverter.SourceToBenchmarks(source, Config));
+            => PostProcessConverter(PreProcessConverter(), BenchmarkConverter.SourceToBenchmarks(source, Config!));
 
         /// <summary>
         /// Converts all benchmark methods of the given type and stores the results.
         /// </summary>
         public void ConvertTypeToBenchmarks(Type type)
-            => PostProcessConverter(PreProcessConverter(), BenchmarkConverter.TypeToBenchmarks(type, Config));
+            => PostProcessConverter(PreProcessConverter(), BenchmarkConverter.TypeToBenchmarks(type, Config!));
 
         /// <summary>
         /// Reads and compiles C# source code from the given Url, converts the contained benchmark methods,
         /// and stores the results.
         /// </summary>
         public void ConvertUrlToBenchmarks(string url)
-            => PostProcessConverter(PreProcessConverter(), BenchmarkConverter.UrlToBenchmarks(url, Config));
+            => PostProcessConverter(PreProcessConverter(), BenchmarkConverter.UrlToBenchmarks(url, Config!));
 
         /// <summary>
         /// Runs all converted benchmarks and returns the results.

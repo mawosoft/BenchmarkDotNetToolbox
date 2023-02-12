@@ -95,7 +95,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
         {
             BenchmarkCase benchmarkCase = BenchmarkCase.Create(
                 new Descriptor(
-                    type: typeof(ConfigExtensions), workloadMethod: MethodBase.GetCurrentMethod() as MethodInfo,
+                    type: typeof(ConfigExtensions), workloadMethod: (MethodBase.GetCurrentMethod() as MethodInfo)!,
                     baseline: true, categories: new[] { "c1" }
                     ),
                 Job.Dry,
