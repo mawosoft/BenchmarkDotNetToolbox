@@ -13,21 +13,13 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.ApiCompat
     internal static class ExecuteResultWrapper
     {
         private static readonly ConstructorInfo? s_ctorInternalStable;
-        private static readonly ConstructorInfo? s_ctorInternalNightly;
 
         static ExecuteResultWrapper()
         {
             s_ctorInternalStable = typeof(ExecuteResult).GetConstructor(
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null,
-                new Type[] { typeof(List<Measurement>), typeof(GcStats), typeof(ThreadingStats) },
+                new Type[] { typeof(List<Measurement>), typeof(GcStats), typeof(ThreadingStats), typeof(double) },
                 null);
-            if (s_ctorInternalStable == null)
-            {
-                s_ctorInternalNightly = typeof(ExecuteResult).GetConstructor(
-                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null,
-                    new Type[] { typeof(List<Measurement>), typeof(GcStats), typeof(ThreadingStats), typeof(double) },
-                    null);
-            }
         }
 
         public static ExecuteResult Create(
@@ -38,11 +30,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.ApiCompat
         {
             if (s_ctorInternalStable != null)
             {
-                return (ExecuteResult)s_ctorInternalStable.Invoke(new object[] { measurements.ToList(), gcStats, threadingStats });
-            }
-            else if (s_ctorInternalNightly != null)
-            {
-                return (ExecuteResult)s_ctorInternalNightly.Invoke(new object[] { measurements.ToList(), gcStats, threadingStats, exceptionFrequency });
+                return (ExecuteResult)s_ctorInternalStable.Invoke(new object[] { measurements.ToList(), gcStats, threadingStats, exceptionFrequency });
             }
             else
             {
