@@ -34,7 +34,7 @@ namespace ColumnDisplaySamples
             // You can still specify filters on the command line, but all other options won't have any effect.
             // Without filters, BenchmarkSwitcher will give you a numbered list of benchmark types to choose from.
             // While the help text doesn't explicitly say so, you can also enter an * (asterisk) to run all benchmarks.
-            List<Summary> summaries = switcher.Run(args, config: null).ToList();
+            List<Summary> summaries = switcher.Run(args, config: null!).ToList();
 
             // Repeat all summaries at the and with some annotations
             PrintSamplesOverview(summaries);

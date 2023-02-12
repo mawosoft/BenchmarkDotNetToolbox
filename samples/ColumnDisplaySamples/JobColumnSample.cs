@@ -74,11 +74,11 @@ namespace ColumnDisplaySamples
                            .AsBaseline().UnfreezeCopy(),
                     Job.Dry.WithRuntime(CoreRuntime.Core31)
                            .WithToolchain(CsProjCoreToolchain.From(new NetCoreAppSettings(
-                               "netcoreapp3.1", null, "netcoreapp3.1")))
+                               "netcoreapp3.1", null!, "netcoreapp3.1")))
                            .UnfreezeCopy(),
                     Job.Dry.WithRuntime(CoreRuntime.Core60)
                            .WithToolchain(CsProjCoreToolchain.From(new NetCoreAppSettings(
-                               "net6.0", null, "net6.0")))
+                               "net6.0", null!, "net6.0")))
                            .UnfreezeCopy()
                     );
         }
