@@ -47,7 +47,7 @@ steps:
   condition: succeededOrFailed()
   artifact: azp-Binlogs
   displayName: Upload Binlogs
-- pwsh: ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj, ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug -f net6.0, net462 -v detailed -r ./TestResults -s ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/coverlet.runsettings
+- pwsh: ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj, ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug -f net7.0, net462 -v detailed -r ./TestResults -s ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/coverlet.runsettings
   displayName: Test
 - task: reportgenerator@5
   condition: succeededOrFailed()

@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
+﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
 using System;
 using System.Collections.Generic;
@@ -140,6 +140,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
         /// <summary>
         /// Compiles the given C# source code, converts the contained benchmark methods, and stores the results.
         /// </summary>
+        [Obsolete("The corresponding BenchmarkConverter method in BDN is obsolete.")]
         public void ConvertSourceToBenchmarks(string source)
             => PostProcessConverter(PreProcessConverter(), BenchmarkConverter.SourceToBenchmarks(source, Config!));
 
@@ -153,6 +154,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
         /// Reads and compiles C# source code from the given Url, converts the contained benchmark methods,
         /// and stores the results.
         /// </summary>
+        [Obsolete("The corresponding BenchmarkConverter method in BDN is obsolete.")]
         public void ConvertUrlToBenchmarks(string url)
             => PostProcessConverter(PreProcessConverter(), BenchmarkConverter.UrlToBenchmarks(url, Config!));
 

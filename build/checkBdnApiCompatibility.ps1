@@ -87,7 +87,7 @@ class BdnPackageInfo {
 class BdnPackageSet {
     static [string]$BaselineFeed = 'https://api.nuget.org/v3/index.json'
     static [string]$NightlyFeed = 'https://ci.appveyor.com/nuget/benchmarkdotnet'
-    static [string]$BaselineVersion = '0.13.2'
+    static [string]$BaselineVersion = '0.13.4'
     static [string]$DownloadProjectFilePath = (Join-Path $script:PSScriptRoot "ApiCompat/BdnDownload/BdnDownload.proj")
     static [string]$NugetPackageRootPath = (Join-Path ([Environment]::GetFolderPath('UserProfile')) '.nuget/packages')
     static [ValidateNotNullOrEmpty()][BdnPackageInfo[]]$Infos = @(

@@ -101,7 +101,7 @@ jobs:
     - name: Test
       id: test
       run: |
-        $tfms = @("net6.0")
+        $tfms = @("net7.0")
         if ($IsWindows) { $tfms += "net462" }
         ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug, Release -f $tfms -v detailed -r ./TestResults -ff:$${{ strategy.fail-fast }}
     - name: Upload Test results
