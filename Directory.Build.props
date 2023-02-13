@@ -20,8 +20,7 @@
     <ContinuousIntegrationBuild>$(CI)</ContinuousIntegrationBuild>
     <Deterministic>$(CI)</Deterministic>
     <TreatWarningsAsErrors>$(CI)</TreatWarningsAsErrors>
-    <!-- Regression in .NET SDK 6.0.300 when using Central Package Management:
-         NU1507 if multiple feeds are used without package source mapping. -->
+    <!-- NU1507: Multiple feeds w/o package source mapping. -->
     <NoWarn>$(NoWarn);NU1507</NoWarn>
   </PropertyGroup>
 
@@ -30,7 +29,7 @@
     <Company>Mawosoft</Company>
     <Product>Mawosoft.Extensions.BenchmarkDotNet</Product>
     <Copyright>Copyright (c) 2021-2023 Matthias Wolf, Mawosoft</Copyright>
-    <Version>0.2.4-dev</Version>
+    <Version>0.2.4</Version>
   </PropertyGroup>
 
   <ItemGroup>
