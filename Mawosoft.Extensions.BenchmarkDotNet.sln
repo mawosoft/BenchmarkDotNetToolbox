@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WhatifFilterSample", "sampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParamWrapperBenchmarks", "tests\ParamWrapperBenchmarks\ParamWrapperBenchmarks.csproj", "{99AB79F8-9523-4952-81A5-24E4C5B31109}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docs", "docs\docs.csproj", "{9D5F0274-4110-494C-93F8-3DEECFA2F439}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docs", "docs\docs.msbuildproj", "{9D5F0274-4110-494C-93F8-3DEECFA2F439}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mawosoft.Extensions.BenchmarkDotNet", "src\Mawosoft.Extensions.BenchmarkDotNet\Mawosoft.Extensions.BenchmarkDotNet.csproj", "{1FD28453-4697-4E93-AB6D-58832BCD8FBD}"
 EndProject

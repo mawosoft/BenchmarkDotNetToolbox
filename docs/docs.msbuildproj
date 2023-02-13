@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.Build.NoTargets">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <EnableSourceLink>false</EnableSourceLink>
+    <EnableSourceControlManagerQueries>false</EnableSourceControlManagerQueries>
+    <EnableGitCommitCount>false</EnableGitCommitCount>
+    <DocParameters Condition="'$(CI)' == 'true'">--warningsAsErrors</DocParameters>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <DocFxInput Include="api\index.md" />
+    <DocFxInput Include="apidoc\*" />
+    <DocFxInput Include="articles\**\*" />
+    <DocFxInput Include="templates\**\*" />
+    <DocFxInput Include="index.md;toc.yml;filter.yml" />
+    <DocFxInput Include="docfx.json" />
+    <!-- None is not auto-populated for *.msbuildproj -->
+    <None Include="@(DocFxInput)" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <!-- Docs build doesn't depend on a configuration, so we only build them for Debug.
+         TODO Use a Target with Inputs="@(DocFxInput) and Outputs="_site/manifest.json"
+         to avoid unnecessary builds. -->
+    <BuildDocFx Condition="'$(BuildDocFx)' == '' and '$(Configuration)' != 'Debug'">false</BuildDocFx>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="docfx.console" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

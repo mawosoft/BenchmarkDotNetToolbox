@@ -1,7 +1,21 @@
-name: Build and Publish Docs Website
+name: Build gh-pages
 
 on:
   workflow_dispatch:
+
+defaults:
+  run:
+    shell: pwsh
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  MSBuildDebugEngine: 1
+  MSBUILDLOGTASKINPUTS: 1
+  MSBUILDTARGETOUTPUTLOGGING: true
+  MSBUILDLOGIMPORTS: 1
+  MSBUILDLOGALLENVIRONMENTVARIABLES: true
 
 jobs:
   gh-pages:
@@ -17,12 +31,13 @@ jobs:
       run: |
         . ./build/startNativeExecution.ps1
         Set-Alias exec Start-NativeExecution
-        exec { dotnet build ./docs/docs.csproj -c Debug -bl:./Binlogs/build_docfx.binlog }
+        exec { dotnet restore }
+        exec { dotnet build ./docs/docs.csproj -c Debug }
     - name: Upload Binlogs
       uses: actions/upload-artifact@v3
       with:
         name: DocFX-Binlogs
-        path: ./Binlogs/
+        path: '**/MSBuild_Logs/*'
     - name: Publish to gh-pages
       uses: peaceiris/actions-gh-pages@v3
       with:
