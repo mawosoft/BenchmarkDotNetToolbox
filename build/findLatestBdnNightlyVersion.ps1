@@ -37,6 +37,10 @@ for (; ; ) {
         if ($build.status -eq 'success' -and $build.buildNumber -ne $skipBuildNumber) {
             if (-not $pr -and $build.branch -eq 'master') {
                 Write-Verbose "Found: $($build.version)"
+                if ($build.version -eq '0.13.5.2121') {
+                    Write-Verbose 'Hack: Packages for build 2121 are incomplete. Using 0.13.5.2118 instead.'
+                    return '0.13.5.2118'
+                }
                 return $build.version
             }
             $skipBuildNumber = $build.buildNumber
