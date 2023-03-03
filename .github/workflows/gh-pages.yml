@@ -15,7 +15,6 @@ env:
   MSBUILDLOGTASKINPUTS: 1
   MSBUILDTARGETOUTPUTLOGGING: true
   MSBUILDLOGIMPORTS: 1
-  MSBUILDLOGALLENVIRONMENTVARIABLES: true
 
 jobs:
   gh-pages:
@@ -24,7 +23,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0
+        fetch-depth: 1
     - name: DotNet Info
       run: dotnet --info
     - name: DocFX Build
@@ -32,8 +31,9 @@ jobs:
         . ./build/startNativeExecution.ps1
         Set-Alias exec Start-NativeExecution
         exec { dotnet restore }
-        exec { dotnet build ./docs/docs.csproj -c Debug }
+        exec { dotnet build ./docs/docs.msbuildproj -c Debug }
     - name: Upload Binlogs
+      if: ${{ always() }}
       uses: actions/upload-artifact@v3
       with:
         name: DocFX-Binlogs

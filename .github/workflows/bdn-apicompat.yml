@@ -82,7 +82,6 @@ jobs:
         MSBUILDLOGTASKINPUTS: 1
         MSBUILDTARGETOUTPUTLOGGING: true
         MSBUILDLOGIMPORTS: 1
-        MSBUILDLOGALLENVIRONMENTVARIABLES: true
       run: |
         . ./build/startNativeExecution.ps1
         Set-Alias exec Start-NativeExecution

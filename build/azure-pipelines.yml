@@ -42,7 +42,6 @@ steps:
     MSBUILDLOGTASKINPUTS: 1
     MSBUILDTARGETOUTPUTLOGGING: true
     MSBUILDLOGIMPORTS: 1
-    MSBUILDLOGALLENVIRONMENTVARIABLES: true
 - publish: ./MSBuild_Logs
   condition: succeededOrFailed()
   artifact: azp-Binlogs
