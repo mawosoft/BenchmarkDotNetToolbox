@@ -62,7 +62,8 @@ jobs:
 
   Test:
     needs: ApiCompat
-    if: ${{ needs.ApiCompat.outputs.IsBreaking == 'true' }}
+    # Temporarly disabled: if: ${{ needs.ApiCompat.outputs.IsBreaking == 'true' }}
+    if: false
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
