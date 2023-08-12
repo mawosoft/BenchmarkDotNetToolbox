@@ -19,19 +19,9 @@ jobs:
         fetch-depth: 1
     - name: dotnet Version
       run: dotnet --version
-    - name: Restore
-      run: |
-        . ./build/startNativeExecution.ps1
-        Start-NativeExecution { dotnet restore }
     - name: Check project dependencies
       id: dependencies
-      run: ./build/checkDependencies.ps1 -Token (ConvertTo-SecureString ${{ secrets.GITHUB_TOKEN }} -AsPlainText)
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ steps.dependencies.outputs.ArtifactName }}
-        path: ${{ steps.dependencies.outputs.ArtifactPath }}
-        retention-days: 5
+      uses: mawosoft/dotnet-dependency-alert@v1
     - name: Check tool dependencies
       id: tooldependencies
       run: ./build/checkToolDependencies.ps1 -Token (ConvertTo-SecureString ${{ secrets.GITHUB_TOKEN }} -AsPlainText)
