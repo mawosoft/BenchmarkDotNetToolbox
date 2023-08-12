@@ -128,7 +128,9 @@ class BdnPackageSet {
     }
 
     [void]Restore() {
-        [string]$feed = $this.Version -eq [BdnPackageSet]::BaselineVersion ? [BdnPackageSet]::BaselineFeed : [BdnPackageSet]::NightlyFeed
+        #[string]$feed = $this.Version -eq [BdnPackageSet]::BaselineVersion ? [BdnPackageSet]::BaselineFeed : [BdnPackageSet]::NightlyFeed
+        # TODO feed
+        [string]$feed = [BdnPackageSet]::BaselineFeed + ';' + [BdnPackageSet]::NightlyFeed
         $this.AssemblyFilePaths = [List[string]]::new()
         $this.AssemblyDirectoryPaths = [List[string]]::new()
         Start-NativeExecution { dotnet restore ([BdnPackageSet]::DownloadProjectFilePath) "-p:BdnFeed=$feed" "-p:BdnVersion=$($this.Version)" } -VerboseOutputOnError
@@ -488,6 +490,7 @@ if ($PreviousVersionOverride -and $PreviousVersionOverride -ne $previousVersion)
 }
 
 # Check for new version and validate
+# TODO error checking and tyepcast (keep NuGetVersion type?)
 Write-Host 'Searching for latest package version...'
 $response = Invoke-RestMethod -Uri ([uri]::new([uri]::new([BdnPackageSet]::NightlyFeed), "flatcontainer/$([BdnPackageSet]::Infos[0].Name)/index.json"))
 [string]$latestVersion = $response.versions.ForEach({ [NuGet.Versioning.NuGetVersion]$_ }) | Sort-Object -Descending | Select-Object -First 1
