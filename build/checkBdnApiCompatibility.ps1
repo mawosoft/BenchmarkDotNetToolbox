@@ -36,7 +36,6 @@ using namespace System
 using namespace System.IO
 using namespace System.Collections.Generic
 using namespace System.Text
-using namespace NuGet.Versioning
 
 
 [CmdletBinding()]
@@ -491,9 +490,9 @@ if ($PreviousVersionOverride -and $PreviousVersionOverride -ne $previousVersion)
 # Check for new version and validate
 Write-Host 'Searching for latest package version...'
 $response = Invoke-RestMethod -Uri ([uri]::new([uri]::new([BdnPackageSet]::NightlyFeed), "flatcontainer/$([BdnPackageSet]::Infos[0].Name)/index.json"))
-[string]$latestVersion = $response.versions.ForEach({ [NuGetVersion]$_ }) | Sort-Object -Descending | Select-Object -First 1
+[string]$latestVersion = $response.versions.ForEach({ [NuGet.Versioning.NuGetVersion]$_ }) | Sort-Object -Descending | Select-Object -First 1
 
-if ([NuGetVersion]$latestVersion -lt [NuGetVersion]$previousVersion) {
+if ([NuGet.Versioning.NuGetVersion]$latestVersion -lt [NuGet.Versioning.NuGetVersion]$previousVersion) {
     throw "Latest version $latestVersion is lower than previous version $previousVersion"
 }
 
