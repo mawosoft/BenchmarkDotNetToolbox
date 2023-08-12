@@ -131,9 +131,11 @@ class BdnPackageSet {
         #[string]$feed = $this.Version -eq [BdnPackageSet]::BaselineVersion ? [BdnPackageSet]::BaselineFeed : [BdnPackageSet]::NightlyFeed
         # TODO feed
         [string]$feed = [BdnPackageSet]::BaselineFeed + ';' + [BdnPackageSet]::NightlyFeed
+        $env:BdnFeed = $feed # msbuild prop syntax error
         $this.AssemblyFilePaths = [List[string]]::new()
         $this.AssemblyDirectoryPaths = [List[string]]::new()
-        Start-NativeExecution { dotnet restore ([BdnPackageSet]::DownloadProjectFilePath) "-p:BdnFeed=$feed" "-p:BdnVersion=$($this.Version)" } -VerboseOutputOnError
+        #Start-NativeExecution { dotnet restore ([BdnPackageSet]::DownloadProjectFilePath) "-p:BdnFeed=$feed" "-p:BdnVersion=$($this.Version)" } -VerboseOutputOnError
+        Start-NativeExecution { dotnet restore ([BdnPackageSet]::DownloadProjectFilePath) "-p:BdnVersion=$($this.Version)" } -VerboseOutputOnError
         if (-not $this.IsRestored()) {
             throw "Restore of $($this.Name) $($this.Version) failed."
         }
