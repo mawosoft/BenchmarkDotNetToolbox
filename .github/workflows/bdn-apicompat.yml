@@ -113,7 +113,8 @@ jobs:
 
   Feedback:
     needs: [ApiCompat, Test]
-    if: ${{ always() && needs.ApiCompat.outputs.IssueNumber != '' }}
+    # Temporarly disabled: if: ${{ always() && needs.ApiCompat.outputs.IssueNumber != '' }}
+    if: false
     runs-on: ubuntu-latest
     steps:
     - name: Update Issue with Test Status
