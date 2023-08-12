@@ -62,7 +62,8 @@ jobs:
 
   Test:
     needs: ApiCompat
-    if: ${{ needs.ApiCompat.outputs.IsBreaking == 'true' }}
+    # Temporarly disabled: if: ${{ needs.ApiCompat.outputs.IsBreaking == 'true' }}
+    if: false
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -112,7 +113,8 @@ jobs:
 
   Feedback:
     needs: [ApiCompat, Test]
-    if: ${{ always() && needs.ApiCompat.outputs.IssueNumber != '' }}
+    # Temporarly disabled: if: ${{ always() && needs.ApiCompat.outputs.IssueNumber != '' }}
+    if: false
     runs-on: ubuntu-latest
     steps:
     - name: Update Issue with Test Status

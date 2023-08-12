@@ -30,8 +30,7 @@ steps:
 - pwsh: |
     . ./build/startNativeExecution.ps1
     Set-Alias exec Start-NativeExecution
-    $BDNNightlyVersion = & ./build/findLatestBdnNightlyVersion.ps1 -Verbose
-    exec { dotnet restore "-p:BDNNightlyVersion=$BDNNightlyVersion" }
+    exec { dotnet restore }
     exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Debug --no-restore }
     exec { dotnet build ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj -c Debug --no-restore }
     exec { dotnet build ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug --no-restore }
