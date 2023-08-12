@@ -36,6 +36,7 @@ using namespace System
 using namespace System.IO
 using namespace System.Collections.Generic
 using namespace System.Text
+using namespace NuGet.Versioning
 
 
 [CmdletBinding()]
@@ -70,6 +71,7 @@ $ErrorActionPreference = 'Stop'
 Import-Module "$PSScriptRoot/ApiCompat/ApiCompatHelper.psm1" -Force
 Import-Module "$PSScriptRoot/GitHubHelper.psm1" -Force
 . "$PSScriptRoot/startNativeExecution.ps1"
+. "$PSScriptRoot/addNuGetType.ps1"
 
 # .SYNOPSIS
 #   General BDN package descriptor
@@ -86,9 +88,9 @@ class BdnPackageInfo {
 #   Restores a set of BDN packages with the same version
 class BdnPackageSet {
     static [string]$BaselineFeed = 'https://api.nuget.org/v3/index.json'
-    static [string]$NightlyFeed = 'https://ci.appveyor.com/nuget/benchmarkdotnet'
+    static [string]$NightlyFeed = 'https://www.myget.org/F/benchmarkdotnet/api/v3/index.json'
     static [string]$BaselineVersion = '0.13.4'
-    static [string]$DownloadProjectFilePath = (Join-Path $script:PSScriptRoot "ApiCompat/BdnDownload/BdnDownload.proj")
+    static [string]$DownloadProjectFilePath = (Join-Path $script:PSScriptRoot 'ApiCompat/BdnDownload/BdnDownload.proj')
     static [string]$NugetPackageRootPath = (Join-Path ([Environment]::GetFolderPath('UserProfile')) '.nuget/packages')
     static [ValidateNotNullOrEmpty()][BdnPackageInfo[]]$Infos = @(
         [BdnPackageInfo]::new('BenchmarkDotNet')
@@ -451,6 +453,10 @@ if (-not $env:GITHUB_RUN_ID -or -not $env:GITHUB_RUN_NUMBER -or
     throw 'GitHub environment variables are not defined.'
 }
 
+# Add type [NuGetVersion]
+Add-NuGetType -AssemblyName 'NuGet.Versioning'
+
+
 # Prepare artifacts
 [hashtable]$lastRunStatus = @{
     LastCheckedVersion = [BdnPackageSet]::BaselineVersion
@@ -483,20 +489,11 @@ if ($PreviousVersionOverride -and $PreviousVersionOverride -ne $previousVersion)
 }
 
 # Check for new version and validate
-Write-Host "Searching for latest package version..."
-$latestVersion = & "$PSSCriptRoot/findLatestBdnNightlyVersion.ps1" -Verbose
+Write-Host 'Searching for latest package version...'
+$response = Invoke-RestMethod -Uri ([uri]::new([uri]::new([BdnPackageSet]::NightlyFeed), "flatcontainer/$([BdnPackageSet]::Infos[0].Name)/index.json"))
+[string]$latestVersion = $response.versions.ForEach({ [NuGetVersion]$_ }) | Sort-Object -Descending | Select-Object -First 1
 
-[bool]$latestLowerThanPrevious = $false
-try {
-    # BDN doesn't use SemVer, so this should be ok
-    $latestLowerThanPrevious = [version]$latestVersion -lt [version]$previousVersion
-}
-catch {
-    # Postpone adding NuGet.Versioning until it is actually needed.
-    Write-Host "::warning::NuGet.Versioning is needed to properly compare $latestVersion with $previousVersion"
-}
-
-if ($latestLowerThanPrevious) {
+if ([NuGetVersion]$latestVersion -lt [NuGetVersion]$previousVersion) {
     throw "Latest version $latestVersion is lower than previous version $previousVersion"
 }
 
