@@ -70,6 +70,7 @@ $ErrorActionPreference = 'Stop'
 Import-Module "$PSScriptRoot/ApiCompat/ApiCompatHelper.psm1" -Force
 Import-Module "$PSScriptRoot/GitHubHelper.psm1" -Force
 . "$PSScriptRoot/startNativeExecution.ps1"
+# Even if we would add [NuGet.Versioning] here right away, the types could not be used in classes.
 . "$PSScriptRoot/addNuGetType.ps1"
 
 # .SYNOPSIS
@@ -128,14 +129,10 @@ class BdnPackageSet {
     }
 
     [void]Restore() {
-        #[string]$feed = $this.Version -eq [BdnPackageSet]::BaselineVersion ? [BdnPackageSet]::BaselineFeed : [BdnPackageSet]::NightlyFeed
-        # TODO feed
-        [string]$feed = [BdnPackageSet]::BaselineFeed + ';' + [BdnPackageSet]::NightlyFeed
-        $env:BdnFeed = $feed # msbuild prop syntax error
+        [string]$feed = $this.Version.Contains([char]'-') ? [BdnPackageSet]::NightlyFeed : [BdnPackageSet]::BaselineFeed
         $this.AssemblyFilePaths = [List[string]]::new()
         $this.AssemblyDirectoryPaths = [List[string]]::new()
-        #Start-NativeExecution { dotnet restore ([BdnPackageSet]::DownloadProjectFilePath) "-p:BdnFeed=$feed" "-p:BdnVersion=$($this.Version)" } -VerboseOutputOnError
-        Start-NativeExecution { dotnet restore ([BdnPackageSet]::DownloadProjectFilePath) "-p:BdnVersion=$($this.Version)" } -VerboseOutputOnError
+        Start-NativeExecution { dotnet restore ([BdnPackageSet]::DownloadProjectFilePath) "-p:BdnFeed=$feed" "-p:BdnVersion=$($this.Version)" } -VerboseOutputOnError
         if (-not $this.IsRestored()) {
             throw "Restore of $($this.Name) $($this.Version) failed."
         }
@@ -458,6 +455,7 @@ if (-not $env:GITHUB_RUN_ID -or -not $env:GITHUB_RUN_NUMBER -or
 
 # Add type [NuGetVersion]
 Add-NuGetType -AssemblyName 'NuGet.Versioning'
+Invoke-Expression 'using namespace NuGet.Versioning'
 
 
 # Prepare artifacts
@@ -492,12 +490,11 @@ if ($PreviousVersionOverride -and $PreviousVersionOverride -ne $previousVersion)
 }
 
 # Check for new version and validate
-# TODO error checking and tyepcast (keep NuGetVersion type?)
 Write-Host 'Searching for latest package version...'
 $response = Invoke-RestMethod -Uri ([uri]::new([uri]::new([BdnPackageSet]::NightlyFeed), "flatcontainer/$([BdnPackageSet]::Infos[0].Name)/index.json"))
-[string]$latestVersion = $response.versions.ForEach({ [NuGet.Versioning.NuGetVersion]$_ }) | Sort-Object -Descending | Select-Object -First 1
+[string]$latestVersion = $response.versions.ForEach({ [NuGetVersion]$_ }) | Sort-Object -Descending | Select-Object -First 1
 
-if ([NuGet.Versioning.NuGetVersion]$latestVersion -lt [NuGet.Versioning.NuGetVersion]$previousVersion) {
+if ([NuGetVersion]$latestVersion -lt [NuGetVersion]$previousVersion) {
     throw "Latest version $latestVersion is lower than previous version $previousVersion"
 }
 
