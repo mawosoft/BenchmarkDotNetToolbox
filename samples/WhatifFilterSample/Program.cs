@@ -56,7 +56,7 @@ namespace WhatifFilterSample
             if (args.Length == 0)
             {
                 runAllPredefinedSamples = true;
-                sampleCmdLine = "--runtimes net6.0 netcoreapp31 net48 --whatif";
+                sampleCmdLine = "--runtimes net7.0 net6.0 net48 --whatif";
                 args = sampleCmdLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             }
 
@@ -101,14 +101,14 @@ namespace WhatifFilterSample
                 logger.WriteLine();
                 logger.WriteLineHeader("// ***** Addendum: BenchmarkDotNet --list option for comparison *****");
 
-                sampleCmdLine = "--runtimes net6.0 netcoreapp31 net48 --list flat";
+                sampleCmdLine = "--runtimes net7.0 net6.0 net48 --list flat";
                 logger.WriteLine();
                 logger.WriteLineInfo("Console arguments: " + sampleCmdLine);
                 logger.WriteLine();
                 args = sampleCmdLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 _ = BenchmarkRunner.Run(typeof(Program).Assembly, config, args);
 
-                sampleCmdLine = "--runtimes net6.0 netcoreapp31 net48 --list tree";
+                sampleCmdLine = "--runtimes net7.0 net6.0 net48 --list tree";
                 logger.WriteLine();
                 logger.WriteLineInfo("Console arguments: " + sampleCmdLine);
                 logger.WriteLine();
