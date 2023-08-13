@@ -78,9 +78,19 @@ Import-Module "$PSScriptRoot/GitHubHelper.psm1" -Force
 class BdnPackageInfo {
     [ValidateNotNullOrEmpty()][string]$Name
     [string[]]$RelativeAsmPaths
+
     BdnPackageInfo([string]$name) {
+        $this.Init($name, 'netstandard2.0')
+    }
+
+    BdnPackageInfo([string]$name, [string[]]$tfms) {
+        $this.Init($name, $tfms)
+    }
+
+    # No ctor chaining in Pwsh
+    hidden [void]Init([string]$name, [string[]]$tfms) {
         $this.Name = $name
-        $this.RelativeAsmPaths = , "lib/netstandard2.0/$name.dll"
+        $this.RelativeAsmPaths = $tfms.ForEach({ "lib/$_/$name.dll" })
     }
 }
 
@@ -89,13 +99,14 @@ class BdnPackageInfo {
 class BdnPackageSet {
     static [string]$BaselineFeed = 'https://api.nuget.org/v3/index.json'
     static [string]$NightlyFeed = 'https://www.myget.org/F/benchmarkdotnet/api/v3/index.json'
-    static [string]$BaselineVersion = '0.13.4'
+    static [string]$BaselineVersion = '0.13.6'
     static [string]$DownloadProjectFilePath = (Join-Path $script:PSScriptRoot 'ApiCompat/BdnDownload/BdnDownload.proj')
     static [string]$NugetPackageRootPath = (Join-Path ([Environment]::GetFolderPath('UserProfile')) '.nuget/packages')
     static [ValidateNotNullOrEmpty()][BdnPackageInfo[]]$Infos = @(
         [BdnPackageInfo]::new('BenchmarkDotNet')
         [BdnPackageInfo]::new('BenchmarkDotNet.Annotations')
         [BdnPackageInfo]::new('BenchmarkDotNet.Diagnostics.Windows')
+        [BdnPackageInfo]::new('BenchmarkDotNet.Diagnostics.dotTrace', 'net6.0')
     )
     [ValidateNotNullOrEmpty()][string]$Name = 'BDN'
     [ValidateNotNullOrEmpty()][string]$Version
@@ -491,7 +502,7 @@ if ($PreviousVersionOverride -and $PreviousVersionOverride -ne $previousVersion)
 
 # Check for new version and validate
 Write-Host 'Searching for latest package version...'
-$response = Invoke-RestMethod -Uri ([uri]::new([uri]::new([BdnPackageSet]::NightlyFeed), "flatcontainer/$([BdnPackageSet]::Infos[0].Name)/index.json"))
+$response = Invoke-RestMethod -Uri ([uri]::new([uri]::new([BdnPackageSet]::NightlyFeed), "flatcontainer/$([BdnPackageSet]::Infos[0].Name.ToLowerInvariant())/index.json"))
 [string]$latestVersion = $response.versions.ForEach({ [NuGetVersion]$_ }) | Sort-Object -Descending | Select-Object -First 1
 
 if ([NuGetVersion]$latestVersion -lt [NuGetVersion]$previousVersion) {
