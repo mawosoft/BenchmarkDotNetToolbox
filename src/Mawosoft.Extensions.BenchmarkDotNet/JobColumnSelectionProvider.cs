@@ -62,7 +62,7 @@ public class JobColumnSelectionProvider : IColumnProvider
                         + ". Some job columns have been hidden:" + Environment.NewLine
                         + string.Join(Environment.NewLine,
                             summary.BenchmarksCases.Select(b =>
-                                b.Job.ResolvedId.PadLeft(paddedJobNameLength) + ": " 
+                                b.Job.ResolvedId.PadLeft(paddedJobNameLength) + ": "
                                 + string.Join(", ", hiddenColumns.Select(cf =>
                                     cf.Characteristic.Id + "=" + cf.Column.GetValue(summary, b)))).Distinct());
                     columnFilters[legendColumnIndex].AddLegend(legend);
@@ -171,7 +171,7 @@ public class JobColumnSelectionProvider : IColumnProvider
         {
             if (filterExpression == null)
                 throw new ArgumentNullException(nameof(filterExpression));
-            string[] filterExpressions = filterExpression.Split(new[]{ ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] filterExpressions = filterExpression.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             CharacteristicFilter[] retVal =
                 _allCharacteristicsAndColumns.Select(i => new CharacteristicFilter(i.characteristic, i.column)).ToArray();
             for (int i = 0; i < filterExpressions.Length; i++)
