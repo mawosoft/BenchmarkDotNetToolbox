@@ -8,34 +8,33 @@ using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Toolchains.Results;
 
-namespace Mawosoft.Extensions.BenchmarkDotNet.ApiCompat
+namespace Mawosoft.Extensions.BenchmarkDotNet.ApiCompat;
+
+internal static class ExecuteResultWrapper
 {
-    internal static class ExecuteResultWrapper
+    private static readonly ConstructorInfo? s_ctorInternalStable;
+
+    static ExecuteResultWrapper()
     {
-        private static readonly ConstructorInfo? s_ctorInternalStable;
+        s_ctorInternalStable = typeof(ExecuteResult).GetConstructor(
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null,
+            new Type[] { typeof(List<Measurement>), typeof(GcStats), typeof(ThreadingStats), typeof(double) },
+            null);
+    }
 
-        static ExecuteResultWrapper()
+    public static ExecuteResult Create(
+        IEnumerable<Measurement> measurements,
+        GcStats gcStats,
+        ThreadingStats threadingStats,
+        double exceptionFrequency)
+    {
+        if (s_ctorInternalStable != null)
         {
-            s_ctorInternalStable = typeof(ExecuteResult).GetConstructor(
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null,
-                new Type[] { typeof(List<Measurement>), typeof(GcStats), typeof(ThreadingStats), typeof(double) },
-                null);
+            return (ExecuteResult)s_ctorInternalStable.Invoke(new object[] { measurements.ToList(), gcStats, threadingStats, exceptionFrequency });
         }
-
-        public static ExecuteResult Create(
-            IEnumerable<Measurement> measurements,
-            GcStats gcStats,
-            ThreadingStats threadingStats,
-            double exceptionFrequency)
+        else
         {
-            if (s_ctorInternalStable != null)
-            {
-                return (ExecuteResult)s_ctorInternalStable.Invoke(new object[] { measurements.ToList(), gcStats, threadingStats, exceptionFrequency });
-            }
-            else
-            {
-                throw new MissingMethodException(nameof(ExecuteResult), ".ctor");
-            }
+            throw new MissingMethodException(nameof(ExecuteResult), ".ctor");
         }
     }
 }
