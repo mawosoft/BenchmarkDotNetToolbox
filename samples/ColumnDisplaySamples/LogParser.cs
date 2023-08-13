@@ -1,10 +1,5 @@
 ﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using BenchmarkDotNet.Loggers;
-
 namespace ColumnDisplaySamples;
 
 // Extracts information from captured BenchmarkDotNet log

@@ -1,0 +1,31 @@
+// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
+
+global using System;
+global using System.Collections.Generic;
+global using System.Collections.Immutable;
+global using System.Diagnostics;
+global using System.Diagnostics.CodeAnalysis;
+global using System.Globalization;
+global using System.Linq;
+global using System.Reflection;
+global using System.Runtime.CompilerServices;
+global using BenchmarkDotNet.Analysers;
+global using BenchmarkDotNet.Attributes;
+global using BenchmarkDotNet.Characteristics;
+global using BenchmarkDotNet.Columns;
+global using BenchmarkDotNet.Configs;
+global using BenchmarkDotNet.Diagnosers;
+global using BenchmarkDotNet.Engines;
+global using BenchmarkDotNet.Environments;
+global using BenchmarkDotNet.Exporters;
+global using BenchmarkDotNet.Filters;
+global using BenchmarkDotNet.Jobs;
+global using BenchmarkDotNet.Loggers;
+global using BenchmarkDotNet.Parameters;
+global using BenchmarkDotNet.Reports;
+global using BenchmarkDotNet.Running;
+global using BenchmarkDotNet.Toolchains;
+global using BenchmarkDotNet.Toolchains.InProcess.Emit;
+global using BenchmarkDotNet.Toolchains.Results;
+global using BenchmarkDotNet.Validators;
+global using Mawosoft.Extensions.BenchmarkDotNet.ApiCompat;

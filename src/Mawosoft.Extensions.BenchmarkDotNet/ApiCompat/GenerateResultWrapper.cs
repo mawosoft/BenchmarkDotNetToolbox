@@ -1,11 +1,5 @@
 // Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using BenchmarkDotNet.Toolchains;
-using BenchmarkDotNet.Toolchains.Results;
-
 namespace Mawosoft.Extensions.BenchmarkDotNet.ApiCompat;
 
 internal static class GenerateResultWrapper

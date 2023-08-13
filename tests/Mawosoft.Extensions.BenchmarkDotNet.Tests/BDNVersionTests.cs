@@ -1,14 +1,5 @@
 // Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Running;
-using Xunit;
-using Xunit.Abstractions;
-
 namespace Mawosoft.Extensions.BenchmarkDotNet.Tests;
 
 public class BDNVersionTests

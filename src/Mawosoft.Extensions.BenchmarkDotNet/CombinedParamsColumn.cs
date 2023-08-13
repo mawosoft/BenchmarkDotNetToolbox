@@ -1,11 +1,5 @@
 ﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
-using System.Linq;
-using BenchmarkDotNet.Columns;
-using BenchmarkDotNet.Parameters;
-using BenchmarkDotNet.Reports;
-using BenchmarkDotNet.Running;
-
 namespace Mawosoft.Extensions.BenchmarkDotNet;
 
 /// <summary>

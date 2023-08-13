@@ -1,24 +1,5 @@
 ﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using BenchmarkDotNet.Columns;
-using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Engines;
-using BenchmarkDotNet.Environments;
-using BenchmarkDotNet.Jobs;
-using BenchmarkDotNet.Parameters;
-using BenchmarkDotNet.Reports;
-using BenchmarkDotNet.Running;
-using BenchmarkDotNet.Toolchains;
-using BenchmarkDotNet.Toolchains.Results;
-using BenchmarkDotNet.Validators;
-using Mawosoft.Extensions.BenchmarkDotNet.ApiCompat;
-
 namespace Mawosoft.Extensions.BenchmarkDotNet;
 
 internal static class ColumnCategoryExtensions
