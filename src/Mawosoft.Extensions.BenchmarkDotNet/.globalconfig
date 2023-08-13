@@ -1,0 +1,4 @@
+# Project-specific config
+
+is_global = true
+#global_level = 100
