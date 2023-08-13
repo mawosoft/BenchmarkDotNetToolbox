@@ -27,10 +27,12 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.Tests
 
             void CheckAssembly(Assembly assembly, bool nightly)
             {
+                // BDN now uses proper prerelease labels
                 _testOutput.WriteLine(assembly.FullName);
-                int? revision = assembly.GetName().Version?.Revision;
-                Assert.NotNull(revision);
-                Assert.Equal(nightly, revision != 0);
+                AssemblyInformationalVersionAttribute v = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!;
+                Assert.NotNull(v);
+                _testOutput.WriteLine("Informational Version: " + v.InformationalVersion);
+                Assert.Equal(nightly, v.InformationalVersion.Contains('-'));
             }
         }
 
@@ -56,7 +58,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.Tests
                 Version v = assembly.GetName().Version;
                 Assert.True(v >= new Version("0.13.2.1930") && v < new Version("0.13.2.2029"), "ReflectionTypeLoadException only tolerated for BDN [0.13.2.1930, 0.13.2.2029)");
 #else
-                Assert.True(false, "ReflectionTypeLoadException only tolerated on .NET Framework.");
+                Assert.Fail("ReflectionTypeLoadException only tolerated on .NET Framework.");
 #endif
 
             }

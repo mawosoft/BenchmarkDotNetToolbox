@@ -66,12 +66,14 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.Tests
                 retVal = genericToArray.MakeGenericMethod(item).Invoke(null, new object?[] { retVal });
                 add.Invoke(config, new object?[] { retVal });
             }
-            config.Orderer = source.Orderer!;
-            config.SummaryStyle = source.SummaryStyle;
-            config.UnionRule = source.UnionRule;
-            config.ArtifactsPath = source.ArtifactsPath;
-            config.CultureInfo = source.CultureInfo!;
+            //config.ConfigAnalysisConclusion not settable on ManualConfig
             config.Options = source.Options;
+            config.CultureInfo = source.CultureInfo!;
+            config.ArtifactsPath = source.ArtifactsPath;
+            config.UnionRule = source.UnionRule;
+            config.SummaryStyle = source.SummaryStyle;
+            config.CategoryDiscoverer = source.CategoryDiscoverer!;
+            config.Orderer = source.Orderer!;
             config.BuildTimeout = source.BuildTimeout;
             return config;
         }
@@ -236,7 +238,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.Tests
         {
             RunReplaceTestCase(typeof(HardwareCounter), input =>
             {
-                var replacements = new HardwareCounter[] { HardwareCounter.BranchMispredictions, HardwareCounter.BranchMispredictsRetired, HardwareCounter.CacheMisses  };
+                var replacements = new HardwareCounter[] { HardwareCounter.BranchMispredictions, HardwareCounter.BranchMispredictsRetired, HardwareCounter.CacheMisses };
                 TestCaseData result;
                 result.ExpectedNeedsAdd = input.ExpectedNeedsAdd.AddHardwareCounters(replacements);
                 result.IConfigRemove = input.IConfigRemove.ReplaceHardwareCounters();
@@ -252,7 +254,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.Tests
         {
             RunReplaceTestCase(typeof(IFilter), input =>
             {
-                var replacements = new IFilter[] { new NameFilter(n => true), new WhatifFilter()  };
+                var replacements = new IFilter[] { new NameFilter(n => true), new WhatifFilter() };
                 TestCaseData result;
                 result.ExpectedNeedsAdd = input.ExpectedNeedsAdd.AddFilter(replacements);
                 result.IConfigRemove = input.IConfigRemove.ReplaceFilters();
