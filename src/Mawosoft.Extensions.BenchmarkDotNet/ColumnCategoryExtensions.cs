@@ -88,6 +88,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet
             public string Unit => string.Empty;
             public bool TheGreaterTheBetter => false;
             public int PriorityInCategory => 0;
+            public bool GetIsAvailable(Metric _) => true;
         }
 
         // Mock summary with necessary content to call IColumnProvider.GetColumns(Summary)
