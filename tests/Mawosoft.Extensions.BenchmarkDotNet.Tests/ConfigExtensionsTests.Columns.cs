@@ -159,7 +159,7 @@ public partial class ConfigExtensionsTests
                         DefaultColumnProviders.Metrics
                     )
                 },
-                new ColumnCategory[] { ColumnCategory.Statistics, ColumnCategory.Params},
+                new ColumnCategory[] { ColumnCategory.Statistics, ColumnCategory.Params },
                 new IColumnProvider[]
                 {
                     new CompositeColumnProvider
