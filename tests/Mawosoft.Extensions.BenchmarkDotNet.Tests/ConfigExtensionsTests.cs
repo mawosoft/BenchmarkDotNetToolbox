@@ -1,24 +1,5 @@
 // Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using BenchmarkDotNet.Analysers;
-using BenchmarkDotNet.Columns;
-using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Diagnosers;
-using BenchmarkDotNet.Exporters;
-using BenchmarkDotNet.Exporters.Json;
-using BenchmarkDotNet.Exporters.Xml;
-using BenchmarkDotNet.Filters;
-using BenchmarkDotNet.Jobs;
-using BenchmarkDotNet.Loggers;
-using BenchmarkDotNet.Validators;
-using Xunit;
-using Xunit.Abstractions;
-
 namespace Mawosoft.Extensions.BenchmarkDotNet.Tests;
 
 public partial class ConfigExtensionsTests

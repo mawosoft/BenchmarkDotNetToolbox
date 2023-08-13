@@ -1,15 +1,5 @@
 ﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
-using System;
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Columns;
-using BenchmarkDotNet.Environments;
-using BenchmarkDotNet.Jobs;
-using BenchmarkDotNet.Toolchains.CsProj;
-using BenchmarkDotNet.Toolchains.DotNetCli;
-using BenchmarkDotNet.Toolchains.InProcess.Emit;
-using Mawosoft.Extensions.BenchmarkDotNet;
-
 namespace ColumnDisplaySamples;
 
 public abstract class JobColumnSample1_RunModes : SampleBase

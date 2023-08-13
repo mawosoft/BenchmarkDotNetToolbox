@@ -1,13 +1,5 @@
 // Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using BenchmarkDotNet.Columns;
-using BenchmarkDotNet.Configs;
-using Xunit;
-
 namespace Mawosoft.Extensions.BenchmarkDotNet.Tests;
 
 public partial class ConfigExtensionsTests

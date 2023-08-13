@@ -1,23 +1,5 @@
 ﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Globalization;
-using System.Linq;
-using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Engines;
-using BenchmarkDotNet.Environments;
-using BenchmarkDotNet.Exporters;
-using BenchmarkDotNet.Filters;
-using BenchmarkDotNet.Loggers;
-using BenchmarkDotNet.Reports;
-using BenchmarkDotNet.Running;
-using BenchmarkDotNet.Toolchains.Results;
-using BenchmarkDotNet.Validators;
-using Mawosoft.Extensions.BenchmarkDotNet.ApiCompat;
-
-
 namespace Mawosoft.Extensions.BenchmarkDotNet;
 
 /// <summary>

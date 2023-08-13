@@ -1,13 +1,5 @@
 ﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
-using System;
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Columns;
-using BenchmarkDotNet.Jobs;
-using BenchmarkDotNet.Reports;
-using BenchmarkDotNet.Toolchains.InProcess.Emit;
-using Mawosoft.Extensions.BenchmarkDotNet;
-
 namespace ColumnDisplaySamples;
 
 public abstract class ParamColumnSample : SampleBase

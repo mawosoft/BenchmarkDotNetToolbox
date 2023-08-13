@@ -1,13 +1,5 @@
 ﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
-using System.Collections.Generic;
-using System.IO;
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
-using BenchmarkDotNet.Reports;
-using BenchmarkDotNet.Toolchains.InProcess.Emit;
-using Mawosoft.Extensions.BenchmarkDotNet;
-
 namespace ColumnDisplaySamples;
 
 [Config(typeof(SampleConfig))]

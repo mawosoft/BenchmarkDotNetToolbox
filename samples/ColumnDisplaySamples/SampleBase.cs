@@ -1,13 +1,5 @@
 ﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
-using System.Linq;
-using BenchmarkDotNet.Analysers;
-using BenchmarkDotNet.Columns;
-using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Exporters;
-using BenchmarkDotNet.Loggers;
-using BenchmarkDotNet.Reports;
-
 namespace ColumnDisplaySamples;
 
 public abstract class SampleBase
