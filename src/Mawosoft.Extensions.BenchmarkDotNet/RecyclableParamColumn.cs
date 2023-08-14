@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
+// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
 namespace Mawosoft.Extensions.BenchmarkDotNet;
 
@@ -30,9 +30,9 @@ internal class RecyclableParamColumn : IColumn
     public override string ToString() => ColumnName;
     public bool IsNumeric => false;
     public UnitType UnitType => UnitType.Dimensionless;
-    public string GetValue(Summary summary, BenchmarkCase benchmarkCase, SummaryStyle style) =>
-        benchmarkCase.Parameters.Items.ElementAtOrDefault(_paramIndex)?.ToDisplayText(style) ??
-        ParameterInstance.NullParameterTextRepresentation;
+    public string GetValue(Summary summary, BenchmarkCase benchmarkCase, SummaryStyle style)
+        => benchmarkCase.Parameters.Items.ElementAtOrDefault(_paramIndex)?.ToDisplayText(style)
+           ?? ParameterInstance.NullParameterTextRepresentation;
     public string Legend => _isRealName
         ? $"Value of the '{ColumnName}' parameter"
         : $"Value of the parameter at position {_paramIndex + 1}";

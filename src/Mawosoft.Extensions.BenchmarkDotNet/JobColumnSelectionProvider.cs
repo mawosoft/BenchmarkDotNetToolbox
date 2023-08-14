@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
+// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
 namespace Mawosoft.Extensions.BenchmarkDotNet;
 
@@ -40,6 +40,7 @@ public class JobColumnSelectionProvider : IColumnProvider
     /// <summary><see cref="IColumnProvider"/> implementation.</summary>
     public IEnumerable<IColumn> GetColumns(Summary summary)
     {
+        if (summary is null) throw new ArgumentNullException(nameof(summary));
         ColumnFilter[] columnFilters
             = _presentableCharacteristicFilters.Select(c => new ColumnFilter(c, summary)).ToArray();
         if (_showHiddenValuesInLegend)
@@ -106,15 +107,16 @@ public class JobColumnSelectionProvider : IColumnProvider
         // - A column the user wants to hide may contain the same value for all benchmarks and therefore
         //   gets extracted by BDN and the value appears only once above the summary. In this case, too,
         //   the column is neither hidden nor visible for our purposes.
-        public bool IsHidden => _available && _multiValue && _hide;
-        public bool IsVisible => _available && _multiValue && !_hide;
+        public readonly bool IsHidden => _available && _multiValue && _hide;
+        public readonly bool IsVisible => _available && _multiValue && !_hide;
 
         public ColumnFilter(CharacteristicFilter characteristicFilter, Summary summary) : this()
         {
             Characteristic = characteristicFilter.Characteristic;
-            IColumn column = Column = characteristicFilter.Column ?? throw new ArgumentNullException(nameof(Column));
+            IColumn column = characteristicFilter.Column ?? throw new ArgumentException("Column is null.", nameof(characteristicFilter));
+            Column = column;
             _hide = characteristicFilter.Hide;
-            if ((_available = Column.IsAvailable(summary)) && summary is not null)
+            if ((_available = column.IsAvailable(summary)) && summary is not null)
             {
                 _multiValue = summary.BenchmarksCases.Select(b => column.GetValue(summary, b)).Distinct().Count() > 1;
             }

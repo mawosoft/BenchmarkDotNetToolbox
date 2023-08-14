@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
+// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
 namespace Mawosoft.Extensions.BenchmarkDotNet;
 
@@ -9,7 +9,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet;
 public class WhatifFilter : IFilter
 {
     private readonly List<BenchmarkCase> _filteredBenchmarkCases = new();
-    private string[]? _consoleArguments = null;
+    private string[]? _consoleArguments;
 
     /// <summary>
     /// Gets or sets the filter's Enabled state. If <c>true</c>, the filter is enabled and will suppress
@@ -88,8 +88,8 @@ public class WhatifFilter : IFilter
     /// </summary>
     public void PrintAsSummaries(ILogger logger)
     {
-        if (_filteredBenchmarkCases.Count == 0)
-            return;
+        if (logger is null) throw new ArgumentNullException(nameof(logger));
+        if (_filteredBenchmarkCases.Count == 0) return;
 
         IConfig? joinedConfig = _filteredBenchmarkCases.FirstOrDefault(bc => (bc.Config.Options & ConfigOptions.JoinSummary) != 0)?.Config;
 
