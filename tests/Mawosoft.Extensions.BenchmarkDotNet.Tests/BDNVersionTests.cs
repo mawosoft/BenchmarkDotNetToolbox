@@ -44,7 +44,7 @@ public class BDNVersionTests
             _testOutput.WriteLine(rtle.Message);
             _testOutput.WriteLine($"# of LoaderExceptions: {rtle.LoaderExceptions.Length}");
             _testOutput.WriteLine(string.Join(Environment.NewLine, rtle.LoaderExceptions.GroupBy(e => e?.Message, (k, g) => $"{g.Count()}x {k}")));
-            types.AddRange(rtle.Types.Where(t => t != null).Select(t => t!));
+            types.AddRange(rtle.Types.Where(t => t is not null).Select(t => t!));
 #if NETFRAMEWORK
             Version v = assembly.GetName().Version;
             Assert.True(v >= new Version("0.13.2.1930") && v < new Version("0.13.2.2029"), "ReflectionTypeLoadException only tolerated for BDN [0.13.2.1930, 0.13.2.2029)");

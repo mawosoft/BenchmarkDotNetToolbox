@@ -34,7 +34,7 @@ public class JobColumnSelectionProvider : IColumnProvider
         _showHiddenValuesInLegend = showHiddenValuesInLegend;
         _presentableCharacteristicFilters =
             s_filterFactory.Value.CreateCharacteristicFilters(filterExpression)
-            .Where(c => c.Column != null).ToArray();
+            .Where(c => c.Column is not null).ToArray();
     }
 
     /// <summary><see cref="IColumnProvider"/> implementation.</summary>
@@ -114,7 +114,7 @@ public class JobColumnSelectionProvider : IColumnProvider
             Characteristic = characteristicFilter.Characteristic;
             IColumn column = Column = characteristicFilter.Column ?? throw new ArgumentNullException(nameof(Column));
             _hide = characteristicFilter.Hide;
-            if ((_available = Column.IsAvailable(summary)) && summary != null)
+            if ((_available = Column.IsAvailable(summary)) && summary is not null)
             {
                 _multiValue = summary.BenchmarksCases.Select(b => column.GetValue(summary, b)).Distinct().Count() > 1;
             }
@@ -169,7 +169,7 @@ public class JobColumnSelectionProvider : IColumnProvider
 
         public CharacteristicFilter[] CreateCharacteristicFilters(string filterExpression)
         {
-            if (filterExpression == null)
+            if (filterExpression is null)
                 throw new ArgumentNullException(nameof(filterExpression));
             string[] filterExpressions = filterExpression.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             CharacteristicFilter[] retVal =

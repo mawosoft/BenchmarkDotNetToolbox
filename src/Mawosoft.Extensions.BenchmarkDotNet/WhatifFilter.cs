@@ -42,7 +42,7 @@ public class WhatifFilter : IFilter
     {
         Enabled = false;
         _consoleArguments = null;
-        if (args == null)
+        if (args is null)
         {
             return Array.Empty<string>();
         }
@@ -112,13 +112,13 @@ public class WhatifFilter : IFilter
         logger.WriteLine();
         logger.WriteLineHeader("// * What If Summary *");
         logger.WriteLine();
-        if (_consoleArguments != null && _consoleArguments.Length != 0)
+        if (_consoleArguments is not null && _consoleArguments.Length != 0)
         {
             logger.WriteLineInfo("Console arguments: " + string.Join(" ", _consoleArguments));
             logger.WriteLine();
         }
         logger.WriteLineInfo(HostEnvironmentInfo.GetInformation());
-        if (joinedConfig != null)
+        if (joinedConfig is not null)
         {
             Summary summary = new(string.Empty, reports.ToImmutableArray(), hostEnvironmentInfo,
                                   string.Empty, string.Empty, TimeSpan.Zero, cultureInfo, validationErrors,
@@ -159,7 +159,7 @@ public class WhatifFilter : IFilter
     /// </summary>
     public bool Predicate(BenchmarkCase benchmarkCase)
     {
-        if (benchmarkCase == null)
+        if (benchmarkCase is null)
         {
             throw new ArgumentNullException(nameof(benchmarkCase));
         }

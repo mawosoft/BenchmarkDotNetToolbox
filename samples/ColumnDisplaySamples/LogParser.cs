@@ -84,7 +84,7 @@ public static class LogParser
                     captured = captured.Skip(1).
                         SkipWhile(ol => ol.Text.Length == 0 || ol.Text == Environment.NewLine);
                 }
-                if (target != null)
+                if (target is not null)
                 {
                     int prevCount = target.Count;
                     target.AddRange(captured.TakeWhile(ol => !ol.Text.StartsWith("//", StringComparison.Ordinal)));

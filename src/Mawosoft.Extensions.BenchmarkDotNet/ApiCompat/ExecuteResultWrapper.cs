@@ -20,7 +20,7 @@ internal static class ExecuteResultWrapper
         ThreadingStats threadingStats,
         double exceptionFrequency)
     {
-        if (s_ctorInternalStable != null)
+        if (s_ctorInternalStable is not null)
         {
             return (ExecuteResult)s_ctorInternalStable.Invoke(new object[] { measurements.ToList(), gcStats, threadingStats, exceptionFrequency });
         }

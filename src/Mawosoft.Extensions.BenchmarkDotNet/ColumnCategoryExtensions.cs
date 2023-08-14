@@ -117,11 +117,11 @@ internal static class ColumnCategoryExtensions
             {
                 FieldInfo? columnsField = typeof(SimpleColumnProvider).GetField("columns",
                     BindingFlags.Instance | BindingFlags.NonPublic);
-                Debug.Assert(columnsField != null);
+                Debug.Assert(columnsField is not null);
                 IColumn[]? columns = (columnsField?.GetValue(provider) as IColumn[])?
                     .Where(col => !categories.Contains(col.GetExtendedColumnCategory()))
                     .ToArray();
-                if (columns != null)
+                if (columns is not null)
                 {
                     if (columns.Length == 0)
                     {
@@ -138,10 +138,10 @@ internal static class ColumnCategoryExtensions
             {
                 FieldInfo? providersField = typeof(CompositeColumnProvider).GetField("providers",
                     BindingFlags.Instance | BindingFlags.NonPublic);
-                Debug.Assert(providersField != null);
+                Debug.Assert(providersField is not null);
                 List<IColumnProvider>? subProviders =
                     (providersField?.GetValue(provider) as IColumnProvider[])?.ToList();
-                if (subProviders != null)
+                if (subProviders is not null)
                 {
                     RemoveColumnsByCategory(subProviders, categories);
                     if (subProviders.Count == 0)

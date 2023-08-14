@@ -27,7 +27,7 @@ namespace ApiCompatHelper
         {
             foreach (AttributeData attribute in attributes)
             {
-                if (attribute.AttributeClass != null
+                if (attribute.AttributeClass is not null
                     && _symbolsWithAttribute.TryGetValue(attribute.AttributeClass.Name, out List<ISymbol>? symbolsWithAttribute))
                 {
                     symbolsWithAttribute.Add(symbol);
