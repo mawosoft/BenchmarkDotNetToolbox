@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
+// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
 using System;
 using BenchmarkDotNet.Attributes;
@@ -10,6 +10,9 @@ using BenchmarkDotNet.Running;
 using Mawosoft.Extensions.BenchmarkDotNet;
 
 namespace WhatifFilterSample;
+
+#pragma warning disable CA1822 // Mark members as static
+#pragma warning disable CA5394 // Do not use insecure randomness
 
 public class Benchmarks1
 {
@@ -43,7 +46,7 @@ public class Benchmarks3
     public int Method2() => new Random().Next(60);
 }
 
-internal class Program
+internal sealed class Program
 {
     public static void Main(string[] args)
     {

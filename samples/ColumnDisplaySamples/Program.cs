@@ -1,8 +1,8 @@
-﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
+// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
 namespace ColumnDisplaySamples;
 
-internal class Program
+internal sealed class Program
 {
     public static void Main(string[] args)
     {

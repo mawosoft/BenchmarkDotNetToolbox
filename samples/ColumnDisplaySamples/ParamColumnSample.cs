@@ -1,15 +1,15 @@
-﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
+// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
 namespace ColumnDisplaySamples;
 
 public abstract class ParamColumnSample : SampleBase
 {
-    public override string SampleGroupDescription => "Param Column Sample";
+    internal override string SampleGroupDescription => "Param Column Sample";
 
-    public class SampleConfig : SampleConfigBase
+    internal class SampleConfig : SampleConfigBase
     {
-        public SampleConfig() : base() =>
-            AddJob(Job.Dry.WithToolchain(InProcessEmitToolchain.DontLogOutput));
+        public SampleConfig() : base()
+            => AddJob(Job.Dry.WithToolchain(InProcessEmitToolchain.DontLogOutput));
     }
 
     [Benchmark]
@@ -29,20 +29,20 @@ public abstract class ParamColumnSample : SampleBase
 [Config(typeof(SampleConfig))]
 public class ParamColumnSample_BDNDefault : ParamColumnSample
 {
-    public override string SampleVariantDescription => BenchmarkDotNetDefault;
+    internal override string SampleVariantDescription => BenchmarkDotNetDefault;
 }
 
 [Config(typeof(SampleConfig))]
 public class ParamColumnSample_CombinedParamsColumn_Default : ParamColumnSample
 {
-    public override string SampleVariantDescription => "with CombinedParamsColumn() // default formatting";
+    internal override string SampleVariantDescription => "with CombinedParamsColumn() // default formatting";
     // Same config as above, but now with CombinedParamsColumn and a wider column width since all params
     // are displayed in the same column.
     // - ReplaceColumnCategory is one of the new extension methods in this library.
-    public new class SampleConfig : ParamColumnSample.SampleConfig
+    internal new class SampleConfig : ParamColumnSample.SampleConfig
     {
-        public SampleConfig() : base() =>
-            this.ReplaceColumnCategory(new CombinedParamsColumn())
+        public SampleConfig() : base()
+            => this.ReplaceColumnCategory(new CombinedParamsColumn())
                 .WithSummaryStyle(SummaryStyle.WithMaxParameterColumnWidth(40));
     }
 
@@ -51,13 +51,13 @@ public class ParamColumnSample_CombinedParamsColumn_Default : ParamColumnSample
 [Config(typeof(SampleConfig))]
 public class ParamColumnSample_CombinedParamsColumn_Custom : ParamColumnSample
 {
-    public override string SampleVariantDescription
+    internal override string SampleVariantDescription
         => @"with CombinedParamsColumn(formatNameValue: ""{1}"", separator: ""; "")";
     // Same config as above, but now with a custom formatting in CombinedParamsColumn.
-    public new class SampleConfig : ParamColumnSample.SampleConfig
+    internal new class SampleConfig : ParamColumnSample.SampleConfig
     {
-        public SampleConfig() : base() =>
-            this.ReplaceColumnCategory(new CombinedParamsColumn(formatNameValue: "{1}", separator: "; "))
+        public SampleConfig() : base()
+            => this.ReplaceColumnCategory(new CombinedParamsColumn(formatNameValue: "{1}", separator: "; "))
                 .WithSummaryStyle(SummaryStyle.WithMaxParameterColumnWidth(40));
     }
 }
@@ -65,25 +65,25 @@ public class ParamColumnSample_CombinedParamsColumn_Custom : ParamColumnSample
 [Config(typeof(SampleConfig))]
 public class ParamColumnSample_RecyclableParamsColumnProvider_Default : ParamColumnSample
 {
-    public override string SampleVariantDescription
+    internal override string SampleVariantDescription
         => "with RecyclableParamsColumnProvider() // default settings";
     // Same config as above, but now with RecyclableParamsColumnProvider.
-    public new class SampleConfig : ParamColumnSample.SampleConfig
+    internal new class SampleConfig : ParamColumnSample.SampleConfig
     {
-        public SampleConfig() : base() =>
-            this.ReplaceColumnCategory(new RecyclableParamsColumnProvider());
+        public SampleConfig() : base()
+            => this.ReplaceColumnCategory(new RecyclableParamsColumnProvider());
     }
 }
 
 [Config(typeof(SampleConfig))]
 public class ParamColumnSample_RecyclableParamsColumnProvider_Custom : ParamColumnSample
 {
-    public override string SampleVariantDescription
+    internal override string SampleVariantDescription
         => "with RecyclableParamsColumnProvider(tryKeepParamName: false)";
     // Same config as above, but now with customized RecyclableParamsColumnProvider.
-    public new class SampleConfig : ParamColumnSample.SampleConfig
+    internal new class SampleConfig : ParamColumnSample.SampleConfig
     {
-        public SampleConfig() : base() =>
-            this.ReplaceColumnCategory(new RecyclableParamsColumnProvider(tryKeepParamName: false));
+        public SampleConfig() : base()
+            => this.ReplaceColumnCategory(new RecyclableParamsColumnProvider(tryKeepParamName: false));
     }
 }
