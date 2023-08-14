@@ -1,14 +1,14 @@
-﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
+// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
 namespace ColumnDisplaySamples;
 
 public abstract class SampleBase
 {
     protected static readonly string BenchmarkDotNetDefault = "with BenchmarkDotNet defaults";
-    public abstract string SampleGroupDescription { get; }
-    public abstract string SampleVariantDescription { get; }
+    internal abstract string SampleGroupDescription { get; }
+    internal abstract string SampleVariantDescription { get; }
 
-    public class SampleConfigBase : ManualConfig
+    internal class SampleConfigBase : ManualConfig
     {
         // Our default console logger
         public static readonly ILogger Console = ConsoleLogger.Unicode;

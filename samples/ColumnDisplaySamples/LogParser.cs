@@ -1,13 +1,13 @@
-﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
+// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
 namespace ColumnDisplaySamples;
 
 // Extracts information from captured BenchmarkDotNet log
-public static class LogParser
+internal static class LogParser
 {
     // LogCapture that needs to be added to your config(s)
     public static readonly LogCapture LogCapture = new();
-    public class SummaryParts
+    public sealed class SummaryParts
     {
         public List<OutputLine> Environment = new();
         public List<OutputLine> Host = new(); // [Host] part of all runtimes
@@ -21,6 +21,8 @@ public static class LogParser
         public List<OutputLine> Diagnosers = new();
     }
 
+    [SuppressMessage("Performance", "CA1851:Possible multiple enumerations of 'IEnumerable' collection",
+        Justification = "Mostly false positive. Ienumerable result gets reassigned after partial enumeration.")]
     public static List<SummaryParts> GetSummaries()
     {
         List<SummaryParts> summaries = new();
@@ -36,7 +38,7 @@ public static class LogParser
             SummaryParts parts = new();
             summaries.Add(parts);
 
-            parts.Environment.AddRange(captured.TakeWhile(ol => !ol.Text.StartsWith("  ")));
+            parts.Environment.AddRange(captured.TakeWhile(ol => !ol.Text.StartsWith("  ", StringComparison.Ordinal)));
             captured = captured.Skip(parts.Environment.Count);
 
             OutputLine oline = captured.First();

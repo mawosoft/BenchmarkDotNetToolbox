@@ -1,18 +1,18 @@
-﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
+// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
 namespace ColumnDisplaySamples;
 
 [Config(typeof(SampleConfig))]
 public class ParamWrapperSample : SampleBase
 {
-    public override string SampleGroupDescription => "ParamWrapper Sample";
-    public override string SampleVariantDescription => "";
+    internal override string SampleGroupDescription => "ParamWrapper Sample";
+    internal override string SampleVariantDescription => "";
 
-    public class SampleConfig : SampleConfigBase
+    internal class SampleConfig : SampleConfigBase
     {
-        public SampleConfig() : base() =>
-            AddJob(Job.Dry.WithToolchain(InProcessEmitToolchain.DontLogOutput))
-            .WithSummaryStyle(SummaryStyle.WithMaxParameterColumnWidth(25));
+        public SampleConfig() : base()
+            => AddJob(Job.Dry.WithToolchain(InProcessEmitToolchain.DontLogOutput))
+                .WithSummaryStyle(SummaryStyle.WithMaxParameterColumnWidth(25));
 
     }
 
