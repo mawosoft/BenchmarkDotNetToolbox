@@ -15,7 +15,7 @@ public class ColumnCategoryExtensionsTests
         }
         catch (ReflectionTypeLoadException rtle)
         {
-            types.AddRange(rtle.Types.Where(t => t != null).Select(t => t!));
+            types.AddRange(rtle.Types.Where(t => t is not null).Select(t => t!));
 
         }
         return types;

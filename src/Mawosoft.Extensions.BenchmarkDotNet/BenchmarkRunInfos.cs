@@ -98,7 +98,7 @@ public class BenchmarkRunInfos
                         && !t.IsSealed
                         && !t.IsNotPublic
                         && t.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.Static)
-                            .Any(m => m.GetCustomAttribute<BenchmarkAttribute>(true) != null));
+                            .Any(m => m.GetCustomAttribute<BenchmarkAttribute>(true) is not null));
         foreach (Type type in types)
         {
             ConvertTypeToBenchmarks(type);
@@ -156,7 +156,7 @@ public class BenchmarkRunInfos
         // If an enabled WhatifFilter exists, we want it to filter the results of our own conversion,
         // not the one performed by BenchmarkConverter. Thus, we disable it here and turn it back on
         // in the post processor.
-        if (OverrideJob != null
+        if (OverrideJob is not null
             && Config?.GetFilters().SingleOrDefault(f => f is WhatifFilter) is WhatifFilter filter
             && filter.Enabled)
         {
@@ -168,14 +168,14 @@ public class BenchmarkRunInfos
 
     private void PostProcessConverter(WhatifFilter? whatifFilter, params BenchmarkRunInfo[] runInfos)
     {
-        if (whatifFilter != null)
+        if (whatifFilter is not null)
         {
             // Reenable filter after BenchmarkConverter has been called
             whatifFilter.Enabled = true;
         }
-        if (OverrideJob == null)
+        if (OverrideJob is null)
         {
-            Debug.Assert(whatifFilter == null);
+            Debug.Assert(whatifFilter is null);
             _items.AddRange(runInfos.Where(ri => ri.BenchmarksCases.Length > 0));
         }
         else
@@ -195,7 +195,7 @@ public class BenchmarkRunInfos
                         BenchmarkCase newBenchmarkCase =
                             BenchmarkCase.Create(benchmarkCase.Descriptor, job, benchmarkCase.Parameters,
                                                  benchmarkCase.Config);
-                        if (whatifFilter == null || whatifFilter.Predicate(newBenchmarkCase))
+                        if (whatifFilter is null || whatifFilter.Predicate(newBenchmarkCase))
                         {
                             newBenchmarkCases.Add(newBenchmarkCase);
                         }
@@ -216,7 +216,7 @@ public class BenchmarkRunInfos
         {
             if (ReferenceEquals(x, y))
                 return true;
-            if (x == null || y == null)
+            if (x is null || y is null)
                 return false;
             // Folder/DisplayInfo and HasParameters/Arguments are calculated properties
             return ReferenceEquals(x.Descriptor, y.Descriptor)

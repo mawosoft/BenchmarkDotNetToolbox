@@ -23,7 +23,7 @@ public class RecyclableParamsColumnProvider : IColumnProvider
     /// <summary><see cref="IColumnProvider"/> implementation.</summary>
     public IEnumerable<IColumn> GetColumns(Summary summary)
     {
-        if (summary == null || summary.BenchmarksCases.Length == 0)
+        if (summary is null || summary.BenchmarksCases.Length == 0)
         {
             return Array.Empty<IColumn>();
         }
