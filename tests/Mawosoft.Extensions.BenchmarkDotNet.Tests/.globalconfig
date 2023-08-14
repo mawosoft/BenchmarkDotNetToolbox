@@ -3,6 +3,9 @@
 is_global = true
 #global_level = 100
 
+# CA1307: Specify StringComparison for clarity
+dotnet_diagnostic.CA1307.severity = none
+
 # CA1822: Mark members as static
 dotnet_diagnostic.CA1822.severity = none
 

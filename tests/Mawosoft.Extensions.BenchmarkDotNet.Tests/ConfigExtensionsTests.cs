@@ -88,6 +88,7 @@ public partial class ConfigExtensionsTests
             .AddFilter(new SimpleFilter(b => true))
             .AddLogicalGroupRules(BenchmarkLogicalGroupRule.ByCategory);
 
+    [SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "Not needed.")]
     private struct TestCaseData
     {
         public ManualConfig ExpectedNeedsAdd;
