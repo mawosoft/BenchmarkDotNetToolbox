@@ -3,6 +3,9 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net6.0</TargetFrameworks>
+    <!-- Disables analyzers during normal and design-time builds, but still allows them
+         to be run explicitly via 'Run Analyzers' command in VStudio. -->
+    <RunAnalyzers>false</RunAnalyzers>
   </PropertyGroup>
 
 </Project>

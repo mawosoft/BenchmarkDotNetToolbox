@@ -101,10 +101,10 @@ public class WhatifFilterTests
     }
 
     [Fact]
+    [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Ownership is transferred.")]
     public void Predicate_WithOtherFilters()
     {
-        WhatifFilter whatifFilter = new();
-        whatifFilter.Enabled = true;
+        WhatifFilter whatifFilter = new() { Enabled = true };
         MockFilter mockFilter = new(shouldFilter: true);
         ManualConfig config = ManualConfig.CreateEmpty().AddFilter(mockFilter, whatifFilter);
         BenchmarkRunInfo runInfo = BenchmarkConverter.TypeToBenchmarks(typeof(Benchmarks1));
@@ -124,8 +124,7 @@ public class WhatifFilterTests
     [Fact]
     public void Predicate_IgnoresDuplicates()
     {
-        WhatifFilter whatifFilter = new();
-        whatifFilter.Enabled = true;
+        WhatifFilter whatifFilter = new() { Enabled = true };
         BenchmarkCase benchmarkCase = BenchmarkConverter.TypeToBenchmarks(typeof(Benchmarks1)).BenchmarksCases[0];
         bool result = whatifFilter.Predicate(benchmarkCase);
         Assert.False(result);
@@ -163,8 +162,7 @@ public class WhatifFilterTests
     {
         AccumulationLogger logger = new(); // This is text-only. Use LogCapture if LogKind is needed.
         Type[] types = new[] { typeof(Benchmarks1), typeof(Benchmarks2), typeof(Benchmarks3) };
-        WhatifFilter whatifFilter = new();
-        whatifFilter.Enabled = true;
+        WhatifFilter whatifFilter = new() { Enabled = true };
         ManualConfig config = ManualConfig.Create(DefaultConfig.Instance)
             .ReplaceLoggers(logger)
             .AddFilter(whatifFilter)

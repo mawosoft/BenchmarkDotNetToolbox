@@ -60,7 +60,7 @@ public class ColumnCategoryExtensionsTests
             public string Unit => SizeUnit.B.Name;
             public bool TheGreaterTheBetter => false;
             public int PriorityInCategory => 0;
-            public bool GetIsAvailable(Metric _) => true;
+            public bool GetIsAvailable(Metric metric) => true;
         }
 
         // We get all existing IColumn classes via reflection and handle them by name
