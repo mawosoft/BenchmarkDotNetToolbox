@@ -3,7 +3,9 @@
     {
         "src": [
             {
-                "files": [ "**.csproj" ],
+                // docfx.console/2.59.4 is not compatible with file-scoped namespace or global usings.
+                //"files": [ "**.csproj" ],
+                "files": [ "bin/Release/netstandard2.0/Mawosoft.Extensions.BenchmarkDotNet.dll" ],
                 "src": "../src/Mawosoft.Extensions.BenchmarkDotNet"
             }
         ],
