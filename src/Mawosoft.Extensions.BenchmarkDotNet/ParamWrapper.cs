@@ -1,10 +1,13 @@
-﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
+// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
 namespace Mawosoft.Extensions.BenchmarkDotNet;
 
 /// <summary>
 /// A generic wrapper to associate strongly typed parameter or argument values with a display text.
 /// </summary>
+[SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "Existing API.")]
+[SuppressMessage("Design", "CA1063:Implement IDisposable Correctly", Justification = "Wrapper only.")]
+[SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "Wrapper only.")]
 public class ParamWrapper<T> : IDisposable
 {
     /// <summary>

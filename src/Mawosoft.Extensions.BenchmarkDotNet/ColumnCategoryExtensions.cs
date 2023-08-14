@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
+// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
 namespace Mawosoft.Extensions.BenchmarkDotNet;
 
@@ -69,7 +69,7 @@ internal static class ColumnCategoryExtensions
         public string Unit => string.Empty;
         public bool TheGreaterTheBetter => false;
         public int PriorityInCategory => 0;
-        public bool GetIsAvailable(Metric _) => true;
+        public bool GetIsAvailable(Metric metric) => true;
     }
 
     // Mock summary with necessary content to call IColumnProvider.GetColumns(Summary)
@@ -105,6 +105,7 @@ internal static class ColumnCategoryExtensions
         => columnProvider.GetColumns(s_mockSummary.Value);
 
     // Remove columns or entire column providers per given categories
+    [SuppressMessage("Maintainability", "CA1508:Avoid dead conditional code", Justification = "False positive due to Debug.Assert().")]
     public static void RemoveColumnsByCategory(List<IColumnProvider> providers,
                                                IEnumerable<ExtendedColumnCategory> categories)
     {

@@ -93,6 +93,7 @@ public class BenchmarkRunInfos
     /// </summary>
     public void ConvertAssemblyToBenchmarks(Assembly assembly)
     {
+        if (assembly is null) throw new ArgumentNullException(nameof(assembly));
         IEnumerable<Type> types = assembly.GetTypes()
             .Where(t => !t.IsAbstract
                         && !t.IsSealed
@@ -143,6 +144,7 @@ public class BenchmarkRunInfos
     /// and stores the results.
     /// </summary>
     [Obsolete("The corresponding BenchmarkConverter method in BDN is obsolete.")]
+    [SuppressMessage("Design", "CA1054:URI-like parameters should not be strings", Justification = "Only forwarder and already obsolete.")]
     public void ConvertUrlToBenchmarks(string url)
         => PostProcessConverter(PreProcessConverter(), BenchmarkConverter.UrlToBenchmarks(url, Config!));
 
@@ -166,6 +168,7 @@ public class BenchmarkRunInfos
         return null;
     }
 
+    [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Ownership is transferred.")]
     private void PostProcessConverter(WhatifFilter? whatifFilter, params BenchmarkRunInfo[] runInfos)
     {
         if (whatifFilter is not null)
@@ -181,8 +184,7 @@ public class BenchmarkRunInfos
         else
         {
             // We keep the hashset here in case we want to go back to support multiple override jobs.
-            HashSet<Job> jobs = new();
-            jobs.Add(OverrideJob);
+            HashSet<Job> jobs = new() { OverrideJob };
             foreach (BenchmarkRunInfo runInfo in runInfos)
             {
                 HashSet<BenchmarkCase> oldBenchmarkCases =
