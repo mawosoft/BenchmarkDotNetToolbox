@@ -94,7 +94,7 @@ internal static class ColumnCategoryExtensions
         ExecuteResult[] executeResults = new[] { ExecuteResultWrapper.Create(allMeasurements, default, default, default) };
         Metric[] metrics = new[] { new Metric(new MockMetricDescriptor(), 1) };
         BenchmarkReport benchmarkReport = new(true, benchmarkCase, generateResult, buildResult, executeResults, metrics);
-        return new Summary(
+        return SummaryWrapper.Create(
             string.Empty, ImmutableArray.Create(benchmarkReport), HostEnvironmentInfo.GetCurrent(),
             string.Empty, string.Empty, TimeSpan.Zero, SummaryExtensions.GetCultureInfo(null),
             ImmutableArray.Create<ValidationError>(), ImmutableArray.Create<IColumnHidingRule>());
