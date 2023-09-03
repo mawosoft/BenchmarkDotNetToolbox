@@ -120,9 +120,10 @@ public class WhatifFilter : IFilter
         logger.WriteLineInfo(HostEnvironmentInfo.GetInformation());
         if (joinedConfig is not null)
         {
-            Summary summary = new(string.Empty, reports.ToImmutableArray(), hostEnvironmentInfo,
-                                  string.Empty, string.Empty, TimeSpan.Zero, cultureInfo, validationErrors,
-                                  joinedConfig.GetColumnHidingRules().ToImmutableArray());
+            Summary summary = SummaryWrapper.Create(
+                string.Empty, reports.ToImmutableArray(), hostEnvironmentInfo,
+                string.Empty, string.Empty, TimeSpan.Zero, cultureInfo, validationErrors,
+                joinedConfig.GetColumnHidingRules().ToImmutableArray());
             PrintSummary(summary, logger);
         }
         else
@@ -132,9 +133,10 @@ public class WhatifFilter : IFilter
             foreach (IGrouping<Type, BenchmarkReport> group in
                      reports.GroupBy(r => r.BenchmarkCase.Descriptor.Type))
             {
-                Summary summary = new(string.Empty, group.ToImmutableArray(), hostEnvironmentInfo,
-                                      string.Empty, string.Empty, TimeSpan.Zero, cultureInfo, validationErrors,
-                                      group.First().BenchmarkCase.Config.GetColumnHidingRules().ToImmutableArray());
+                Summary summary = SummaryWrapper.Create(
+                    string.Empty, group.ToImmutableArray(), hostEnvironmentInfo,
+                    string.Empty, string.Empty, TimeSpan.Zero, cultureInfo, validationErrors,
+                    group.First().BenchmarkCase.Config.GetColumnHidingRules().ToImmutableArray());
                 logger.WriteLine();
                 logger.WriteLineHeader($"// {(useFullName ? group.Key.FullName : group.Key.Name)}");
                 logger.WriteLine();
