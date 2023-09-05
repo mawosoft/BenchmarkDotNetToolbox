@@ -34,7 +34,8 @@ jobs:
         . ./build/startNativeExecution.ps1
         Set-Alias exec Start-NativeExecution
         exec { dotnet restore }
-        exec { dotnet build ./docs/docs.msbuildproj -c Debug }
+        exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Release --no-restore }
+        exec { dotnet build ./docs/docs.msbuildproj -c Release }
     - name: Upload Binlogs
       if: ${{ always() }}
       uses: actions/upload-artifact@v3

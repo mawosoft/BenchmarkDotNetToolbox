@@ -20,10 +20,9 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <!-- Docs build doesn't depend on a configuration, so we only build them for Debug.
-         TODO Use a Target with Inputs="@(DocFxInput) and Outputs="_site/manifest.json"
+    <!-- TODO Use a Target with Inputs="@(DocFxInput) and Outputs="_site/manifest.json"
          to avoid unnecessary builds. -->
-    <BuildDocFx Condition="'$(BuildDocFx)' == '' and '$(Configuration)' != 'Debug'">false</BuildDocFx>
+    <BuildDocFx Condition="'$(BuildDocFx)' == '' and '$(Configuration)' != 'Release'">false</BuildDocFx>
   </PropertyGroup>
 
   <ItemGroup>
