@@ -23,6 +23,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       with:
+        show-progress: false
         fetch-depth: 1
     - name: DotNet Info
       run: dotnet --info
