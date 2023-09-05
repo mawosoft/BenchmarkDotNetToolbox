@@ -53,7 +53,7 @@ internal static class SummaryWrapper
         ImmutableArray<IColumnHidingRule> columnHidingRules,
         SummaryStyle? summaryStyle = null)
     {
-        if (s_ctorStable != null)
+        if (s_ctorStable is not null)
         {
             return (Summary)s_ctorStable.Invoke(new object?[]
             {
@@ -68,7 +68,7 @@ internal static class SummaryWrapper
                 columnHidingRules
             });
         }
-        else if (s_ctorNightly != null)
+        else if (s_ctorNightly is not null)
         {
             return (Summary)s_ctorNightly.Invoke(new object?[]
             {
