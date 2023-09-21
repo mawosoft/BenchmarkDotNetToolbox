@@ -41,6 +41,10 @@ jobs:
       with:
         show-progress: false
         fetch-depth: 1
+    # The APICompat check involves dotnet restore and dotnet msbuild with custom target.
+    # This doesn't require a specific dotnet sdk version.
+    - name: Remove global.json
+      run: Remove-Item ./global.json
     - name: Check BDN API Compatibility
       id: apicompat
       run: |
