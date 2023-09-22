@@ -20,5 +20,6 @@ global using BenchmarkDotNet.Loggers;
 global using BenchmarkDotNet.Reports;
 global using BenchmarkDotNet.Running;
 global using BenchmarkDotNet.Validators;
+global using NuGet.Versioning;
 global using Xunit;
 global using Xunit.Abstractions;

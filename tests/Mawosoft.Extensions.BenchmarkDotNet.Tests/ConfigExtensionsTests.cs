@@ -11,7 +11,18 @@ public partial class ConfigExtensionsTests
             .Where(m => !m.IsSpecialName
                         && m.ReturnType.IsGenericType
                         && typeof(IEnumerable).IsAssignableFrom(m.ReturnType));
-        Assert.Equal(11, getter.Count());
+        AssemblyInformationalVersionAttribute v = typeof(BenchmarkCase).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!;
+        Assert.NotNull(v);
+        if (new NuGetVersion(v.InformationalVersion) < new NuGetVersion("0.13.9-nightly.20230921.71"))
+        {
+            Assert.Equal(11, getter.Count());
+        }
+        else
+        {
+            // EventProcessor, GetEventProcessors(), AddEventProcessor() added in 0.13.9-nightly.20230921.71.
+            // Properly working in 0.13.9-nightly.20230922.72
+            Assert.Equal(12, getter.Count());
+        }
         (MethodInfo m, Type? t)[] adder = typeof(ManualConfig)
             .GetMethods()
             .Where(m => !m.IsSpecialName
@@ -47,6 +58,7 @@ public partial class ConfigExtensionsTests
             retVal = genericToArray.MakeGenericMethod(item).Invoke(null, new object?[] { retVal });
             add.Invoke(config, new object?[] { retVal });
         }
+        // Statements in IConfig order
         //config.ConfigAnalysisConclusion not settable on ManualConfig
         config.Options = source.Options;
         config.CultureInfo = source.CultureInfo!;
@@ -67,12 +79,14 @@ public partial class ConfigExtensionsTests
             object? retRight = get.Invoke(actual, Array.Empty<object?>());
             Assert.Equal(retLeft, retRight);
         }
-        Assert.Equal(expected.Orderer, actual.Orderer);
-        Assert.Equal(expected.SummaryStyle, actual.SummaryStyle);
-        Assert.Equal(expected.UnionRule, actual.UnionRule);
-        Assert.Equal(expected.ArtifactsPath, actual.ArtifactsPath);
-        Assert.Equal(expected.CultureInfo, actual.CultureInfo);
+        // Statements in IConfig order
         Assert.Equal(expected.Options, actual.Options);
+        Assert.Equal(expected.CultureInfo, actual.CultureInfo);
+        Assert.Equal(expected.ArtifactsPath, actual.ArtifactsPath);
+        Assert.Equal(expected.UnionRule, actual.UnionRule);
+        Assert.Equal(expected.SummaryStyle, actual.SummaryStyle);
+        Assert.Equal(expected.CategoryDiscoverer, actual.CategoryDiscoverer);
+        Assert.Equal(expected.Orderer, actual.Orderer);
         Assert.Equal(expected.BuildTimeout, actual.BuildTimeout);
     }
 
