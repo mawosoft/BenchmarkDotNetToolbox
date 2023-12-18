@@ -53,14 +53,14 @@ jobs:
         if (-not $issueType) { $issueType = 'ReportAndSummary' }
         ./build/checkBdnApiCompatibility.ps1 -Token $token -IssueType $issueType -PreviousVersionOverride '${{ github.event.inputs.previous-version }}'
     - name: Upload Status
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ steps.apicompat.outputs.StatusArtifactName }}
         path: ${{ steps.apicompat.outputs.StatusArtifactPath }}
         retention-days: 5
     - name: Upload Logs
       if: ${{ steps.apicompat.outputs.LogArtifactName != '' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ steps.apicompat.outputs.LogArtifactName }}
         path: ${{ steps.apicompat.outputs.LogArtifactPath }}
@@ -101,7 +101,7 @@ jobs:
         exec { dotnet build ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Release --no-restore }
     - name: Upload Binlogs
       if: ${{ failure() || github.event_name == 'workflow_dispatch' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.os }}-Binlogs
         path: '**/MSBuild_Logs/*'
@@ -113,7 +113,7 @@ jobs:
         ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug, Release -f $tfms -v detailed -r ./TestResults -ff:$${{ strategy.fail-fast }}
     - name: Upload Test results
       if: ${{ (failure() || github.event_name == 'workflow_dispatch') && steps.test.outcome != 'skipped' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.os }}-Testresults
         path: ./TestResults/
