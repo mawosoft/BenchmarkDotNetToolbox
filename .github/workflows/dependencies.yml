@@ -29,7 +29,7 @@ jobs:
       id: tooldependencies
       run: ./build/checkToolDependencies.ps1 -Token (ConvertTo-SecureString ${{ secrets.GITHUB_TOKEN }} -AsPlainText)
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ steps.tooldependencies.outputs.ArtifactName }}
         path: ${{ steps.tooldependencies.outputs.ArtifactPath }}
