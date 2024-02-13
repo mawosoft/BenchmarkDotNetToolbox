@@ -70,7 +70,7 @@ function Install-ApiCompatTools {
     try { $null = [ApiCompatHelper.SymbolWithAttributeFinder] }
     catch {
         Add-Type -LiteralPath $symbolWithAttributeFinderPath -CompilerOptions '-nowarn:CS1701' -ReferencedAssemblies @(
-            [System.Collections.Generic.CollectionExtensions].Assembly.FullName
+            [System.Collections.StructuralComparisons].Assembly.FullName
             [System.Collections.Immutable.ImmutableArray].Assembly.FullName
             [Microsoft.CodeAnalysis.SymbolVisitor].Assembly.FullName
         )
