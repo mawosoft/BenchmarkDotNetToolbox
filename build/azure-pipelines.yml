@@ -30,12 +30,12 @@ steps:
     Invoke-Expression "& { $(Invoke-RestMethod https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.ps1) } -JsonFile ./global.json"
   displayName: Setup dotnet (pinned)
 - pwsh: |
-    . ./build/startNativeExecution.ps1
-    Set-Alias exec Start-NativeExecution
-    exec { dotnet restore }
-    exec { dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Debug --no-restore }
-    exec { dotnet build ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj -c Debug --no-restore }
-    exec { dotnet build ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug --no-restore }
+    $ErrorActionPreference = 'Stop'
+    $PSNativeCommandUseErrorActionPreference = $true
+    dotnet restore
+    dotnet build ./src/Mawosoft.Extensions.BenchmarkDotNet/Mawosoft.Extensions.BenchmarkDotNet.csproj -c Debug --no-restore
+    dotnet build ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj -c Debug --no-restore
+    dotnet build ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug --no-restore
   displayName: Build
   env:
     MSBuildDebugEngine: 1 # Auto-creates binlogs in ./MSBuild_Logs
@@ -47,7 +47,7 @@ steps:
   condition: succeededOrFailed()
   artifact: azp-Binlogs
   displayName: Upload Binlogs
-- pwsh: ./build/test.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj, ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug -f net7.0, net462 -v detailed -r ./TestResults -s ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/coverlet.runsettings
+- pwsh: ./build/invokeDotnetTest.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj, ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug -f net7.0, net462 -v detailed -r ./TestResults -s ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/coverlet.runsettings
   displayName: Test
 - task: reportgenerator@5
   condition: succeededOrFailed()
@@ -63,6 +63,7 @@ steps:
     searchFolder: ./TestResults
     publishRunAttachments: false
 - task: PublishCodeCoverageResults@1
+  # Cannot use v2 with ReportGenerator
   condition: succeededOrFailed()
   inputs:
     codeCoverageTool: Cobertura
