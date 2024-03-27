@@ -130,7 +130,8 @@ public class JobColumnSelectionProvider : IColumnProvider
         }
     }
 
-    private class FilterFactory
+    [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "False positive.")]
+    private sealed class FilterFactory
     {
         private readonly (Characteristic characteristic, IColumn? column)[] _allCharacteristicsAndColumns;
         private readonly Dictionary<string, (int index, int[] childIndices)> _idToIndexLookup;
@@ -173,7 +174,7 @@ public class JobColumnSelectionProvider : IColumnProvider
         {
             if (filterExpression is null)
                 throw new ArgumentNullException(nameof(filterExpression));
-            string[] filterExpressions = filterExpression.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] filterExpressions = filterExpression.Split([' '], StringSplitOptions.RemoveEmptyEntries);
             CharacteristicFilter[] retVal =
                 _allCharacteristicsAndColumns.Select(i => new CharacteristicFilter(i.characteristic, i.column)).ToArray();
             for (int i = 0; i < filterExpressions.Length; i++)

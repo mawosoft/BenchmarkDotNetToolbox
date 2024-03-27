@@ -6,8 +6,8 @@ public partial class ConfigExtensionsTests
 {
     private static void AssertColumnsEqual(IConfig expected, IConfig actual)
     {
-        List<Type> expectedResult = new();
-        List<Type> actualResult = new();
+        List<Type> expectedResult = [];
+        List<Type> actualResult = [];
         Flatten(expected.GetColumnProviders(), expectedResult);
         Flatten(actual.GetColumnProviders(), actualResult);
         Assert.Equal(expectedResult, actualResult);
@@ -45,25 +45,23 @@ public partial class ConfigExtensionsTests
     {
         public ReplaceColumnCategory_WithColumns_TheoryData()
         {
-            Add(new IColumnProvider[]
-                {
+            Add(
+                [
                     DefaultColumnProviders.Descriptor,
                     DefaultColumnProviders.Job,
                     DefaultColumnProviders.Statistics,
                     DefaultColumnProviders.Params,
                     DefaultColumnProviders.Metrics
-                },
-                new IColumn[]
-                {
+                ],
+                [
                     StatisticColumn.Mean,
                     new CombinedParamsColumn()
-                },
-                new IColumnProvider[]
-                {
+                ],
+                [
                     DefaultColumnProviders.Descriptor,
                     DefaultColumnProviders.Job,
                     DefaultColumnProviders.Metrics
-                });
+                ]);
         }
     }
 
@@ -86,25 +84,23 @@ public partial class ConfigExtensionsTests
     {
         public ReplaceColumnCategory_WithProviders_TheoryData()
         {
-            Add(new IColumnProvider[]
-                {
+            Add(
+                [
                     DefaultColumnProviders.Descriptor,
                     DefaultColumnProviders.Job,
                     DefaultColumnProviders.Statistics,
                     DefaultColumnProviders.Params,
                     DefaultColumnProviders.Metrics
-                },
-                new IColumnProvider[]
-                {
+                ],
+                [
                     new JobColumnSelectionProvider("-all +job"),
                     new RecyclableParamsColumnProvider()
-                },
-                new IColumnProvider[]
-                {
+                ],
+                [
                     DefaultColumnProviders.Descriptor,
                     DefaultColumnProviders.Statistics,
                     DefaultColumnProviders.Metrics
-                });
+                ]);
         }
     }
 
@@ -127,23 +123,22 @@ public partial class ConfigExtensionsTests
     {
         public RemoveColumnsByCategory_TheoryData()
         {
-            Add(new IColumnProvider[]
-                {
+            Add(
+                [
                     DefaultColumnProviders.Descriptor,
                     DefaultColumnProviders.Job,
                     DefaultColumnProviders.Statistics,
                     DefaultColumnProviders.Params,
                     DefaultColumnProviders.Metrics
-                },
-                new ColumnCategory[] { ColumnCategory.Job, ColumnCategory.Statistics },
-                new IColumnProvider[]
-                {
+                ],
+                [ColumnCategory.Job, ColumnCategory.Statistics],
+                [
                     DefaultColumnProviders.Descriptor,
                     DefaultColumnProviders.Params,
                     DefaultColumnProviders.Metrics
-                });
-            Add(new IColumnProvider[]
-                {
+                ]);
+            Add(
+                [
                     new CompositeColumnProvider
                     (
                         DefaultColumnProviders.Descriptor,
@@ -158,10 +153,9 @@ public partial class ConfigExtensionsTests
                         DefaultColumnProviders.Params,
                         DefaultColumnProviders.Metrics
                     )
-                },
-                new ColumnCategory[] { ColumnCategory.Statistics, ColumnCategory.Params },
-                new IColumnProvider[]
-                {
+                ],
+                [ColumnCategory.Statistics, ColumnCategory.Params],
+                [
                     new CompositeColumnProvider
                     (
                         DefaultColumnProviders.Descriptor,
@@ -172,9 +166,9 @@ public partial class ConfigExtensionsTests
                         ),
                         DefaultColumnProviders.Metrics
                     )
-                });
-            Add(new IColumnProvider[]
-                {
+                ]);
+            Add(
+                [
                     DefaultColumnProviders.Descriptor,
                     DefaultColumnProviders.Job,
                     new CompositeColumnProvider
@@ -188,14 +182,13 @@ public partial class ConfigExtensionsTests
                         new ParamColumn("param")
                     ),
                     DefaultColumnProviders.Metrics
-                },
-                new ColumnCategory[] { ColumnCategory.Statistics, ColumnCategory.Params },
-                new IColumnProvider[]
-                {
+                ],
+                [ColumnCategory.Statistics, ColumnCategory.Params],
+                [
                     DefaultColumnProviders.Descriptor,
                     DefaultColumnProviders.Job,
                     DefaultColumnProviders.Metrics
-                });
+                ]);
         }
     }
 

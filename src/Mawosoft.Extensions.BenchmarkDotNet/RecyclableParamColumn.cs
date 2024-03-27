@@ -5,7 +5,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet;
 /// <summary>
 /// Internal class used by <see cref="RecyclableParamsColumnProvider"/>
 /// </summary>
-internal class RecyclableParamColumn : IColumn
+internal sealed class RecyclableParamColumn : IColumn
 {
     [SuppressMessage("CodeQuality", "IDE0079:Remove unnecessary suppression",
         Justification = "False warning for IDE0032 supression.")]

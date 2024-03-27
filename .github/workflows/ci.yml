@@ -139,7 +139,7 @@ jobs:
       id: test
       if: ${{ github.event.inputs.skip-tests != 'true' }}
       run: |
-        $tfms = @("net7.0")
+        $tfms = @("net8.0")
         if ($IsWindows) { $tfms += "net462" }
         ./build/invokeDotnetTest.ps1 -p ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/StableBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.StableBDN.csproj, ./tests/Mawosoft.Extensions.BenchmarkDotNet.Tests/NightlyBDN/Mawosoft.Extensions.BenchmarkDotNet.Tests.NightlyBDN.csproj -c Debug, Release -f $tfms -v detailed -r ./TestResults -ff:$${{ strategy.fail-fast }}
     - name: Upload Test results
@@ -208,7 +208,7 @@ jobs:
         fetch-depth: 1
     - name: Create GitHub release
       # TODO release notes
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ needs.Build.outputs.release }}
         generate_release_notes: false # false is default. Seems to draw from PRs only.

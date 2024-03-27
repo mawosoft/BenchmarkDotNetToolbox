@@ -75,7 +75,7 @@ public class WhatifFilterTests
     {
         string[]? args = arguments?.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
         string[] expected = expectedPreparsed?.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                            ?? (string[]?)args?.Clone() ?? Array.Empty<string>();
+                            ?? (string[]?)args?.Clone() ?? [];
         WhatifFilter whatifFilter = new();
         args = whatifFilter.PreparseConsoleArguments(args!);
         Assert.Equal(expectedEnabled, whatifFilter.Enabled);
@@ -137,21 +137,20 @@ public class WhatifFilterTests
     [Fact]
     public void FilteredBenchmarkCases_EqualsConvertedBenchmarks()
     {
-        Type[] types = new[] { typeof(Benchmarks1), typeof(Benchmarks2), typeof(Benchmarks3) };
+        Type[] types = [typeof(Benchmarks1), typeof(Benchmarks2), typeof(Benchmarks3)];
         WhatifFilter whatifFilter = new();
         ManualConfig config = ManualConfig.CreateEmpty().AddFilter(whatifFilter);
         // Do *NOT* allow deferred execution here, otherwise expected will be empty
-        BenchmarkCase[] expected = types
+        BenchmarkCase[] expected = [.. types
             .SelectMany(t => BenchmarkConverter.TypeToBenchmarks(t, config).BenchmarksCases)
-            .OrderBy(b => b.DisplayInfo)
-            .ToArray();
+            .OrderBy(b => b.DisplayInfo)];
         // Run again with filter enabled
         whatifFilter.Enabled = true;
         Assert.Empty(types.SelectMany(t => BenchmarkConverter.TypeToBenchmarks(t, config).BenchmarksCases));
-        Assert.Equal(expected, whatifFilter.FilteredBenchmarkCases.OrderBy(b => b.DisplayInfo));
-        Assert.Equal(expected,
-                     whatifFilter.FilteredBenchmarkRunInfos.SelectMany(r => r.BenchmarksCases)
-                                                           .OrderBy(b => b.DisplayInfo));
+        BenchmarkCase[] actual1 = [.. whatifFilter.FilteredBenchmarkCases.OrderBy(b => b.DisplayInfo)];
+        Assert.Equal(expected, actual1);
+        BenchmarkCase[] actual2 = [.. whatifFilter.FilteredBenchmarkRunInfos.SelectMany(r => r.BenchmarksCases).OrderBy(b => b.DisplayInfo)];
+        Assert.Equal(expected, actual2);
     }
 
     // TODO More detailed tests
@@ -161,7 +160,7 @@ public class WhatifFilterTests
     public void PrintAsSummaries_Succeeds(bool join)
     {
         AccumulationLogger logger = new(); // This is text-only. Use LogCapture if LogKind is needed.
-        Type[] types = new[] { typeof(Benchmarks1), typeof(Benchmarks2), typeof(Benchmarks3) };
+        Type[] types = [typeof(Benchmarks1), typeof(Benchmarks2), typeof(Benchmarks3)];
         WhatifFilter whatifFilter = new() { Enabled = true };
         ManualConfig config = ManualConfig.Create(DefaultConfig.Instance)
             .ReplaceLoggers(logger)

@@ -8,13 +8,12 @@ internal static class ExecuteResultWrapper
         typeof(ExecuteResult).GetConstructor(
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
             null,
-            new Type[]
-            {
+            [
                 typeof(List<Measurement>),
                 typeof(GcStats),
                 typeof(ThreadingStats),
                 typeof(double)
-            },
+            ],
             null);
 
     public static ExecuteResult Create(
@@ -25,7 +24,7 @@ internal static class ExecuteResultWrapper
     {
         return s_ctorInternalStable is not null
             ? (ExecuteResult)s_ctorInternalStable.Invoke(
-                new object[] { measurements.ToList(), gcStats, threadingStats, exceptionFrequency })
+                [measurements.ToList(), gcStats, threadingStats, exceptionFrequency])
             : throw new MissingMethodException(nameof(ExecuteResult), ".ctor");
     }
 }

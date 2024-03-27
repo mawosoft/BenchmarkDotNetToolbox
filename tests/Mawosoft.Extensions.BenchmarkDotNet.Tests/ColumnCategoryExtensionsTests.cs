@@ -6,9 +6,9 @@ namespace Mawosoft.Extensions.BenchmarkDotNet.Tests;
 
 public class ColumnCategoryExtensionsTests
 {
-    private static IEnumerable<Type> GetTypesWrapper(Assembly assembly)
+    private static List<Type> GetTypesWrapper(Assembly assembly)
     {
-        List<Type> types = new();
+        List<Type> types = [];
         try
         {
             types.AddRange(assembly.GetTypes());
@@ -74,7 +74,7 @@ public class ColumnCategoryExtensionsTests
                 .Concat(typeof(ColumnCategoryExtensions).Assembly.GetTypes().Where(predicate)
                 .Distinct());
 
-            List<string> unexpectedTypes = new();
+            List<string> unexpectedTypes = [];
 
             foreach (Type type in columnTypes)
             {
@@ -168,7 +168,7 @@ public class ColumnCategoryExtensionsTests
                 .Concat(typeof(ColumnCategoryExtensions).Assembly.GetTypes().Where(predicate)
                 .Distinct());
 
-            List<string> unexpectedTypes = new();
+            List<string> unexpectedTypes = [];
 
             foreach (Type type in providerTypes)
             {
@@ -178,42 +178,42 @@ public class ColumnCategoryExtensionsTests
                     case "CompositeColumnProvider":
                         Add(new CompositeColumnProvider(
                                 DefaultColumnProviders.Descriptor, DefaultColumnProviders.Job),
-                            new[] { ExtendedColumnCategory.TargetMethod, ExtendedColumnCategory.Job });
+                            [ExtendedColumnCategory.TargetMethod, ExtendedColumnCategory.Job]);
                         Add(new CompositeColumnProvider(
                                 new JobColumnSelectionProvider("-all +job", true), new RecyclableParamsColumnProvider()),
-                            new[] { ExtendedColumnCategory.Job, ExtendedColumnCategory.Params });
+                            [ExtendedColumnCategory.Job, ExtendedColumnCategory.Params]);
                         break;
                     case "EmptyColumnProvider":
-                        Add(EmptyColumnProvider.Instance, Array.Empty<ExtendedColumnCategory>());
+                        Add(EmptyColumnProvider.Instance, []);
                         break;
                     case "SimpleColumnProvider":
                         Add(new SimpleColumnProvider(
                                 StatisticColumn.Mean, StatisticColumn.Error, TargetMethodColumn.Method),
-                            new[] { ExtendedColumnCategory.Statistics, ExtendedColumnCategory.TargetMethod });
+                            [ExtendedColumnCategory.Statistics, ExtendedColumnCategory.TargetMethod]);
                         Add(new SimpleColumnProvider(new CategoriesColumn()),
-                            new[] { ExtendedColumnCategory.Category });
+                            [ExtendedColumnCategory.Category]);
                         break;
                     case "DescriptorColumnProvider":
-                        Add(DefaultColumnProviders.Descriptor, new[] { ExtendedColumnCategory.TargetMethod });
+                        Add(DefaultColumnProviders.Descriptor, [ExtendedColumnCategory.TargetMethod]);
                         break;
                     case "JobColumnProvider":
-                        Add(DefaultColumnProviders.Job, new[] { ExtendedColumnCategory.Job });
+                        Add(DefaultColumnProviders.Job, [ExtendedColumnCategory.Job]);
                         break;
                     case "StatisticsColumnProvider":
-                        Add(DefaultColumnProviders.Statistics, new[] { ExtendedColumnCategory.Statistics });
+                        Add(DefaultColumnProviders.Statistics, [ExtendedColumnCategory.Statistics]);
                         break;
                     case "ParamsColumnProvider":
-                        Add(DefaultColumnProviders.Params, new[] { ExtendedColumnCategory.Params });
+                        Add(DefaultColumnProviders.Params, [ExtendedColumnCategory.Params]);
                         break;
                     case "MetricsColumnProvider":
-                        Add(DefaultColumnProviders.Metrics, new[] { ExtendedColumnCategory.Metric });
+                        Add(DefaultColumnProviders.Metrics, [ExtendedColumnCategory.Metric]);
                         break;
                     // Mawosoft.Extensions.BenchmarkDotNet
                     case "JobColumnSelectionProvider":
-                        Add(new JobColumnSelectionProvider("+all", true), new[] { ExtendedColumnCategory.Job });
+                        Add(new JobColumnSelectionProvider("+all", true), [ExtendedColumnCategory.Job]);
                         break;
                     case "RecyclableParamsColumnProvider":
-                        Add(new RecyclableParamsColumnProvider(), new[] { ExtendedColumnCategory.Params });
+                        Add(new RecyclableParamsColumnProvider(), [ExtendedColumnCategory.Params]);
                         break;
                     default:
                         unexpectedTypes.Add(type.Name);
