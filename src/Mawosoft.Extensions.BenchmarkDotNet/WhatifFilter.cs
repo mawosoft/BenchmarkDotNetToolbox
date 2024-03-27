@@ -8,7 +8,7 @@ namespace Mawosoft.Extensions.BenchmarkDotNet;
 /// </summary>
 public class WhatifFilter : IFilter
 {
-    private readonly List<BenchmarkCase> _filteredBenchmarkCases = new();
+    private readonly List<BenchmarkCase> _filteredBenchmarkCases = [];
     private string[]? _consoleArguments;
 
     /// <summary>
@@ -29,7 +29,7 @@ public class WhatifFilter : IFilter
     /// </summary>
     public IEnumerable<BenchmarkRunInfo> FilteredBenchmarkRunInfos => _filteredBenchmarkCases
         .GroupBy(bc => bc.Descriptor.Type)
-        .Select(g => new BenchmarkRunInfo(g.ToArray(), g.First().Descriptor.Type, g.First().Config));
+        .Select(g => new BenchmarkRunInfo([.. g], g.First().Descriptor.Type, g.First().Config));
 
     /// <summary>
     /// Preparses the console arguments for the option <c>--whatif</c> (short: <c>-w</c>) and automatically
@@ -44,7 +44,7 @@ public class WhatifFilter : IFilter
         _consoleArguments = null;
         if (args is null)
         {
-            return Array.Empty<string>();
+            return [];
         }
         // Get a copy of the original for summary
         _consoleArguments = (string[])args.Clone();
@@ -60,7 +60,7 @@ public class WhatifFilter : IFilter
             // Don't keep a copy if empty or --whatif only
             _consoleArguments = null;
         }
-        if (Enabled && Array.FindIndex(args, a => a.ToLowerInvariant() == "--list") < 0)
+        if (Enabled && Array.FindIndex(args, a => a.Equals("--list", StringComparison.OrdinalIgnoreCase)) < 0)
         {
             // Avoid BDN displaying warnings/suggestions due to all benchmarks being filtered out
             // by adding a --list option.
@@ -91,18 +91,18 @@ public class WhatifFilter : IFilter
         if (logger is null) throw new ArgumentNullException(nameof(logger));
         if (_filteredBenchmarkCases.Count == 0) return;
 
-        IConfig? joinedConfig = _filteredBenchmarkCases.FirstOrDefault(bc => (bc.Config.Options & ConfigOptions.JoinSummary) != 0)?.Config;
+        ImmutableConfig? joinedConfig = _filteredBenchmarkCases.FirstOrDefault(bc => (bc.Config.Options & ConfigOptions.JoinSummary) != 0)?.Config;
 
         GenerateResult generateResult = GenerateResultWrapper.Success();
         BuildResult buildResult = BuildResult.Success(generateResult);
         IEnumerable<BenchmarkReport> reports = _filteredBenchmarkCases.Select((bc, i)
             => new BenchmarkReport(true, bc, generateResult, buildResult,
-                    new[] {
+                    [
                         ExecuteResultWrapper.Create(
-                            new[] { new Measurement(1, IterationMode.Workload, IterationStage.Result, 1, 1, 100_000_000 + (i * 1_000_000)) },
+                            [new Measurement(1, IterationMode.Workload, IterationStage.Result, 1, 1, 100_000_000 + (i * 1_000_000))],
                             default, default, default)
-                    },
-                    Array.Empty<Metric>()));
+                    ],
+                    []));
         HostEnvironmentInfo hostEnvironmentInfo = HostEnvironmentInfo.GetCurrent();
         // This is the way BDN does it. SummaryStyle.CultureInfo seems to be getting ignored.
         CultureInfo cultureInfo = _filteredBenchmarkCases.First().Config.CultureInfo

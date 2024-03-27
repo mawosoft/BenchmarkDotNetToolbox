@@ -30,7 +30,7 @@ public class BDNVersionTests
     [Fact]
     public void BDNAssemblyGetTypes()
     {
-        List<Type> types = new();
+        List<Type> types = [];
         Assembly assembly = typeof(BenchmarkCase).Assembly;
         try
         {

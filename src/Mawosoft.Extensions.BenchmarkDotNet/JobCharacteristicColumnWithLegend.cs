@@ -1,11 +1,11 @@
-﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
+// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
 namespace Mawosoft.Extensions.BenchmarkDotNet;
 
 /// <summary>
 /// Internal class used by <see cref="JobColumnSelectionProvider"/>
 /// </summary>
-internal class JobCharacteristicColumnWithLegend : IColumn
+internal sealed class JobCharacteristicColumnWithLegend : IColumn
 {
     private readonly IColumn _inner;
 

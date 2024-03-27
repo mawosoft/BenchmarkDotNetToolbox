@@ -9,7 +9,7 @@ internal sealed class Program
         // Normally, we would just use
         //      BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly)
         // but that will sort types alphabetically and we want to maintain a certain order.
-        BenchmarkSwitcher switcher = BenchmarkSwitcher.FromTypes(new[] {
+        BenchmarkSwitcher switcher = BenchmarkSwitcher.FromTypes([
             typeof(JobColumnSample1_RunModes_BDNDefault),
             typeof(JobColumnSample1_RunModes_JobColumnSelectionProvider),
             typeof(JobColumnSample2_Runtimes_BDNDefault),
@@ -20,7 +20,7 @@ internal sealed class Program
             typeof(ParamColumnSample_RecyclableParamsColumnProvider_Default),
             typeof(ParamColumnSample_RecyclableParamsColumnProvider_Custom),
             typeof(ParamWrapperSample),
-        });
+        ]);
 
         // All samples use an exclusive local config (ConfigUnionRule.AlwaysUseLocal).
         // You can still specify filters on the command line, but all other options won't have any effect.

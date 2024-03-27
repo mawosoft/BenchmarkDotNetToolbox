@@ -14,5 +14,5 @@ internal static class GenerateResultWrapper
     }
 
     public static GenerateResult Success()
-        => Create(ArtifactsPaths.Empty, true, null, Array.Empty<string>());
+        => Create(ArtifactsPaths.Empty, true, null, []);
 }

@@ -14,7 +14,7 @@ public class BenchmarkRunInfos
     public static readonly Job FastInProcessJob =
         new Job("FastInProc", Job.Dry.WithToolchain(InProcessEmitToolchain.Instance)).Freeze();
 
-    private readonly List<BenchmarkRunInfo> _items = new();
+    private readonly List<BenchmarkRunInfo> _items = [];
 
     /// <summary>
     /// Gets or sets the global config to use for subsequent benchmark conversions.
@@ -151,7 +151,7 @@ public class BenchmarkRunInfos
     /// <summary>
     /// Runs all converted benchmarks and returns the results.
     /// </summary>
-    public Summary[] RunAll() => BenchmarkRunner.Run(_items.ToArray());
+    public Summary[] RunAll() => BenchmarkRunner.Run([.. _items]);
 
     private WhatifFilter? PreProcessConverter()
     {
@@ -184,12 +184,12 @@ public class BenchmarkRunInfos
         else
         {
             // We keep the hashset here in case we want to go back to support multiple override jobs.
-            HashSet<Job> jobs = new() { OverrideJob };
+            HashSet<Job> jobs = [OverrideJob];
             foreach (BenchmarkRunInfo runInfo in runInfos)
             {
                 HashSet<BenchmarkCase> oldBenchmarkCases =
                     new(runInfo.BenchmarksCases, BenchmarkCaseWithoutJobEqualityComparer.Instance);
-                List<BenchmarkCase> newBenchmarkCases = new();
+                List<BenchmarkCase> newBenchmarkCases = [];
                 foreach (BenchmarkCase benchmarkCase in oldBenchmarkCases)
                 {
                     foreach (Job job in jobs)
@@ -205,13 +205,13 @@ public class BenchmarkRunInfos
                 }
                 if (newBenchmarkCases.Count > 0)
                 {
-                    _items.Add(new BenchmarkRunInfo(newBenchmarkCases.ToArray(), runInfo.Type, runInfo.Config));
+                    _items.Add(new BenchmarkRunInfo([.. newBenchmarkCases], runInfo.Type, runInfo.Config));
                 }
             }
         }
     }
 
-    private class BenchmarkCaseWithoutJobEqualityComparer : IEqualityComparer<BenchmarkCase>
+    private sealed class BenchmarkCaseWithoutJobEqualityComparer : IEqualityComparer<BenchmarkCase>
     {
         public static readonly BenchmarkCaseWithoutJobEqualityComparer Instance = new();
         public bool Equals(BenchmarkCase x, BenchmarkCase y)

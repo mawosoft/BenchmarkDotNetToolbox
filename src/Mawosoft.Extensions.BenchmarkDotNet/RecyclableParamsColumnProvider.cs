@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
+// Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
 namespace Mawosoft.Extensions.BenchmarkDotNet;
 
@@ -25,7 +25,7 @@ public class RecyclableParamsColumnProvider : IColumnProvider
     {
         if (summary is null || summary.BenchmarksCases.Length == 0)
         {
-            return Array.Empty<IColumn>();
+            return [];
         }
         int maxParamCount = summary.BenchmarksCases.Max(b => b.Parameters.Count);
         List<IColumn> columns = new(maxParamCount);

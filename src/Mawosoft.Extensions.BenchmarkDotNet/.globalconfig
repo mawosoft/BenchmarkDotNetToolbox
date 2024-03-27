@@ -11,3 +11,6 @@ dotnet_diagnostic.CA1308.severity = none
 
 # CA1815: Override equals and operator equals on value types
 dotnet_code_quality.CA1815.api_surface = public
+
+# IDE0290: Use primary constructor
+dotnet_diagnostic.IDE0290.severity = silent

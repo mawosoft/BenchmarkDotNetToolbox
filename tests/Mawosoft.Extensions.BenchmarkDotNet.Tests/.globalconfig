@@ -9,6 +9,12 @@ dotnet_diagnostic.CA1307.severity = none
 # CA1822: Mark members as static
 dotnet_diagnostic.CA1822.severity = none
 
+# CA1861: Avoid constant arrays as arguments
+dotnet_diagnostic.CA1861.severity = none
+
+# IDE0290: Use primary constructor
+dotnet_diagnostic.IDE0290.severity = none
+
 # Common settings for test projects
 
 # CA1034: Nested types should not be visible

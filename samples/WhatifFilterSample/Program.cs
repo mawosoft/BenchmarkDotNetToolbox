@@ -48,6 +48,8 @@ public class Benchmarks3
 
 internal sealed class Program
 {
+    private static readonly char[] separator = [' '];
+
     public static void Main(string[] args)
     {
         bool runAllPredefinedSamples = false;
@@ -60,7 +62,7 @@ internal sealed class Program
         {
             runAllPredefinedSamples = true;
             sampleCmdLine = "--runtimes net7.0 net6.0 net48 --whatif";
-            args = sampleCmdLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            args = sampleCmdLine.Split(separator, StringSplitOptions.RemoveEmptyEntries);
         }
 
         // Create the WhatifFilter and let it process the --whatif (or -w for short) argument if one exists.
@@ -108,14 +110,14 @@ internal sealed class Program
             logger.WriteLine();
             logger.WriteLineInfo("Console arguments: " + sampleCmdLine);
             logger.WriteLine();
-            args = sampleCmdLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            args = sampleCmdLine.Split(separator, StringSplitOptions.RemoveEmptyEntries);
             _ = BenchmarkRunner.Run(typeof(Program).Assembly, config, args);
 
             sampleCmdLine = "--runtimes net7.0 net6.0 net48 --list tree";
             logger.WriteLine();
             logger.WriteLineInfo("Console arguments: " + sampleCmdLine);
             logger.WriteLine();
-            args = sampleCmdLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            args = sampleCmdLine.Split(separator, StringSplitOptions.RemoveEmptyEntries);
             _ = BenchmarkRunner.Run(typeof(Program).Assembly, config, args);
 
         }

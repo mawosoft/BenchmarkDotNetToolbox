@@ -54,9 +54,9 @@ public partial class ConfigExtensionsTests
         foreach ((Type item, MethodInfo add, MethodInfo get) in s_methodPairs.Value)
         {
             if (item == itemTypeToExclude) continue;
-            object? retVal = get.Invoke(source, Array.Empty<object?>());
-            retVal = genericToArray.MakeGenericMethod(item).Invoke(null, new object?[] { retVal });
-            add.Invoke(config, new object?[] { retVal });
+            object? retVal = get.Invoke(source, []);
+            retVal = genericToArray.MakeGenericMethod(item).Invoke(null, [retVal]);
+            add.Invoke(config, [retVal]);
         }
         // Statements in IConfig order
         //config.ConfigAnalysisConclusion not settable on ManualConfig
@@ -75,8 +75,8 @@ public partial class ConfigExtensionsTests
     {
         foreach ((_, _, MethodInfo get) in s_methodPairs.Value)
         {
-            object? retLeft = get.Invoke(expected, Array.Empty<object?>());
-            object? retRight = get.Invoke(actual, Array.Empty<object?>());
+            object? retLeft = get.Invoke(expected, []);
+            object? retRight = get.Invoke(actual, []);
             Assert.Equal(retLeft, retRight);
         }
         // Statements in IConfig order

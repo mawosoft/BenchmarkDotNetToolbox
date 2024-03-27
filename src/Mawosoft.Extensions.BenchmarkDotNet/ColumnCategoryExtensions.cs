@@ -35,7 +35,7 @@ internal static class ColumnCategoryExtensions
 
     // Map known ColumnProviders to ExtendedColumnCategory
     private static readonly Lazy<(Type type, ExtendedColumnCategory category)[]> s_knownColumnProviders
-        = new(() => new[] {
+        = new(() => [
             (DefaultColumnProviders.Descriptor.GetType(), ExtendedColumnCategory.TargetMethod),
             (DefaultColumnProviders.Job.GetType(), ExtendedColumnCategory.Job),
             (DefaultColumnProviders.Statistics.GetType(), ExtendedColumnCategory.Statistics),
@@ -43,7 +43,7 @@ internal static class ColumnCategoryExtensions
             (DefaultColumnProviders.Metrics.GetType(), ExtendedColumnCategory.Metric),
             (typeof(RecyclableParamsColumnProvider), ExtendedColumnCategory.Params),
             (typeof(JobColumnSelectionProvider), ExtendedColumnCategory.Job),
-        });
+        ]);
 
     // Get ExtendedColumnCategory(s) either from mapping or by querying for columns
     public static IEnumerable<ExtendedColumnCategory> GetExtendedColumnCategories(this IColumnProvider columnProvider)
@@ -53,13 +53,13 @@ internal static class ColumnCategoryExtensions
             s_knownColumnProviders.Value.FirstOrDefault(item => item.type == providerType);
         if (providerType == type)
         {
-            return new[] { category };
+            return [category];
         }
         return columnProvider.GetDefaultColumns().Select(c => c.GetExtendedColumnCategory()).Distinct();
     }
 
     // Needed for mock Summary
-    private class MockMetricDescriptor : IMetricDescriptor
+    private sealed class MockMetricDescriptor : IMetricDescriptor
     {
         public string Id => nameof(MockMetricDescriptor);
         public string DisplayName => Id;
@@ -78,21 +78,21 @@ internal static class ColumnCategoryExtensions
         BenchmarkCase benchmarkCase = BenchmarkCase.Create(
             new Descriptor(
                 type: typeof(ConfigExtensions), workloadMethod: (MethodBase.GetCurrentMethod() as MethodInfo)!,
-                baseline: true, categories: new[] { "c1" }
+                baseline: true, categories: ["c1"]
                 ),
             Job.Dry,
-            new ParameterInstances(new[] { new ParameterInstance(
-                new ParameterDefinition("p1", false, new object[] { 1 }, true, typeof(int), 0),
-                1, SummaryStyle.Default) }),
+            new ParameterInstances([ new ParameterInstance(
+                new ParameterDefinition("p1", false, [1], true, typeof(int), 0),
+                1, SummaryStyle.Default) ]),
             DefaultConfig.Instance.CreateImmutableConfig()
             );
         GenerateResult generateResult = GenerateResultWrapper.Success();
         BuildResult buildResult = BuildResult.Success(generateResult);
-        Measurement[] allMeasurements = new[] {
+        Measurement[] allMeasurements = [
             new Measurement(1, IterationMode.Workload, IterationStage.Result, 1, 1, 1)
-        };
-        ExecuteResult[] executeResults = new[] { ExecuteResultWrapper.Create(allMeasurements, default, default, default) };
-        Metric[] metrics = new[] { new Metric(new MockMetricDescriptor(), 1) };
+        ];
+        ExecuteResult[] executeResults = [ExecuteResultWrapper.Create(allMeasurements, default, default, default)];
+        Metric[] metrics = [new Metric(new MockMetricDescriptor(), 1)];
         BenchmarkReport benchmarkReport = new(true, benchmarkCase, generateResult, buildResult, executeResults, metrics);
         return SummaryWrapper.Create(
             string.Empty, ImmutableArray.Create(benchmarkReport), HostEnvironmentInfo.GetCurrent(),

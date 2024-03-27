@@ -9,25 +9,25 @@ internal static class LogParser
     public static readonly LogCapture LogCapture = new();
     public sealed class SummaryParts
     {
-        public List<OutputLine> Environment = new();
-        public List<OutputLine> Host = new(); // [Host] part of all runtimes
-        public List<OutputLine> Runtimes = new();
-        public List<OutputLine> CommonValues = new();
-        public List<OutputLine> Table = new();
-        public List<OutputLine> Errors = new();
-        public List<OutputLine> Warnings = new();
-        public List<OutputLine> Hints = new();
-        public List<OutputLine> Legend = new();
-        public List<OutputLine> Diagnosers = new();
+        public List<OutputLine> Environment = [];
+        public List<OutputLine> Host = []; // [Host] part of all runtimes
+        public List<OutputLine> Runtimes = [];
+        public List<OutputLine> CommonValues = [];
+        public List<OutputLine> Table = [];
+        public List<OutputLine> Errors = [];
+        public List<OutputLine> Warnings = [];
+        public List<OutputLine> Hints = [];
+        public List<OutputLine> Legend = [];
+        public List<OutputLine> Diagnosers = [];
     }
 
     [SuppressMessage("Performance", "CA1851:Possible multiple enumerations of 'IEnumerable' collection",
         Justification = "Mostly false positive. Ienumerable result gets reassigned after partial enumeration.")]
     public static List<SummaryParts> GetSummaries()
     {
-        List<SummaryParts> summaries = new();
+        List<SummaryParts> summaries = [];
         OutputLine emptyLine = new() { Kind = LogKind.Default, Text = Environment.NewLine };
-        IEnumerable<OutputLine> captured = LogCapture.CapturedOutput.ToList();
+        IEnumerable<OutputLine> captured = [.. LogCapture.CapturedOutput];
         // Using the original IReadOnlyList<> and an index would be more efficient, but Skip/Take
         // is more readable and there aren't really any performance here issues to worry about.
         while (captured.Any())
