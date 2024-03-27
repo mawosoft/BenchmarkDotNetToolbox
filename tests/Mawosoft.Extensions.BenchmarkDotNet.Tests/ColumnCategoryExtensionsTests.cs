@@ -1,5 +1,11 @@
 // Copyright (c) 2021-2023 Matthias Wolf, Mawosoft.
 
+#if BDN_NIGHTLY
+using Perfolizer.Metrology;
+#else
+using Perfolizer.Mathematics.SignificanceTesting;
+using Perfolizer.Mathematics.Thresholds;
+#endif
 using static Mawosoft.Extensions.BenchmarkDotNet.ColumnCategoryExtensions;
 
 namespace Mawosoft.Extensions.BenchmarkDotNet.Tests;
@@ -57,7 +63,11 @@ public class ColumnCategoryExtensionsTests
             public string Legend => nameof(MockMetricDescriptor);
             public string NumberFormat => "0.##";
             public UnitType UnitType => UnitType.Size;
+#if BDN_NIGHTLY
+            public string Unit => SizeUnit.B.Abbreviation;
+#else
             public string Unit => SizeUnit.B.Name;
+#endif
             public bool TheGreaterTheBetter => false;
             public int PriorityInCategory => 0;
             public bool GetIsAvailable(Metric metric) => true;
@@ -111,7 +121,11 @@ public class ColumnCategoryExtensionsTests
                         Add(RankColumn.Arabic, ExtendedColumnCategory.Custom);
                         break;
                     case "StatisticalTestColumn":
-                        Add(new StatisticalTestColumn(Perfolizer.Mathematics.SignificanceTesting.StatisticalTestKind.Welch, Perfolizer.Mathematics.Thresholds.Threshold.Create(Perfolizer.Mathematics.Thresholds.ThresholdUnit.Ratio, 0), true), ExtendedColumnCategory.Baseline);
+#if BDN_NIGHTLY
+                        Add(new StatisticalTestColumn(new Threshold()), ExtendedColumnCategory.Baseline);
+#else
+                        Add(new StatisticalTestColumn(StatisticalTestKind.Welch, Threshold.Create(ThresholdUnit.Ratio, 0), true), ExtendedColumnCategory.Baseline);
+#endif
                         break;
                     case "StatisticColumn":
                         Add(StatisticColumn.Mean, ExtendedColumnCategory.Statistics);
