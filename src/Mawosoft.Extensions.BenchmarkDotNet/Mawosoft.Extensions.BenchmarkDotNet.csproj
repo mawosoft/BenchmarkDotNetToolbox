@@ -19,7 +19,7 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <DebugType>embedded</DebugType>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <PackageReleaseNotes>This release supports BenchmarkDotNet 0.13.8 and BDN nightly builds up to at least 0.13.9-nightly.20230922.72</PackageReleaseNotes>
+    <PackageReleaseNotes>This release supports BenchmarkDotNet 0.13.8 and BDN nightly builds up to at least 0.13.13-nightly.20240310.144</PackageReleaseNotes>
     <EnablePackageValidation>true</EnablePackageValidation>
     <PackageValidationBaselineVersion>0.2.1</PackageValidationBaselineVersion>
   </PropertyGroup>
