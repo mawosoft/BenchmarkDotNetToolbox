@@ -137,4 +137,4 @@ jobs:
         $pos = $body.IndexOf($find)
         $body = $body.Substring(0, $pos) + $replace + $body.Substring($pos + $find.Length)
         $param = @{ body = $body }
-        $response = $param | ConvertTo-Json -EscapeHandling EscapeNonAscii | Invoke-RestMethod -Uri $uri -Method Patch @auth
+        $response = $param | ConvertTo-Json -EscapeHandling EscapeNonAscii | Invoke-RestMethod -Uri $uri -Method Patch -ContentType 'application/json' @auth
