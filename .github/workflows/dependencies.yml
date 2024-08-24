@@ -3,7 +3,7 @@ name: Dependency Check
 on:
   workflow_dispatch:
   schedule:
-  - cron: '0 5 * * *'
+  - cron: '0 0 * * 0'
 
 defaults:
   run:
@@ -25,6 +25,8 @@ jobs:
     - name: Check project dependencies
       id: dependencies
       uses: mawosoft/dotnet-dependency-alert@v1
+      with:
+        retention-days: 14
     - name: Check tool dependencies
       id: tooldependencies
       run: ./build/checkToolDependencies.ps1 -Token (ConvertTo-SecureString ${{ secrets.GITHUB_TOKEN }} -AsPlainText)
@@ -33,4 +35,4 @@ jobs:
       with:
         name: ${{ steps.tooldependencies.outputs.ArtifactName }}
         path: ${{ steps.tooldependencies.outputs.ArtifactPath }}
-        retention-days: 5
+        retention-days: 14

@@ -17,7 +17,7 @@ on:
         - None
 
   schedule:
-  - cron: '0 5 * * *'
+  - cron: '0 0 * * 0'
 
 defaults:
   run:
@@ -57,7 +57,7 @@ jobs:
       with:
         name: ${{ steps.apicompat.outputs.StatusArtifactName }}
         path: ${{ steps.apicompat.outputs.StatusArtifactPath }}
-        retention-days: 5
+        retention-days: 14
     - name: Upload Logs
       if: ${{ steps.apicompat.outputs.LogArtifactName != '' }}
       uses: actions/upload-artifact@v4
